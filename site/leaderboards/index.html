@@ -7,12 +7,20 @@
   <meta name="description" content="The top 25 most-upvoted small websites of the month.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body data-page="rankings" data-root="../" class="board-page">
   <main class="board">
-    <h1>Top-voted <span class="noun" id="noun">projects</span></h1>
+    <h1>Top-voted <span class="noun"><span id="noun">projects</span><svg class="brush" viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true">
+      <defs><clipPath id="brush-reveal"><rect class="brush-reveal" x="0" y="0" width="300" height="30"/></clipPath></defs>
+      <g clip-path="url(#brush-reveal)">
+        <path d="M4 17 C40 10 95 9 150 10 C205 11 255 9 296 12 C299 14 297 18 293 19 C250 17 200 19 150 20 C100 21 48 22 9 25 C3 25 1 20 4 17 Z"/>
+        <path d="M20 13 C80 9 170 8 280 11 L280 12.4 C170 10 80 11 20 14.6 Z" opacity=".55"/>
+        <path d="M14 22 C70 19 160 18 260 18 L262 19.6 C160 19.6 70 21 14 23.6 Z" opacity=".5"/>
+        <path d="M60 16 C120 14 200 14 288 15 L288 15.8 C200 15.4 120 15.8 60 17 Z" fill-opacity=".35"/>
+      </g>
+    </svg></span></h1>
     <p class="sub">The most-upvoted standalone websites from Show HN and Reddit over the last 30 days.</p>
     <table class="ranks">
       <thead>
@@ -42,7 +50,13 @@
 
     function render() {
       const cat = DL.CATS.find((c) => c.key === DL.category);
-      document.getElementById("noun").textContent = cat.noun;
+      const noun = document.getElementById("noun");
+      if (noun.textContent !== cat.noun) {
+        noun.textContent = cat.noun;
+        // Repaint the brush stroke under the new word.
+        const r = document.querySelector(".brush-reveal");
+        r.style.animation = "none"; r.getBoundingClientRect(); r.style.animation = "";
+      }
       const rows = data.sites.filter((s) => DL.inCategory(s)).slice(0, 25);
       const max = rows[0]?.votes || 1;
       document.getElementById("rows").innerHTML = rows.length ? rows.map((s, i) => `
