@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths-ignore: ["README.md", "LICENSE"]
   schedule:
-    - cron: "17 6 */3 * *" # refresh rankings every 3 days
+    - cron: "17 6 * * *" # daily due-check; collect Reddit posts every 3 days
   workflow_dispatch:
 
 # Nothing by default; each job asks only for what it needs.
@@ -24,22 +24,33 @@ jobs:
     steps:
       # Actions are pinned to commit SHAs so a moved tag can't change what runs.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Test scraper
-        run: python3 -m unittest discover -s scripts -p 'test_*.py'
-      - name: Scrape top posts
+      - name: Test scraper and Reddit ingestion
+        run: python3 -B -m unittest discover -s scripts -p 'test_*.py'
+      - name: Scrape Reddit top posts when due
+        id: scrape
+        if: github.event_name != 'push'
         # If scraping fails, the last committed data is deployed instead.
         continue-on-error: true
         timeout-minutes: 15
         env:
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
-        run: python3 scripts/scrape.py
+          REFRESH_TRIGGER: ${{ github.event_name }}
+        run: |
+          if [ "$REFRESH_TRIGGER" = "workflow_dispatch" ]; then
+            python3 -B scripts/scrape.py
+          else
+            python3 -B scripts/scrape.py --if-due
+          fi
+      - name: Report retained rankings
+        if: steps.scrape.outcome == 'failure'
+        run: echo "::warning::Direct Reddit ingestion failed. Retaining the last successful rankings and update timestamp."
       - name: Commit refreshed data
-        if: github.event_name != 'push'
+        if: steps.scrape.outcome == 'success'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A site/data data
+          git add site/data/sites.json data/reddit-cache.json
           git diff --cached --quiet || (git commit -m "Refresh rankings data" && git push)
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3

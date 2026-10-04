@@ -132,10 +132,11 @@ def refresh_due(now):
     try:
         with open(OUT, encoding="utf-8") as f:
             data = json.load(f)
-        if not data.get("sites") or any(not p.get("source", "").startswith("r/") for p in data["sites"]):
+        if (not data.get("sites") or not data.get("next_refresh_at")
+                or any(not p.get("source", "").startswith("r/") for p in data["sites"])):
             return True
         generated = dt.datetime.fromisoformat(data["generated_at"])
-        due = dt.datetime.fromisoformat(data["next_refresh_at"]) if data.get("next_refresh_at") else generated + REFRESH_INTERVAL
+        due = dt.datetime.fromisoformat(data["next_refresh_at"])
         if generated.tzinfo is None or due.tzinfo is None or generated > now:
             return True
         return now >= due
@@ -185,13 +186,15 @@ def reddit_api(since, token):
             continue
         for c in data["data"]["children"]:
             p = c["data"]
+            if not isinstance(p.get("score"), int):
+                continue
             if p.get("created_utc", 0) < since.timestamp() or p.get("over_18") or p.get("stickied"):
                 continue
             title = p.get("title") or ""
             direct = None if p.get("is_self") else p.get("url_overridden_by_dest") or p.get("url")
             url = pick_site(title, direct, URL_RE.findall(p.get("selftext") or ""))
             if url:
-                out.append(reddit_entry(sub, url, title, p.get("score") or 0, p["permalink"], int(p.get("created_utc", 0))))
+                out.append(reddit_entry(sub, url, title, p["score"], p["permalink"], int(p.get("created_utc", 0))))
     return out
 
 
