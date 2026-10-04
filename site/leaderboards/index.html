@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#e9ecf3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121621" media="(prefers-color-scheme: dark)">
   <title>Rankings · deploylist</title>
   <meta name="description" content="The top 25 most-upvoted small websites of the month.">
+  <link rel="canonical" href="https://deploylist.com/leaderboards/">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -31,7 +34,7 @@
           <th>Domain</th>
           <th class="num votes">Votes</th>
           <th class="src src-head">
-            <button id="src-btn" aria-haspopup="true">Source</button>
+            <button id="src-btn" aria-haspopup="true" aria-expanded="false">Source</button>
             <div class="glass popover" id="src-pop"><p>Where posts are collected from</p><div id="src-list"></div></div>
           </th>
         </tr>
@@ -42,7 +45,7 @@
   </main>
   <footer class="site-foot">
     <span>© 2026 deploylist.com</span>
-    <a href="https://buymeacoffee.com/0wtynrfutb" target="_blank" rel="noopener">Donate</a>
+    <a href="https://buymeacoffee.com/0wtynrfutb" target="_blank" rel="noopener noreferrer">Donate</a>
   </footer>
   <script src="../assets/app.js" defer></script>
   <script src="../assets/rankings.js" defer></script>
