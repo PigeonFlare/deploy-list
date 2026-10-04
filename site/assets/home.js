@@ -4,8 +4,11 @@
   DL.loadData().then((d) => DL.setCounts(d.sites, 25)).catch(() => {}));
 // Carry the chosen category into the next page.
 function syncLinks() {
-  const q = DL.category === "all" ? "" : "?cat=" + DL.category;
-  document.getElementById("go-rankings").href = "leaderboards/" + q;
-  document.getElementById("go-live").href = "live/" + q;
+  const q = DL.category === "all" ? "" : "?cat=" + encodeURIComponent(DL.category);
+  const goRankings = document.getElementById("go-rankings");
+  const goLive = document.getElementById("go-live");
+  if (goRankings) goRankings.href = "leaderboards/" + q;
+  if (goLive) goLive.href = "live/" + q;
 }
 DL.onCategory(syncLinks); syncLinks();
+

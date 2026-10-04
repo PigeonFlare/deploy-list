@@ -24,6 +24,8 @@ jobs:
     steps:
       # Actions are pinned to commit SHAs so a moved tag can't change what runs.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Test scraper
+        run: python3 -m unittest discover -s scripts -p 'test_*.py'
       - name: Scrape top posts
         # If scraping fails, the last committed data is deployed instead.
         continue-on-error: true

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build site/data/sites.json from this month's top Show HN and Reddit posts.
+"""Build site/data/sites.json directly from this month's top Reddit posts.
 
 Only posts centred on one standalone website are kept (no GitHub repos,
 store pages, blog posts or social links). Each site is then probed to see
@@ -7,12 +7,15 @@ whether it can be shown inside an <iframe>; sites that can't stay on the
 leaderboard but are left out of live view.
 
 Standard library only. Reddit's API is used when REDDIT_CLIENT_ID and
-REDDIT_CLIENT_SECRET are set; otherwise its public web pages are read.
+REDDIT_CLIENT_SECRET are set; otherwise its public listings and RSS are read.
+Post details and vote counts always come from Reddit itself.
 """
 
+import argparse
 import base64
 import datetime as dt
 import html
+import ipaddress
 import json
 import os
 import re
@@ -22,13 +25,17 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
+from html.parser import HTMLParser
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "site", "data", "sites.json")
-# Reddit often blocks GitHub's runners, so the last successful Reddit scrape (from
-# any machine) is saved here and reused when a run can't reach Reddit.
+# Save successful direct scrapes for inspection. Failed runs leave this snapshot
+# and the published rankings unchanged.
 REDDIT_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "reddit-cache.json")
 UA = "deploylist/1.0 (+https://deploylist.com)"
 POOL_SIZE = 100  # candidates kept; the pages show the top 25 per category
+REFRESH_INTERVAL = dt.timedelta(days=3)
+# Match the daily due-check in .github/workflows/deploy.yml.
+REFRESH_HOUR, REFRESH_MINUTE = 6, 17
 
 SUBREDDITS = ["SideProject", "InternetIsBeautiful", "WebGames", "alphaandbetausers", "IMadeThis"]
 
@@ -77,18 +84,34 @@ def blocked(host):
     return any(host == b or host.endswith("." + b) for b in BLOCKED_HOSTS)
 
 
+def is_ip(host):
+    try:
+        ipaddress.ip_address(host.strip("[]"))
+        return True
+    except ValueError:
+        return False
+
+
 def site_url(url, title):
     """Return a cleaned URL if this link is a standalone website, else None."""
     url = html.unescape(url).rstrip(".,;:!?")
-    parts = urllib.parse.urlsplit(url)
+    try:
+        parts = urllib.parse.urlsplit(url)
+    except Exception:
+        return None
     host = host_of(url)
-    if parts.scheme not in ("http", "https") or not host or "." not in host or blocked(host):
+    if parts.scheme not in ("http", "https") or not host or "." not in host or is_ip(host) or blocked(host):
+        return None
+    if parts.port and parts.port not in (80, 443, 8080, 8443):
         return None
     if BLOG_PATH.search(parts.path) or BLOG_TITLE.search(title or ""):
         return None
     if re.search(r"\.(pdf|png|jpe?g|gif|mp4|zip)$", parts.path, re.I):
         return None
-    return urllib.parse.urlunsplit((parts.scheme, parts.netloc, parts.path or "/", parts.query, ""))
+    netloc = (parts.hostname or "") + (f":{parts.port}" if parts.port else "")
+    if not netloc:
+        return None
+    return urllib.parse.urlunsplit((parts.scheme, netloc, parts.path or "/", parts.query, ""))
 
 
 def category(text, source):
@@ -104,26 +127,29 @@ def window_start():
     return dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)
 
 
-def show_hn(since):
-    q = urllib.parse.urlencode({
-        "tags": "show_hn",
-        "numericFilters": f"created_at_i>={int(since.timestamp())},points>=10",
-        "hitsPerPage": 1000,
-    })
-    hits = json.loads(fetch(f"https://hn.algolia.com/api/v1/search?{q}"))["hits"]
-    out = []
-    for h in hits:
-        title = re.sub(r"^show hn:\s*", "", h.get("title") or "", flags=re.I)
-        url = site_url(h.get("url") or "", title)
-        if not url:
-            continue
-        out.append({
-            "url": url, "title": title, "votes": h.get("points") or 0,
-            "source": "Hacker News", "source_url": "https://news.ycombinator.com/show",
-            "post_url": f"https://news.ycombinator.com/item?id={h['objectID']}",
-            "created": h.get("created_at_i"),
-        })
-    return out
+def refresh_due(now):
+    """Refresh when due, or immediately when migrating the old mixed feed."""
+    try:
+        with open(OUT, encoding="utf-8") as f:
+            data = json.load(f)
+        if not data.get("sites") or any(not p.get("source", "").startswith("r/") for p in data["sites"]):
+            return True
+        generated = dt.datetime.fromisoformat(data["generated_at"])
+        due = dt.datetime.fromisoformat(data["next_refresh_at"]) if data.get("next_refresh_at") else generated + REFRESH_INTERVAL
+        if generated.tzinfo is None or due.tzinfo is None or generated > now:
+            return True
+        return now >= due
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return True
+
+
+def next_refresh_time(now):
+    """Anchor the next collection to the clock so runner delays don't add a day."""
+    slot = now.astimezone(dt.timezone.utc).replace(
+        hour=REFRESH_HOUR, minute=REFRESH_MINUTE, second=0, microsecond=0)
+    if slot > now:
+        slot -= dt.timedelta(days=1)
+    return slot + REFRESH_INTERVAL
 
 
 def reddit_token():
@@ -177,127 +203,148 @@ def reddit_entry(sub, url, title, votes, permalink, created):
     }
 
 
-# Without API keys, read Reddit's public RSS feeds, which work even from GitHub's
-# servers. A subreddit's "top this month" feed has each post's link and text but no
-# score, so scores come from the subreddit's web listing when it's reachable, else
-# from the Arctic Shift Reddit archive, whose counts lag behind the live ones.
-BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
-LISTING_PAGES = 4  # about 25 posts per page
+# Listings supply live votes and link posts; RSS supplies links in text posts.
+LISTING_PAGES = 5  # about 20 posts per page
 
 
-def reddit_get(url, attempts=4):
+def reddit_get(url, attempts=3):
     for i in range(attempts):
         time.sleep(1.5)  # stay well under Reddit's rate limit
         try:
-            return fetch(url, {"User-Agent": BROWSER_UA, "Accept-Language": "en-US"}).decode("utf-8", "replace")
+            return fetch(url, {"Accept-Language": "en-US"}).decode("utf-8", "replace")
         except urllib.error.HTTPError as e:
             if e.code != 429 or i == attempts - 1:
                 raise
-            time.sleep(20 * (i + 1))
+            time.sleep(10 * (i + 1))
 
 
 def reddit_feed(sub, since):
     feed = reddit_get(f"https://www.reddit.com/r/{sub}/top/.rss?t=month&limit=100")
     posts = []
     for e in re.findall(r"<entry>(.*?)</entry>", feed, re.S):
-        get = lambda tag: html.unescape((re.search(rf"<{tag}[^>]*>(.*?)</{tag}>", e, re.S) or [None, ""])[1])
-        created = dt.datetime.fromisoformat(get("published")).timestamp()
-        if created < since.timestamp():
+        try:
+            get = lambda tag: html.unescape((re.search(rf"<{tag}[^>]*>(.*?)</{tag}>", e, re.S) or [None, ""])[1])
+            pub = get("published")
+            if not pub:
+                continue
+            created = dt.datetime.fromisoformat(pub).timestamp()
+            if created < since.timestamp():
+                continue
+            anchors = re.findall(r'<a href="([^"]+)">([^<]*)</a>', get("content"))
+            direct = next((h for h, text in anchors if text == "[link]"), None)
+            permalink = next((h for h, text in anchors if text == "[comments]"), "")
+            body = [h for h, text in anchors if text not in ("[link]", "[comments]")]
+            posts.append({
+                "id": get("id").removeprefix("t3_"), "title": get("title"), "direct": direct, "body": body,
+                "permalink": urllib.parse.urlsplit(permalink).path, "created": int(created),
+            })
+        except Exception:
             continue
-        anchors = re.findall(r'<a href="([^"]+)">([^<]*)</a>', get("content"))
-        direct = next((h for h, text in anchors if text == "[link]"), None)
-        permalink = next((h for h, text in anchors if text == "[comments]"), "")
-        body = [h for h, text in anchors if text not in ("[link]", "[comments]")]
-        posts.append({
-            "id": get("id").removeprefix("t3_"), "title": get("title"), "direct": direct, "body": body,
-            "permalink": urllib.parse.urlsplit(permalink).path, "created": int(created),
-        })
     return posts
 
 
-def listing_scores(sub):
-    """Live scores from the subreddit's web listing, or {} where Reddit blocks it."""
-    scores, after = {}, None
-    try:
-        for _ in range(LISTING_PAGES):
-            q = {"t": "MONTH", "name": sub, **({"after": after} if after else {})}
-            page = reddit_get("https://www.reddit.com/svc/shreddit/community-more-posts/top/?" + urllib.parse.urlencode(q))
-            for tag in re.findall(r'<shreddit-post\b([^>]*\bid="t3_[^"]*"[^>]*)>', page):
-                pid, score = re.search(r'\bid="t3_(\w+)"', tag).group(1), re.search(r'\bscore="(-?\d+)"', tag)
-                if score:
-                    scores[pid] = int(score.group(1))
-            m = re.search(r'more-posts-cursor="([^"]+)"', page)
-            if not m:
-                break
-            after = m.group(1)
-    except Exception as e:
-        print(f"warn: r/{sub} listing: {e}", file=sys.stderr)
-    return scores
+class RedditListing(HTMLParser):
+    """Read scored posts without depending on HTML attribute order."""
 
+    def __init__(self):
+        super().__init__()
+        self.posts = []
+        self.after = None
 
-def archive_scores(ids):
-    scores = {}
-    for i in range(0, len(ids), 100):
-        q = urllib.parse.urlencode({"ids": ",".join(ids[i:i + 100]), "fields": "id,score"})
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if attrs.get("more-posts-cursor"):
+            self.after = attrs["more-posts-cursor"]
+        if tag != "shreddit-post" or not attrs.get("id", "").startswith("t3_"):
+            return
         try:
-            data = json.loads(fetch(f"https://arctic-shift.photon-reddit.com/api/posts/ids?{q}", timeout=40))
-            scores.update({p["id"]: p["score"] for p in data.get("data") or []})
+            post = {
+                "id": attrs["id"].removeprefix("t3_"),
+                "title": attrs["post-title"], "direct": attrs.get("content-href"),
+                "votes": int(attrs["score"]),
+                "permalink": urllib.parse.urlsplit(attrs["permalink"]).path,
+                "created": int(dt.datetime.fromisoformat(attrs["created-timestamp"]).timestamp()),
+            }
+        except (KeyError, TypeError, ValueError):
+            return  # Unknown scores must never turn into zero-vote posts.
+        if not post["permalink"].startswith("/r/") or "/comments/" not in post["permalink"]:
+            return
+        post["excluded"] = any(
+            key in attrs and attrs[key] in (None, "", "true", "1")
+            for key in ("nsfw", "is-nsfw", "is-stickied", "is-pinned", "is-promoted")
+        )
+        self.posts.append(post)
+
+
+def listing_posts(sub):
+    """Read a bounded number of pages directly from Reddit, with live scores."""
+    posts, after = {}, None
+    for _ in range(LISTING_PAGES):
+        q = {"t": "MONTH", "name": sub, **({"after": after} if after else {})}
+        try:
+            page = reddit_get("https://www.reddit.com/svc/shreddit/community-more-posts/top/?" + urllib.parse.urlencode(q))
+            listing = RedditListing()
+            listing.feed(page)
+            if not listing.posts:
+                raise ValueError("Reddit returned no scored posts")
         except Exception as e:
-            print(f"warn: Arctic Shift: {e}", file=sys.stderr)
-    return scores
-
-
-def cached_scores():
-    try:
-        with open(REDDIT_CACHE) as f:
-            return {re.search(r"/comments/(\w+)", p["post_url"]).group(1): p["votes"] for p in json.load(f)["posts"]}
-    except (FileNotFoundError, ValueError, KeyError):
-        return {}
+            if not posts:
+                raise
+            print(f"warn: r/{sub}: pagination stopped ({e}); keeping the live posts already read", file=sys.stderr)
+            break
+        new = {p["id"]: p for p in listing.posts if p["id"] not in posts}
+        posts.update(new)
+        if not new or not listing.after or listing.after == after:
+            break
+        after = listing.after
+    return list(posts.values())
 
 
 def reddit_pages(since):
-    out, live = [], True
-    cache = cached_scores()
+    out = []
     for sub in SUBREDDITS:
         try:
-            posts = reddit_feed(sub, since)
+            posts = listing_posts(sub)
         except Exception as e:
             print(f"warn: r/{sub}: {e}", file=sys.stderr)
             continue
+        posts = [p for p in posts if p["created"] >= since.timestamp()
+                 and not p["excluded"] and not NSFW.search(p["title"])]
+        feed = {}
+        if any(not site_url(p["direct"] or "", p["title"]) for p in posts):
+            try:
+                feed = {p["id"]: p for p in reddit_feed(sub, since)}
+            except Exception as e:
+                print(f"warn: r/{sub} text links: {e}", file=sys.stderr)
+        kept = 0
         for p in posts:
-            p["url"] = None if NSFW.search(p["title"]) else pick_site(p["title"], p["direct"], p["body"])
-        posts = [p for p in posts if p["url"]]
-        scores = listing_scores(sub) if live else {}
-        live = live and bool(scores)  # once the listing is blocked, don't keep retrying it
-        missing = [p["id"] for p in posts if p["id"] not in scores]
-        archived = archive_scores(missing) if missing else {}
-        for p in posts:
-            # Archive counts only ever lag, so never drop below a count seen earlier.
-            votes = scores.get(p["id"]) or max(archived.get(p["id"], 0), cache.get(p["id"], 0))
-            out.append(reddit_entry(sub, p["url"], p["title"], votes, p["permalink"], p["created"]))
-        print(f"r/{sub}: {len(posts)} sites ({'live' if scores else 'archived'} scores)", flush=True)
+            text = feed.get(p["id"], {})
+            url = pick_site(p["title"], p["direct"] or text.get("direct"), text.get("body", ()))
+            if url:
+                out.append(reddit_entry(sub, url, p["title"], p["votes"], p["permalink"], p["created"]))
+                kept += 1
+        print(f"r/{sub}: {kept} sites (live Reddit scores)", flush=True)
     return out
 
 
 def reddit(since):
-    token = reddit_token()
+    posts = []
     try:
-        posts = reddit_api(since, token) if token else reddit_pages(since)
+        token = reddit_token()
+        if token:
+            posts = reddit_api(since, token)
     except Exception as e:
-        print(f"warn: Reddit failed: {e}", file=sys.stderr)
-        posts = []
+        print(f"warn: Reddit API failed: {e}; trying public listings", file=sys.stderr)
+    if not posts:
+        posts = reddit_pages(since)
     if posts:
         os.makedirs(os.path.dirname(REDDIT_CACHE), exist_ok=True)
-        with open(REDDIT_CACHE, "w") as f:
+        tmp = REDDIT_CACHE + ".tmp"
+        with open(tmp, "w") as f:
             json.dump({"scraped_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "posts": posts}, f, indent=1)
+        os.replace(tmp, REDDIT_CACHE)
         return posts
-    try:
-        with open(REDDIT_CACHE) as f:
-            cache = json.load(f)
-    except FileNotFoundError:
-        return []
-    print(f"Reddit unreachable; using cached posts from {cache['scraped_at']}")
-    return [p for p in cache["posts"] if p["created"] >= since.timestamp()]
+    return []
 
 
 def embeddable(url):
@@ -305,12 +352,18 @@ def embeddable(url):
     try:
         req = urllib.request.Request(url.replace("http://", "https://", 1),
                                      headers={"User-Agent": "Mozilla/5.0 (deploylist iframe check)"})
-        with urllib.request.urlopen(req, timeout=12) as r:
-            if not r.geturl().startswith("https://") or r.status >= 400:
+        with urllib.request.urlopen(req, timeout=10) as r:
+            final_url = r.geturl()
+            if not final_url.startswith("https://") or r.status >= 400:
                 return False
-            xfo = (r.headers.get("X-Frame-Options") or "").lower()
-            if "deny" in xfo or "sameorigin" in xfo:
+            final_host = host_of(final_url)
+            if not final_host or blocked(final_host) or is_ip(final_host):
                 return False
+            for xfo in r.headers.get_all("X-Frame-Options") or []:
+                xfo_lower = xfo.lower()
+                # ALLOW-FROM is ignored by current browsers, so it doesn't block framing.
+                if "deny" in xfo_lower or "sameorigin" in xfo_lower:
+                    return False
             for csp in r.headers.get_all("Content-Security-Policy") or []:
                 m = re.search(r"frame-ancestors([^;]*)", csp, re.I)
                 if m and "*" not in m.group(1).split():
@@ -320,18 +373,16 @@ def embeddable(url):
         return False
 
 
-def main():
+def main(if_due=False):
+    started = dt.datetime.now(dt.timezone.utc)
+    if if_due and not refresh_due(started):
+        print("Reddit refresh is not due; keeping the current rankings and update timestamp")
+        return
     since = window_start()
-    posts = []
-    for name, fn in (("Show HN", lambda: show_hn(since)), ("Reddit", lambda: reddit(since))):
-        try:
-            got = fn()
-            print(f"{name}: {len(got)} candidate posts")
-            posts += got
-        except Exception as e:
-            print(f"warn: {name} failed: {e}", file=sys.stderr)
+    posts = reddit(since)
+    print(f"Reddit: {len(posts)} candidate posts")
     if not posts:
-        sys.exit("no posts scraped; keeping existing data")
+        sys.exit("no fresh, scored Reddit posts scraped; keeping existing data")
 
     # One entry per domain, keeping its best-voted post.
     best = {}
@@ -349,16 +400,20 @@ def main():
         s["url"] = s["url"].replace("http://", "https://", 1) if ok else s["url"]
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w", encoding="utf-8") as f:
+    tmp = OUT + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump({
             "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+            "next_refresh_at": next_refresh_time(started).isoformat(timespec="seconds"),
             "since": since.isoformat(timespec="seconds"),
-            "sources": [{"name": "Show HN", "url": "https://news.ycombinator.com/show"}]
-                       + [{"name": f"r/{s}", "url": f"https://www.reddit.com/r/{s}/"} for s in SUBREDDITS],
+            "sources": [{"name": f"r/{s}", "url": f"https://www.reddit.com/r/{s}/"} for s in SUBREDDITS],
             "sites": sites,
         }, f, separators=(",", ":"), ensure_ascii=False)
+    os.replace(tmp, OUT)
     print(f"wrote {len(sites)} sites ({sum(flags)} embeddable) to {os.path.normpath(OUT)}")
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--if-due", action="store_true", help="skip collection until the next three-day refresh is due")
+    main(if_due=parser.parse_args().if_due)
