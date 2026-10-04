@@ -124,11 +124,12 @@
     let w, h, cx, cy, dpr, stars = [];
     const N = 1100, DEPTH = 1000;
 
-    function star(fresh) {
+    function newStar(fresh) {
+      // Keep stars off the exact center line, where they'd pile up into a bright blob.
+      const a = Math.random() * Math.PI * 2, r = 12 + Math.sqrt(Math.random()) * 220;
       return {
-        x: (Math.random() - 0.5) * 6, y: (Math.random() - 0.5) * 6,
+        x: Math.cos(a) * r, y: Math.sin(a) * r,
         z: fresh ? Math.random() * DEPTH : DEPTH, pz: 0,
-        hue: 200 + Math.random() * 60,
       };
     }
     function resize() {
@@ -139,34 +140,47 @@
     }
     resize();
     addEventListener("resize", resize);
-    for (let i = 0; i < N; i++) { const s = star(true); s.pz = s.z; stars.push(s); }
+    for (let i = 0; i < N; i++) { const s = newStar(true); s.pz = s.z; stars.push(s); }
+
+    // Colors come from CSS so the field follows light/dark mode.
+    let star = "", space = "";
+    function readColors() {
+      const cs = getComputedStyle(document.documentElement);
+      star = cs.getPropertyValue("--star").trim();
+      space = cs.getPropertyValue("--space").trim();
+      const [r, g, b] = space.match(/\w\w/g).map((h) => parseInt(h, 16));
+      fade = `rgba(${r},${g},${b},0.35)`;
+    }
+    let fade;
+    readColors();
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readColors);
 
     let last = performance.now();
     function frame(now) {
       const dt = Math.min(50, now - last); last = now;
       const speed = 0.09 * dt;
-      ctx.fillStyle = "rgba(4,5,11,0.35)";
+      ctx.fillStyle = fade;
       ctx.fillRect(0, 0, w, h);
       const scale = Math.max(w, h) * 0.5;
       for (const s of stars) {
         s.pz = s.z;
         s.z -= speed * (1 + (DEPTH - s.z) / 400);
-        if (s.z < 1) { Object.assign(s, star(false)); s.pz = s.z; continue; }
+        if (s.z < 1) { Object.assign(s, newStar(false)); s.pz = s.z; continue; }
         const x = cx + (s.x / s.z) * scale * 2, y = cy + (s.y / s.z) * scale * 2;
         let px = cx + (s.x / s.pz) * scale * 2, py = cy + (s.y / s.pz) * scale * 2;
         // Cap streak length so near stars read as streaks, not lines across the screen.
         const dx = x - px, dy = y - py, len = Math.hypot(dx, dy), cap = 26 * dpr;
         if (len > cap) { px = x - (dx / len) * cap; py = y - (dy / len) * cap; }
-        if (x < -50 || x > w + 50 || y < -50 || y > h + 50) { Object.assign(s, star(false)); s.pz = s.z; continue; }
+        if (x < -50 || x > w + 50 || y < -50 || y > h + 50) { Object.assign(s, newStar(false)); s.pz = s.z; continue; }
         const t = 1 - s.z / DEPTH;
-        ctx.strokeStyle = `hsla(${s.hue},80%,${72 + t * 25}%,${0.35 + t * 0.65})`;
+        ctx.strokeStyle = `hsla(${star},${Math.min(1, t * t * 2.4)})`;
         ctx.lineCap = "round";
         ctx.lineWidth = (0.8 + t * 1.8) * dpr;
         ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke();
       }
       if (!reduce) requestAnimationFrame(frame);
     }
-    ctx.fillStyle = "#04050b"; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = space; ctx.fillRect(0, 0, w, h);
     if (reduce) { for (let i = 0; i < 6; i++) frame(last + 16 * i); } else requestAnimationFrame(frame);
   }
 
@@ -177,6 +191,6 @@
     esc(s) { return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]); },
   };
 
-  hyperspace();
+  if (PAGE === "home") hyperspace();
   initMenus();
 })();
