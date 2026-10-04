@@ -4,7 +4,7 @@ The best snapshot of online development: the month's most-upvoted small websites
 
 - `site/` is the static site deployed to GitHub Pages (homepage, `/leaderboards/`, `/live/`).
 - `scripts/scrape.py` builds `site/data/sites.json` from the last 30 days of Show HN (via hn.algolia.com) and Reddit posts that center on one standalone website. Sites that refuse to be framed stay on the leaderboard but are left out of live view.
-- `.github/workflows/deploy.yml` scrapes and deploys on every push to `main` and every 6 hours.
+- `.github/workflows/deploy.yml` scrapes and deploys on every push to `main` and every 3 days. Reddit usually blocks GitHub's runners, so a scheduled task on Henry's Mac also refreshes `data/reddit-cache.json` every 3 days; CI reuses that cache.
 
 ## Setup
 
