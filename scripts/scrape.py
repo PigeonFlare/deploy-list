@@ -24,6 +24,9 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "site", "data", "sites.json")
+# Reddit often blocks GitHub's runners, so the last successful Reddit scrape (from
+# any machine) is saved here and reused when a run can't reach Reddit.
+REDDIT_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "reddit-cache.json")
 UA = "deploylist/1.0 (+https://deploylist.com)"
 POOL_SIZE = 100  # candidates kept; the pages show the top 25 per category
 
@@ -252,7 +255,23 @@ def reddit_pages(since):
 
 def reddit(since):
     token = reddit_token()
-    return reddit_api(since, token) if token else reddit_pages(since)
+    try:
+        posts = reddit_api(since, token) if token else reddit_pages(since)
+    except Exception as e:
+        print(f"warn: Reddit failed: {e}", file=sys.stderr)
+        posts = []
+    if posts:
+        os.makedirs(os.path.dirname(REDDIT_CACHE), exist_ok=True)
+        with open(REDDIT_CACHE, "w") as f:
+            json.dump({"scraped_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "posts": posts}, f, indent=1)
+        return posts
+    try:
+        with open(REDDIT_CACHE) as f:
+            cache = json.load(f)
+    except FileNotFoundError:
+        return []
+    print(f"Reddit unreachable; using cached posts from {cache['scraped_at']}")
+    return [p for p in cache["posts"] if p["created"] >= since.timestamp()]
 
 
 def embeddable(url):
