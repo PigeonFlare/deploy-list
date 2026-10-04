@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Rankings · deploylist</title>
   <meta name="description" content="The top 25 most-upvoted small websites of the month.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap">
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body data-page="rankings" data-root="../" class="board-page">
@@ -42,58 +44,7 @@
     <span>© 2026 deploylist.com</span>
     <a href="https://buymeacoffee.com/0wtynrfutb" target="_blank" rel="noopener">Donate</a>
   </footer>
-  <script src="../assets/app.js"></script>
-  <script>
-    const { esc } = DL;
-    const fmt = new Intl.NumberFormat("en-US");
-    let data;
-
-    function render() {
-      const cat = DL.CATS.find((c) => c.key === DL.category);
-      const noun = document.getElementById("noun");
-      if (noun.textContent !== cat.noun) {
-        noun.textContent = cat.noun;
-        // Repaint the brush stroke under the new word.
-        const r = document.querySelector(".brush-reveal");
-        r.style.animation = "none"; r.getBoundingClientRect(); r.style.animation = "";
-      }
-      const rows = data.sites.filter((s) => DL.inCategory(s)).slice(0, 25);
-      const max = rows[0]?.votes || 1;
-      document.getElementById("rows").innerHTML = rows.length ? rows.map((s, i) => `
-        <tr>
-          <td class="rank"><span class="badge ${i < 3 ? "medal r" + (i + 1) : ""}">${i + 1}</span></td>
-          <td class="domain-cell">
-            <div class="bar" style="width:${(s.votes / max) * 100}%"></div>
-            <div class="inner">
-              <span><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.domain)} ↗</a>${s.embeddable ? "" : '<span class="nolive" title="This site can\'t be shown inside Live view">not in live</span>'}</span>
-              <span class="title">${esc(s.title)}</span>
-            </div>
-          </td>
-          <td class="num votes">${fmt.format(s.votes)}</td>
-          <td class="src"><a href="${esc(s.post_url)}" target="_blank" rel="noopener">${esc(s.source)} ↗</a></td>
-        </tr>`).join("") : `<tr><td colspan="4" class="updated">Nothing in this category yet.</td></tr>`;
-    }
-
-    const pop = document.getElementById("src-pop");
-    document.getElementById("src-btn").addEventListener("click", (e) => {
-      e.stopPropagation();
-      const open = !pop.classList.contains("open");
-      document.querySelectorAll(".dropdown.open").forEach((d) => d.classList.remove("open"));
-      pop.classList.toggle("open", open);
-    });
-    pop.addEventListener("click", (e) => e.stopPropagation());
-
-    DL.loadData().then((d) => {
-      data = d;
-      DL.setCounts(d.sites, 25);
-      document.getElementById("src-list").innerHTML = d.sources.map((s) =>
-        `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("");
-      document.getElementById("updated").textContent = "Updated " + new Date(d.generated_at).toLocaleString();
-      render();
-      DL.onCategory(render);
-    }).catch(() => {
-      document.getElementById("rows").innerHTML = '<tr><td colspan="4" class="updated">Couldn\'t load rankings.</td></tr>';
-    });
-  </script>
+  <script src="../assets/app.js" defer></script>
+  <script src="../assets/rankings.js" defer></script>
 </body>
 </html>

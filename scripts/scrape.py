@@ -45,6 +45,7 @@ BLOCKED_HOSTS = {
     "facebook.com", "instagram.com", "tiktok.com", "threads.net", "bsky.app", "mastodon.social",
     "reddit.com", "redd.it", "redditstatic.com", "redditmedia.com", "reddit.app.link", "onelink.me", "app.link", "imgur.com", "i.imgur.com", "news.ycombinator.com", "discord.gg",
     "discord.com", "t.me", "arxiv.org", "wikipedia.org", "bit.ly", "tinyurl.com", "linktr.ee",
+    "deploylist.com", "pigeonflare.github.io",  # never frame our own origin
 }
 BLOG_PATH = re.compile(r"/(blog|posts?|articles?|news|p|story|stories|writing|essays?|\d{4}/\d{2})(/|$)", re.I)
 BLOG_TITLE = re.compile(r"^(how|why|what) i\b|\bi wrote\b|\bwrite-?up\b|\bpost-?mortem\b|\blessons learned\b|\bblog\b", re.I)
@@ -64,7 +65,7 @@ URL_RE = re.compile(r"https?://[^\s)\]>\"'|]+")
 def fetch(url, headers=None, data=None, timeout=20):
     req = urllib.request.Request(url, data=data, headers={"User-Agent": UA, **(headers or {})})
     with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read()
+        return r.read(20_000_000)  # cap response size
 
 
 def host_of(url):
@@ -348,14 +349,14 @@ def main():
         s["url"] = s["url"].replace("http://", "https://", 1) if ok else s["url"]
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w") as f:
+    with open(OUT, "w", encoding="utf-8") as f:
         json.dump({
             "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
             "since": since.isoformat(timespec="seconds"),
             "sources": [{"name": "Show HN", "url": "https://news.ycombinator.com/show"}]
                        + [{"name": f"r/{s}", "url": f"https://www.reddit.com/r/{s}/"} for s in SUBREDDITS],
             "sites": sites,
-        }, f, indent=1)
+        }, f, separators=(",", ":"), ensure_ascii=False)
     print(f"wrote {len(sites)} sites ({sum(flags)} embeddable) to {os.path.normpath(OUT)}")
 
 
