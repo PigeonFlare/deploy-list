@@ -6,9 +6,8 @@ store pages, blog posts or social links). Each site is then probed to see
 whether it can be shown inside an <iframe>; sites that can't stay on the
 leaderboard but are left out of live view.
 
-Standard library only. Reddit app-only OAuth is used when REDDIT_CLIENT_ID
-and REDDIT_CLIENT_SECRET are set, since anonymous requests from CI runners
-are often refused.
+Standard library only. Reddit's API is used when REDDIT_CLIENT_ID and
+REDDIT_CLIENT_SECRET are set; otherwise its public web pages are read.
 """
 
 import base64
@@ -18,6 +17,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -40,7 +40,7 @@ BLOCKED_HOSTS = {
     "notion.site", "notion.so", "docs.google.com", "drive.google.com", "forms.gle",
     "youtube.com", "youtu.be", "vimeo.com", "loom.com", "twitter.com", "x.com", "linkedin.com",
     "facebook.com", "instagram.com", "tiktok.com", "threads.net", "bsky.app", "mastodon.social",
-    "reddit.com", "redd.it", "imgur.com", "i.imgur.com", "news.ycombinator.com", "discord.gg",
+    "reddit.com", "redd.it", "redditstatic.com", "redditmedia.com", "reddit.app.link", "onelink.me", "app.link", "imgur.com", "i.imgur.com", "news.ycombinator.com", "discord.gg",
     "discord.com", "t.me", "arxiv.org", "wikipedia.org", "bit.ly", "tinyurl.com", "linktr.ee",
 }
 BLOG_PATH = re.compile(r"/(blog|posts?|articles?|news|p|story|stories|writing|essays?|\d{4}/\d{2})(/|$)", re.I)
@@ -132,13 +132,23 @@ def reddit_token():
     return json.loads(body)["access_token"]
 
 
-def reddit(since, token):
-    base, headers = ("https://oauth.reddit.com", {"Authorization": f"bearer {token}"}) if token \
-        else ("https://www.reddit.com", {})
+def pick_site(title, direct, body_links=()):
+    """The post's site: its link if it has one, else the single site its text links to."""
+    url = site_url(direct or "", title)
+    if url:
+        return url
+    links = {site_url(u, title) for u in body_links} - {None}
+    if len({host_of(u) for u in links}) != 1:
+        return None
+    return sorted(links, key=len)[0]
+
+
+def reddit_api(since, token):
     out = []
     for sub in SUBREDDITS:
         try:
-            data = json.loads(fetch(f"{base}/r/{sub}/top.json?t=month&limit=100&raw_json=1", headers))
+            data = json.loads(fetch(f"https://oauth.reddit.com/r/{sub}/top.json?t=month&limit=100&raw_json=1",
+                                    {"Authorization": f"bearer {token}"}))
         except Exception as e:  # one subreddit failing shouldn't sink the run
             print(f"warn: r/{sub}: {e}", file=sys.stderr)
             continue
@@ -147,23 +157,102 @@ def reddit(since, token):
             if p.get("created_utc", 0) < since.timestamp() or p.get("over_18") or p.get("stickied"):
                 continue
             title = p.get("title") or ""
-            if p.get("is_self"):
-                # Text posts count only when they link to exactly one site.
-                links = {site_url(u, title) for u in URL_RE.findall(p.get("selftext") or "")} - {None}
-                if len({host_of(u) for u in links}) != 1:
-                    continue
-                url = sorted(links, key=len)[0]
-            else:
-                url = site_url(p.get("url_overridden_by_dest") or p.get("url") or "", title)
-            if not url:
-                continue
-            out.append({
-                "url": url, "title": title, "votes": p.get("score") or 0,
-                "source": f"r/{sub}", "source_url": f"https://www.reddit.com/r/{sub}/",
-                "post_url": "https://www.reddit.com" + p["permalink"],
-                "created": int(p.get("created_utc", 0)),
-            })
+            direct = None if p.get("is_self") else p.get("url_overridden_by_dest") or p.get("url")
+            url = pick_site(title, direct, URL_RE.findall(p.get("selftext") or ""))
+            if url:
+                out.append(reddit_entry(sub, url, title, p.get("score") or 0, p["permalink"], int(p.get("created_utc", 0))))
     return out
+
+
+def reddit_entry(sub, url, title, votes, permalink, created):
+    return {
+        "url": url, "title": title, "votes": votes,
+        "source": f"r/{sub}", "source_url": f"https://www.reddit.com/r/{sub}/",
+        "post_url": "https://www.reddit.com" + permalink, "created": created,
+    }
+
+
+# Without API keys, read the same public pages a browser shows: the subreddit's
+# "top this month" feed for titles and scores, and each post's RSS feed for its text.
+BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
+LISTING_PAGES = 3      # about 25 posts per page
+BODY_LOOKUPS = 30      # per subreddit, for posts whose link isn't in the listing
+REDDIT_BUDGET = 8 * 60  # seconds; stop looking up post text after this
+
+
+def reddit_get(url, attempts=3):
+    for i in range(attempts):
+        time.sleep(2)  # stay well under Reddit's rate limit
+        try:
+            return fetch(url, {"User-Agent": BROWSER_UA, "Accept-Language": "en-US"}).decode("utf-8", "replace")
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or i == attempts - 1:
+                raise
+            time.sleep(15 * (i + 1))
+
+
+def attr(tag, name):
+    m = re.search(rf'\b{name}="([^"]*)"', tag)
+    return html.unescape(m.group(1)) if m else None
+
+
+def reddit_listing(sub, since):
+    posts, after = [], None
+    for _ in range(LISTING_PAGES):
+        q = {"t": "MONTH", "name": sub}
+        if after:
+            q["after"] = after
+        page = reddit_get("https://www.reddit.com/svc/shreddit/community-more-posts/top/?" + urllib.parse.urlencode(q))
+        for tag, inner in re.findall(r'<shreddit-post\b([^>]*\bid="t3_[^"]*"[^>]*)>(.*?)</shreddit-post>', page, re.S):
+            created = attr(tag, "created-timestamp")
+            ts = dt.datetime.fromisoformat(created.replace("+0000", "+00:00")).timestamp() if created else 0
+            if ts < since.timestamp() or re.search(r'\bnsfw\b|\bstickied\b', tag):
+                continue
+            posts.append({
+                "title": attr(tag, "post-title") or "", "votes": int(attr(tag, "score") or 0),
+                "href": attr(tag, "content-href"), "permalink": attr(tag, "permalink"), "created": int(ts),
+                "links": [html.unescape(h) for h in re.findall(r'href="(https?://[^"]+)"', inner)],
+            })
+        m = re.search(r'more-posts-cursor="([^"]+)"', page)
+        if not m:
+            break
+        after = m.group(1)
+    return posts
+
+
+def post_body_links(permalink):
+    feed = reddit_get("https://www.reddit.com" + permalink.rstrip("/") + "/.rss")
+    m = re.search(r"<entry>.*?<content[^>]*>(.*?)</content>", feed, re.S)
+    body = html.unescape(m.group(1)) if m else ""
+    return re.findall(r'href="(https?://[^"]+)"', body) + URL_RE.findall(re.sub(r"<[^>]+>", " ", body))
+
+
+def reddit_pages(since):
+    out, deadline = [], time.time() + REDDIT_BUDGET
+    for sub in SUBREDDITS:
+        try:
+            posts = reddit_listing(sub, since)
+        except Exception as e:
+            print(f"warn: r/{sub}: {e}", file=sys.stderr)
+            continue
+        lookups = 0
+        for p in sorted(posts, key=lambda p: -p["votes"]):
+            url = pick_site(p["title"], p["href"], p["links"])
+            if not url and lookups < BODY_LOOKUPS and time.time() < deadline:
+                lookups += 1
+                try:
+                    url = pick_site(p["title"], None, post_body_links(p["permalink"]))
+                except Exception as e:
+                    print(f"warn: {p['permalink']}: {e}", file=sys.stderr)
+            if url:
+                out.append(reddit_entry(sub, url, p["title"], p["votes"], p["permalink"], p["created"]))
+        print(f"r/{sub}: {len(posts)} posts, {sum(o['source'] == f'r/{sub}' for o in out)} sites", flush=True)
+    return out
+
+
+def reddit(since):
+    token = reddit_token()
+    return reddit_api(since, token) if token else reddit_pages(since)
 
 
 def embeddable(url):
@@ -189,7 +278,7 @@ def embeddable(url):
 def main():
     since = window_start()
     posts = []
-    for name, fn in (("Show HN", lambda: show_hn(since)), ("Reddit", lambda: reddit(since, reddit_token()))):
+    for name, fn in (("Show HN", lambda: show_hn(since)), ("Reddit", lambda: reddit(since))):
         try:
             got = fn()
             print(f"{name}: {len(got)} candidate posts")
