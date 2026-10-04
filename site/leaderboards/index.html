@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rankings · deploylist</title>
+  <meta name="description" content="The top 25 most-upvoted small websites of the month.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="rankings" data-root="../" class="dim">
+  <main class="board">
+    <h1>Top-voted <u id="noun">projects</u></h1>
+    <p class="sub">The most-upvoted standalone websites from Show HN and Reddit over the last 30 days.</p>
+    <table class="ranks">
+      <thead>
+        <tr>
+          <th class="rank">Rank</th>
+          <th>Domain</th>
+          <th class="num votes">Votes</th>
+          <th class="src src-head">
+            <button id="src-btn" aria-haspopup="true">Source</button>
+            <div class="glass popover" id="src-pop"><p>Where posts are collected from</p><div id="src-list"></div></div>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="rows"><tr><td colspan="4" class="updated">Loading…</td></tr></tbody>
+    </table>
+    <p class="updated" id="updated"></p>
+  </main>
+  <footer class="site-foot">
+    <span>© 2026 deploylist.com</span>
+    <a href="https://buymeacoffee.com/0wtynrfutb" target="_blank" rel="noopener">Donate</a>
+  </footer>
+  <script src="../assets/app.js"></script>
+  <script>
+    const { esc } = DL;
+    const fmt = new Intl.NumberFormat("en-US");
+    let data;
+
+    function render() {
+      const cat = DL.CATS.find((c) => c.key === DL.category);
+      document.getElementById("noun").textContent = cat.noun;
+      const rows = data.sites.filter((s) => DL.inCategory(s)).slice(0, 25);
+      const max = rows[0]?.votes || 1;
+      document.getElementById("rows").innerHTML = rows.length ? rows.map((s, i) => `
+        <tr>
+          <td class="rank"><span class="badge ${i < 3 ? "r" + (i + 1) : ""}">${i + 1}</span></td>
+          <td class="domain-cell">
+            <div class="bar" style="width:${(s.votes / max) * 100}%"></div>
+            <div class="inner">
+              <span><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.domain)} ↗</a>${s.embeddable ? "" : '<span class="nolive" title="This site can\'t be shown inside Live view">not in live</span>'}</span>
+              <span class="title">${esc(s.title)}</span>
+            </div>
+          </td>
+          <td class="num votes">${fmt.format(s.votes)}</td>
+          <td class="src"><a href="${esc(s.post_url)}" target="_blank" rel="noopener">${esc(s.source)} ↗</a></td>
+        </tr>`).join("") : `<tr><td colspan="4" class="updated">Nothing in this category yet.</td></tr>`;
+    }
+
+    const pop = document.getElementById("src-pop");
+    document.getElementById("src-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = !pop.classList.contains("open");
+      document.querySelectorAll(".dropdown.open").forEach((d) => d.classList.remove("open"));
+      pop.classList.toggle("open", open);
+    });
+    pop.addEventListener("click", (e) => e.stopPropagation());
+
+    DL.loadData().then((d) => {
+      data = d;
+      DL.setCounts(d.sites, 25);
+      document.getElementById("src-list").innerHTML = d.sources.map((s) =>
+        `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("");
+      document.getElementById("updated").textContent = "Updated " + new Date(d.generated_at).toLocaleString();
+      render();
+      DL.onCategory(render);
+    }).catch(() => {
+      document.getElementById("rows").innerHTML = '<tr><td colspan="4" class="updated">Couldn\'t load rankings.</td></tr>';
+    });
+  </script>
+</body>
+</html>
