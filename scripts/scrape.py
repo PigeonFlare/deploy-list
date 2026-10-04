@@ -57,6 +57,7 @@ APP_WORDS = re.compile(
     r"builder|calculator|planner|extension|assistant|analytics|search|engine|notes?|budget|finance|"
     r"crm|chat|convert|compress|pdf|resume|invoice|scheduler|calendar|monitor|ide|cli|database|workflow|"
     r"agents?|harness|workspace|sandbox|email|course|learn|translate|password|tasks?|todo|productivity)\b", re.I)
+NSFW = re.compile(r"\bnsfw\b|\bporn|\bonlyfans\b|\bxxx\b", re.I)
 URL_RE = re.compile(r"https?://[^\s)\]>\"'|]+")
 
 
@@ -175,81 +176,105 @@ def reddit_entry(sub, url, title, votes, permalink, created):
     }
 
 
-# Without API keys, read the same public pages a browser shows: the subreddit's
-# "top this month" feed for titles and scores, and each post's RSS feed for its text.
+# Without API keys, read Reddit's public RSS feeds, which work even from GitHub's
+# servers. A subreddit's "top this month" feed has each post's link and text but no
+# score, so scores come from the subreddit's web listing when it's reachable, else
+# from the Arctic Shift Reddit archive, whose counts lag behind the live ones.
 BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
-LISTING_PAGES = 3      # about 25 posts per page
-BODY_LOOKUPS = 30      # per subreddit, for posts whose link isn't in the listing
-REDDIT_BUDGET = 8 * 60  # seconds; stop looking up post text after this
+LISTING_PAGES = 4  # about 25 posts per page
 
 
-def reddit_get(url, attempts=3):
+def reddit_get(url, attempts=4):
     for i in range(attempts):
-        time.sleep(2)  # stay well under Reddit's rate limit
+        time.sleep(1.5)  # stay well under Reddit's rate limit
         try:
             return fetch(url, {"User-Agent": BROWSER_UA, "Accept-Language": "en-US"}).decode("utf-8", "replace")
         except urllib.error.HTTPError as e:
             if e.code != 429 or i == attempts - 1:
                 raise
-            time.sleep(15 * (i + 1))
+            time.sleep(20 * (i + 1))
 
 
-def attr(tag, name):
-    m = re.search(rf'\b{name}="([^"]*)"', tag)
-    return html.unescape(m.group(1)) if m else None
-
-
-def reddit_listing(sub, since):
-    posts, after = [], None
-    for _ in range(LISTING_PAGES):
-        q = {"t": "MONTH", "name": sub}
-        if after:
-            q["after"] = after
-        page = reddit_get("https://www.reddit.com/svc/shreddit/community-more-posts/top/?" + urllib.parse.urlencode(q))
-        for tag, inner in re.findall(r'<shreddit-post\b([^>]*\bid="t3_[^"]*"[^>]*)>(.*?)</shreddit-post>', page, re.S):
-            created = attr(tag, "created-timestamp")
-            ts = dt.datetime.fromisoformat(created.replace("+0000", "+00:00")).timestamp() if created else 0
-            if ts < since.timestamp() or re.search(r'\bnsfw\b|\bstickied\b', tag):
-                continue
-            posts.append({
-                "title": attr(tag, "post-title") or "", "votes": int(attr(tag, "score") or 0),
-                "href": attr(tag, "content-href"), "permalink": attr(tag, "permalink"), "created": int(ts),
-                "links": [html.unescape(h) for h in re.findall(r'href="(https?://[^"]+)"', inner)],
-            })
-        m = re.search(r'more-posts-cursor="([^"]+)"', page)
-        if not m:
-            break
-        after = m.group(1)
+def reddit_feed(sub, since):
+    feed = reddit_get(f"https://www.reddit.com/r/{sub}/top/.rss?t=month&limit=100")
+    posts = []
+    for e in re.findall(r"<entry>(.*?)</entry>", feed, re.S):
+        get = lambda tag: html.unescape((re.search(rf"<{tag}[^>]*>(.*?)</{tag}>", e, re.S) or [None, ""])[1])
+        created = dt.datetime.fromisoformat(get("published")).timestamp()
+        if created < since.timestamp():
+            continue
+        anchors = re.findall(r'<a href="([^"]+)">([^<]*)</a>', get("content"))
+        direct = next((h for h, text in anchors if text == "[link]"), None)
+        permalink = next((h for h, text in anchors if text == "[comments]"), "")
+        body = [h for h, text in anchors if text not in ("[link]", "[comments]")]
+        posts.append({
+            "id": get("id").removeprefix("t3_"), "title": get("title"), "direct": direct, "body": body,
+            "permalink": urllib.parse.urlsplit(permalink).path, "created": int(created),
+        })
     return posts
 
 
-def post_body_links(permalink):
-    feed = reddit_get("https://www.reddit.com" + permalink.rstrip("/") + "/.rss")
-    m = re.search(r"<entry>.*?<content[^>]*>(.*?)</content>", feed, re.S)
-    body = html.unescape(m.group(1)) if m else ""
-    return re.findall(r'href="(https?://[^"]+)"', body) + URL_RE.findall(re.sub(r"<[^>]+>", " ", body))
+def listing_scores(sub):
+    """Live scores from the subreddit's web listing, or {} where Reddit blocks it."""
+    scores, after = {}, None
+    try:
+        for _ in range(LISTING_PAGES):
+            q = {"t": "MONTH", "name": sub, **({"after": after} if after else {})}
+            page = reddit_get("https://www.reddit.com/svc/shreddit/community-more-posts/top/?" + urllib.parse.urlencode(q))
+            for tag in re.findall(r'<shreddit-post\b([^>]*\bid="t3_[^"]*"[^>]*)>', page):
+                pid, score = re.search(r'\bid="t3_(\w+)"', tag).group(1), re.search(r'\bscore="(-?\d+)"', tag)
+                if score:
+                    scores[pid] = int(score.group(1))
+            m = re.search(r'more-posts-cursor="([^"]+)"', page)
+            if not m:
+                break
+            after = m.group(1)
+    except Exception as e:
+        print(f"warn: r/{sub} listing: {e}", file=sys.stderr)
+    return scores
+
+
+def archive_scores(ids):
+    scores = {}
+    for i in range(0, len(ids), 100):
+        q = urllib.parse.urlencode({"ids": ",".join(ids[i:i + 100]), "fields": "id,score"})
+        try:
+            data = json.loads(fetch(f"https://arctic-shift.photon-reddit.com/api/posts/ids?{q}", timeout=40))
+            scores.update({p["id"]: p["score"] for p in data.get("data") or []})
+        except Exception as e:
+            print(f"warn: Arctic Shift: {e}", file=sys.stderr)
+    return scores
+
+
+def cached_scores():
+    try:
+        with open(REDDIT_CACHE) as f:
+            return {re.search(r"/comments/(\w+)", p["post_url"]).group(1): p["votes"] for p in json.load(f)["posts"]}
+    except (FileNotFoundError, ValueError, KeyError):
+        return {}
 
 
 def reddit_pages(since):
-    out, deadline = [], time.time() + REDDIT_BUDGET
+    out, live = [], True
+    cache = cached_scores()
     for sub in SUBREDDITS:
         try:
-            posts = reddit_listing(sub, since)
+            posts = reddit_feed(sub, since)
         except Exception as e:
             print(f"warn: r/{sub}: {e}", file=sys.stderr)
             continue
-        lookups = 0
-        for p in sorted(posts, key=lambda p: -p["votes"]):
-            url = pick_site(p["title"], p["href"], p["links"])
-            if not url and lookups < BODY_LOOKUPS and time.time() < deadline:
-                lookups += 1
-                try:
-                    url = pick_site(p["title"], None, post_body_links(p["permalink"]))
-                except Exception as e:
-                    print(f"warn: {p['permalink']}: {e}", file=sys.stderr)
-            if url:
-                out.append(reddit_entry(sub, url, p["title"], p["votes"], p["permalink"], p["created"]))
-        print(f"r/{sub}: {len(posts)} posts, {sum(o['source'] == f'r/{sub}' for o in out)} sites", flush=True)
+        for p in posts:
+            p["url"] = None if NSFW.search(p["title"]) else pick_site(p["title"], p["direct"], p["body"])
+        posts = [p for p in posts if p["url"]]
+        scores = listing_scores(sub) if live else {}
+        live = live and bool(scores)  # once the listing is blocked, don't keep retrying it
+        missing = [p["id"] for p in posts if p["id"] not in scores]
+        archived = archive_scores(missing) if missing else {}
+        for p in posts:
+            # Archive counts only ever lag, so never drop below a count seen earlier.
+            votes = scores.get(p["id"]) or max(archived.get(p["id"], 0), cache.get(p["id"], 0))
+            out.append(reddit_entry(sub, p["url"], p["title"], votes, p["permalink"], p["created"]))
+        print(f"r/{sub}: {len(posts)} sites ({'live' if scores else 'archived'} scores)", flush=True)
     return out
 
 
