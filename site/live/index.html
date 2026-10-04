@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-src https:; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Live · deploylist</title>
   <meta name="description" content="Stumble through this month's most-upvoted small websites.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap">
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body data-page="live" data-root="../" class="live">
@@ -25,78 +27,7 @@
     </div>
     <button class="glass round" id="next" aria-label="Next site">›</button>
   </div>
-  <script src="../assets/app.js"></script>
-  <script>
-    const fmt = new Intl.NumberFormat("en-US");
-    const $ = (id) => document.getElementById(id);
-    // History of viewed sites lives in sessionStorage, so it's cleared when the session ends.
-    const KEY = "deploylist.live";
-    let pool = [], byId = {}, hist = { ids: [], pos: -1 };
-    try { hist = JSON.parse(sessionStorage.getItem(KEY)) || hist; } catch {}
-    const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(hist)); } catch {} };
-
-    function candidates() { return pool.filter((s) => DL.inCategory(s)); }
-
-    function show(site) {
-      $("empty").hidden = true;
-      $("frame").hidden = false;
-      $("frame").src = site.url;
-      $("site-link").textContent = site.domain;
-      $("site-link").href = site.url;
-      $("site-link").title = site.title;
-      $("votes").textContent = `${fmt.format(site.votes)} votes`;
-      $("post-link").href = site.post_url;
-      $("post-link").hidden = false;
-      $("prev").disabled = hist.pos <= 0;
-      document.title = `${site.domain} · deploylist live`;
-    }
-
-    function empty(msg) {
-      $("frame").hidden = true; $("frame").removeAttribute("src");
-      $("empty").hidden = false; $("empty").textContent = msg;
-      $("site-link").textContent = "deploylist live"; $("site-link").removeAttribute("href");
-      $("votes").textContent = ""; $("post-link").hidden = true;
-      $("prev").disabled = hist.pos <= 0;
-    }
-
-    function next() {
-      // Walk forward through history first, then pick a random site, preferring unseen ones.
-      if (hist.pos < hist.ids.length - 1) { hist.pos++; save(); return show(byId[hist.ids[hist.pos]]); }
-      const list = candidates();
-      if (!list.length) return empty("No live-viewable sites in this category yet.");
-      const seen = new Set(hist.ids);
-      const fresh = list.filter((s) => !seen.has(s.id));
-      const recent = new Set(hist.ids.slice(-Math.floor(list.length / 2)));
-      const from = fresh.length ? fresh : (list.filter((s) => !recent.has(s.id)).length ? list.filter((s) => !recent.has(s.id)) : list);
-      const pick = from[Math.floor(Math.random() * from.length)];
-      hist.ids.push(pick.id); hist.pos = hist.ids.length - 1; save();
-      show(pick);
-    }
-
-    function prev() {
-      if (hist.pos <= 0) return;
-      hist.pos--; save(); show(byId[hist.ids[hist.pos]]);
-    }
-
-    $("next").addEventListener("click", next);
-    $("prev").addEventListener("click", prev);
-    addEventListener("keydown", (e) => {
-      if (e.target.closest("input, textarea")) return;
-      if (e.key === "ArrowRight") next();
-      if (e.key === "ArrowLeft") prev();
-    });
-
-    DL.loadData().then((d) => {
-      pool = d.sites.filter((s) => s.embeddable);
-      pool.forEach((s) => (byId[s.id] = s));
-      DL.setCounts(pool);
-      // Drop history entries that are no longer in the data.
-      hist.ids = hist.ids.filter((id) => byId[id]);
-      hist.pos = Math.min(hist.pos, hist.ids.length - 1);
-      const cur = byId[hist.ids[hist.pos]];
-      if (cur && DL.inCategory(cur)) show(cur); else { hist.ids = hist.ids.slice(0, hist.pos + 1); next(); }
-      DL.onCategory(() => { hist.ids = hist.ids.slice(0, hist.pos + 1); next(); });
-    }).catch(() => empty("Couldn't load the site list."));
-  </script>
+  <script src="../assets/app.js" defer></script>
+  <script src="../assets/live.js" defer></script>
 </body>
 </html>

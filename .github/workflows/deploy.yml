@@ -3,14 +3,13 @@ name: Scrape and deploy
 on:
   push:
     branches: [main]
+    paths-ignore: ["README.md", "LICENSE"]
   schedule:
     - cron: "17 6 */3 * *" # refresh rankings every 3 days
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
+# Nothing by default; each job asks only for what it needs.
+permissions: {}
 
 concurrency:
   group: pages
@@ -19,18 +18,20 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # commit refreshed data on scheduled runs
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      # Actions are pinned to commit SHAs so a moved tag can't change what runs.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Scrape top posts
         # If scraping fails, the last committed data is deployed instead.
         continue-on-error: true
+        timeout-minutes: 15
         env:
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
-        run: python scripts/scrape.py
+        run: python3 scripts/scrape.py
       - name: Commit refreshed data
         if: github.event_name != 'push'
         run: |
@@ -38,17 +39,21 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A site/data data
           git diff --cached --quiet || (git commit -m "Refresh rankings data" && git push)
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: site
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

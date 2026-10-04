@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>deploylist</title>
   <meta name="description" content="The best snapshot of online development: this month's most-upvoted small websites.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap">
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body data-page="home" data-root="" class="home">
@@ -19,16 +21,7 @@
       <a class="glass pill" id="go-live" href="live/">Live view</a>
     </div>
   </main>
-  <script src="assets/app.js"></script>
-  <script>
-    DL.loadData().then((d) => DL.setCounts(d.sites, 25)).catch(() => {});
-    // Carry the chosen category into the next page.
-    function syncLinks() {
-      const q = DL.category === "all" ? "" : "?cat=" + DL.category;
-      document.getElementById("go-rankings").href = "leaderboards/" + q;
-      document.getElementById("go-live").href = "live/" + q;
-    }
-    DL.onCategory(syncLinks); syncLinks();
-  </script>
+  <script src="assets/app.js" defer></script>
+  <script src="assets/home.js" defer></script>
 </body>
 </html>
