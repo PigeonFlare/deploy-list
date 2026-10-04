@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-04T22:12:30+00:00",
- "since": "2026-09-04T22:12:14+00:00",
+ "generated_at": "2026-10-04T22:58:32+00:00",
+ "since": "2026-09-04T22:49:15+00:00",
  "sources": [
   {
    "name": "Show HN",
@@ -29,6 +29,66 @@
  ],
  "sites": [
   {
+   "url": "https://crawlerzoo.com/",
+   "title": "A live zoo of the bots and crawlers visiting one website, with a trap for the ones that ignore robots.txt",
+   "votes": 2863,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wx5hlp/a_live_zoo_of_the_bots_and_crawlers_visiting_one/",
+   "created": 1791084236,
+   "domain": "crawlerzoo.com",
+   "embeddable": false,
+   "category": "other"
+  },
+  {
+   "url": "http://lunasites.io/",
+   "title": "My side project just made 0.000 revenue in just 6 days after launch and I am so grateful, this feels so real! \ud83c\udf89\ud83c\udf89\ud83c\udf89",
+   "votes": 1681,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wgcfb4/my_side_project_just_made_0000_revenue_in_just_6/",
+   "created": 1789411996,
+   "domain": "lunasites.io",
+   "embeddable": false,
+   "category": "other"
+  },
+  {
+   "url": "https://whereismrkim.com/",
+   "title": "Where is Mr. Kim? I built an entire village just to lose one guy in it",
+   "votes": 1085,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wf801o/where_is_mr_kim_i_built_an_entire_village_just_to/",
+   "created": 1789306869,
+   "domain": "whereismrkim.com",
+   "embeddable": false,
+   "category": "other"
+  },
+  {
+   "url": "https://lumabook.ai/",
+   "title": "I\u2019m building a reading app where books come alive as you read",
+   "votes": 1034,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wpaalh/im_building_a_reading_app_where_books_come_alive/",
+   "created": 1790276158,
+   "domain": "lumabook.ai",
+   "embeddable": true,
+   "category": "apps"
+  },
+  {
+   "url": "https://rzekulec.pl/twoje-miejsce",
+   "title": "A quiet room at the bottom of the ocean, made to be left open on your second monitor",
+   "votes": 888,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wlgt7f/a_quiet_room_at_the_bottom_of_the_ocean_made_to/",
+   "created": 1789910096,
+   "domain": "rzekulec.pl",
+   "embeddable": false,
+   "category": "apps"
+  },
+  {
    "url": "https://bastardica.mitpit.com/",
    "title": "Make cursed fonts like Times New Bastard",
    "votes": 862,
@@ -37,6 +97,18 @@
    "post_url": "https://news.ycombinator.com/item?id=49823738",
    "created": 1790204008,
    "domain": "bastardica.mitpit.com",
+   "embeddable": true,
+   "category": "other"
+  },
+  {
+   "url": "https://slidingshores.com/",
+   "title": "I made a 3D globe where you can drag a slider to drain the oceans or flood the whole planet",
+   "votes": 739,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wq1ia6/i_made_a_3d_globe_where_you_can_drag_a_slider_to/",
+   "created": 1790355159,
+   "domain": "slidingshores.com",
    "embeddable": true,
    "category": "other"
   },
@@ -51,6 +123,18 @@
    "domain": "rivendell.dmitrybrant.com",
    "embeddable": true,
    "category": "other"
+  },
+  {
+   "url": "https://kinoku.app/features/journeys",
+   "title": "I'm building a fitness tracker (yes one of the most crowded app categories), so I built something I couldn't find and actually needed + some fun quirky stuff",
+   "votes": 613,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wv85zh/im_building_a_fitness_tracker_yes_one_of_the_most/",
+   "created": 1790881419,
+   "domain": "kinoku.app",
+   "embeddable": false,
+   "category": "apps"
   },
   {
    "url": "https://inflightsimulator.com/",
@@ -101,6 +185,18 @@
    "category": "apps"
   },
   {
+   "url": "https://dangerblack.github.io/spore/",
+   "title": "I built a website that doesn't need a server",
+   "votes": 355,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wfivzo/i_built_a_website_that_doesnt_need_a_server/",
+   "created": 1789331584,
+   "domain": "dangerblack.github.io",
+   "embeddable": true,
+   "category": "other"
+  },
+  {
    "url": "https://vester.si/bodily-oddities/",
    "title": "Bodily Oddities",
    "votes": 341,
@@ -125,6 +221,18 @@
    "category": "other"
   },
   {
+   "url": "https://rasterbator.net/",
+   "title": "The Rasterbator",
+   "votes": 310,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wenr30/the_rasterbator/",
+   "created": 1789245935,
+   "domain": "rasterbator.net",
+   "embeddable": false,
+   "category": "other"
+  },
+  {
    "url": "https://jev-pokemon.vercel.app/",
    "title": "Jev Plays Pok\u00e9mon Red",
    "votes": 282,
@@ -134,7 +242,19 @@
    "created": 1790346487,
    "domain": "jev-pokemon.vercel.app",
    "embeddable": true,
-   "category": "apps"
+   "category": "other"
+  },
+  {
+   "url": "https://everyphonumber.com/",
+   "title": "Every Pho Number",
+   "votes": 278,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wucqlm/every_pho_number/",
+   "created": 1790792898,
+   "domain": "everyphonumber.com",
+   "embeddable": true,
+   "category": "other"
   },
   {
    "url": "https://mysetup.ai/",
@@ -269,6 +389,18 @@
    "category": "apps"
   },
   {
+   "url": "https://techmatt.github.io/fractals/explorer/",
+   "title": "A browser fractal explorer seeded with thousands of wallpapers found by searching fractal space for hundreds of hours. Zoom, recolor, and download any view at any resolution.",
+   "votes": 189,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wvly5y/a_browser_fractal_explorer_seeded_with_thousands/",
+   "created": 1790920221,
+   "domain": "techmatt.github.io",
+   "embeddable": true,
+   "category": "other"
+  },
+  {
    "url": "https://poltora.dev/redis",
    "title": "Redis City \u2013 Explore how Redis works in an interactive 3D model",
    "votes": 186,
@@ -317,6 +449,30 @@
    "category": "other"
   },
   {
+   "url": "https://quiet.holiday/",
+   "title": "A tool to find quiet weeks to go on holiday, avoiding school & public holidays, weighted by visitor countries to your destination",
+   "votes": 156,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wuzja9/a_tool_to_find_quiet_weeks_to_go_on_holiday/",
+   "created": 1790861530,
+   "domain": "quiet.holiday",
+   "embeddable": true,
+   "category": "apps"
+  },
+  {
+   "url": "https://projectresourcemap.com/",
+   "title": "Cancer Resource Guide",
+   "votes": 155,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wibdhi/cancer_resource_guide/",
+   "created": 1789596330,
+   "domain": "projectresourcemap.com",
+   "embeddable": true,
+   "category": "other"
+  },
+  {
    "url": "https://benchmarkheaven.com/jev-models",
    "title": "JevBench, a reproducible benchmark for typed decision models",
    "votes": 154,
@@ -331,7 +487,7 @@
   {
    "url": "https://niklasroy.com/gtc/",
    "title": "Glash\u00fctte Trash Clock \u2013 A 30-minute pendulum clock made from trash",
-   "votes": 148,
+   "votes": 154,
    "source": "Hacker News",
    "source_url": "https://news.ycombinator.com/show",
    "post_url": "https://news.ycombinator.com/item?id=49930439",
@@ -343,7 +499,7 @@
   {
    "url": "https://scissor.studio/",
    "title": "Free alternative to graphics design giants",
-   "votes": 146,
+   "votes": 147,
    "source": "Hacker News",
    "source_url": "https://news.ycombinator.com/show",
    "post_url": "https://news.ycombinator.com/item?id=49875308",
@@ -361,6 +517,18 @@
    "post_url": "https://news.ycombinator.com/item?id=49623398",
    "created": 1788944038,
    "domain": "thomasahle.com",
+   "embeddable": true,
+   "category": "other"
+  },
+  {
+   "url": "https://ptree.org/",
+   "title": "Interactive tree of life explorer",
+   "votes": 138,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wjywgy/interactive_tree_of_life_explorer/",
+   "created": 1789757549,
+   "domain": "ptree.org",
    "embeddable": true,
    "category": "other"
   },
@@ -401,6 +569,18 @@
    "category": "other"
   },
   {
+   "url": "https://redblue.benjamincrozat.com/",
+   "title": "Pok\u00e9mon Red and Blue as a MMO, on the web, desktop and mobile, 100% free",
+   "votes": 121,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtid2n/pok\u00e9mon_red_and_blue_as_a_mmo_on_the_web_desktop/",
+   "created": 1790707265,
+   "domain": "redblue.benjamincrozat.com",
+   "embeddable": false,
+   "category": "games"
+  },
+  {
    "url": "https://tinyaiarena.com/",
    "title": "TinyAIArena watch AI agents battle it out",
    "votes": 120,
@@ -411,6 +591,18 @@
    "domain": "tinyaiarena.com",
    "embeddable": true,
    "category": "apps"
+  },
+  {
+   "url": "https://www.droidfiletransfer.com/",
+   "title": "A web page that copies files between your Mac and Android phone over USB (Chrome)",
+   "votes": 118,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wtjtsx/a_web_page_that_copies_files_between_your_mac_and/",
+   "created": 1790710609,
+   "domain": "droidfiletransfer.com",
+   "embeddable": true,
+   "category": "other"
   },
   {
    "url": "https://enigma.design/",
@@ -437,6 +629,18 @@
    "category": "games"
   },
   {
+   "url": "https://pipod.dev/",
+   "title": "Pi pod \u2013 Run your pi coding agent in sandboxes on your own server",
+   "votes": 113,
+   "source": "Hacker News",
+   "source_url": "https://news.ycombinator.com/show",
+   "post_url": "https://news.ycombinator.com/item?id=49937304",
+   "created": 1790968238,
+   "domain": "pipod.dev",
+   "embeddable": false,
+   "category": "apps"
+  },
+  {
    "url": "https://snapdrop.me/",
    "title": "Snapdrop: Instantly share files between devices. No setup, no signup",
    "votes": 112,
@@ -447,18 +651,6 @@
    "domain": "snapdrop.me",
    "embeddable": true,
    "category": "other"
-  },
-  {
-   "url": "https://pipod.dev/",
-   "title": "Pi pod \u2013 Run your pi coding agent in sandboxes on your own server",
-   "votes": 112,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49937304",
-   "created": 1790968238,
-   "domain": "pipod.dev",
-   "embeddable": false,
-   "category": "apps"
   },
   {
    "url": "https://gettogether.dev/",
@@ -511,7 +703,7 @@
   {
    "url": "https://thoreaubasic.com/",
    "title": "Thoreau BASIC \u2013\u00a0What if BASIC hadn't gone out of fashion?",
-   "votes": 88,
+   "votes": 89,
    "source": "Hacker News",
    "source_url": "https://news.ycombinator.com/show",
    "post_url": "https://news.ycombinator.com/item?id=49942103",
@@ -529,6 +721,18 @@
    "post_url": "https://news.ycombinator.com/item?id=49844497",
    "created": 1790343474,
    "domain": "hackeratlas.com",
+   "embeddable": true,
+   "category": "other"
+  },
+  {
+   "url": "https://0xhzsa.github.io/flapboard/",
+   "title": "FLAPBOARD \u2014 turn any TV into a split-flap board",
+   "votes": 88,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wra2gw/flapboard_turn_any_tv_into_a_splitflap_board/",
+   "created": 1790481224,
+   "domain": "0xhzsa.github.io",
    "embeddable": true,
    "category": "other"
   },
@@ -629,6 +833,18 @@
    "category": "apps"
   },
   {
+   "url": "https://www.geoguessr.com/",
+   "title": "12 decent browser games I actually played this year",
+   "votes": 67,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1whcloe/12_decent_browser_games_i_actually_played_this/",
+   "created": 1789505662,
+   "domain": "geoguessr.com",
+   "embeddable": false,
+   "category": "games"
+  },
+  {
    "url": "https://rhun.app/",
    "title": "Rhun, an open-source code editor written in assembly",
    "votes": 62,
@@ -710,7 +926,7 @@
    "created": 1790074471,
    "domain": "atlas-sysdes.vercel.app",
    "embeddable": true,
-   "category": "apps"
+   "category": "other"
   },
   {
    "url": "https://gosandeep.com/eagles-descent/",
@@ -770,7 +986,7 @@
    "created": 1789436263,
    "domain": "sunkcost.ai",
    "embeddable": true,
-   "category": "apps"
+   "category": "other"
   },
   {
    "url": "https://eterdb.com/",
@@ -797,6 +1013,18 @@
    "category": "other"
   },
   {
+   "url": "https://car-soccer.com/",
+   "title": "Car Soccer - A Rocket League-inspired game you can play in your browser, even on mobile, that has the same feel as the original",
+   "votes": 47,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wbmfbe/car_soccer_a_rocket_leagueinspired_game_you_can/",
+   "created": 1788962416,
+   "domain": "car-soccer.com",
+   "embeddable": false,
+   "category": "games"
+  },
+  {
    "url": "https://ai-rete-rag.com/",
    "title": "AI\u00b7rete\u00b7RAG \u2013 a Rete rule engine decides, RAG explains why",
    "votes": 46,
@@ -807,6 +1035,18 @@
    "domain": "ai-rete-rag.com",
    "embeddable": false,
    "category": "apps"
+  },
+  {
+   "url": "https://www.appscout.co/",
+   "title": "What's your startup idea? Let's self promote. (and get more users)",
+   "votes": 46,
+   "source": "r/alphaandbetausers",
+   "source_url": "https://www.reddit.com/r/alphaandbetausers/",
+   "post_url": "https://www.reddit.com/r/alphaandbetausers/comments/1w9uw29/whats_your_startup_idea_lets_self_promote_and_get/",
+   "created": 1788794058,
+   "domain": "appscout.co",
+   "embeddable": false,
+   "category": "other"
   },
   {
    "url": "https://www.gptbeyond.com/try?home=1",
@@ -917,6 +1157,18 @@
    "category": "other"
   },
   {
+   "url": "https://theendlessmuseum.com/?play=1",
+   "title": "The Endless Museum - I turned Wikipedia into a walkable 3D museum",
+   "votes": 39,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wdi35a/the_endless_museum_i_turned_wikipedia_into_a/",
+   "created": 1789137408,
+   "domain": "theendlessmuseum.com",
+   "embeddable": false,
+   "category": "games"
+  },
+  {
    "url": "https://www.ax-check.com/",
    "title": "Ax-check.com \u2013 Can agents use your product?",
    "votes": 38,
@@ -937,8 +1189,8 @@
    "post_url": "https://news.ycombinator.com/item?id=49910328",
    "created": 1790782392,
    "domain": "openparrot.app",
-   "embeddable": true,
-   "category": "apps"
+   "embeddable": false,
+   "category": "other"
   },
   {
    "url": "https://moadim.io/",
@@ -975,258 +1227,6 @@
    "domain": "mosthatedtools.app",
    "embeddable": true,
    "category": "apps"
-  },
-  {
-   "url": "https://numbermuseum.com/2147483647",
-   "title": "Museum of Numbers",
-   "votes": 32,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49858756",
-   "created": 1790444207,
-   "domain": "numbermuseum.com",
-   "embeddable": true,
-   "category": "other"
-  },
-  {
-   "url": "https://apiaxess.dev/",
-   "title": "I built a free Burp/Caido alternative but, zero setup - API Testing",
-   "votes": 32,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49911931",
-   "created": 1790789530,
-   "domain": "apiaxess.dev",
-   "embeddable": false,
-   "category": "apps"
-  },
-  {
-   "url": "https://trail.franzai.com/",
-   "title": "Trail \u2013 new kind of logic game",
-   "votes": 31,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49864105",
-   "created": 1790492540,
-   "domain": "trail.franzai.com",
-   "embeddable": true,
-   "category": "games"
-  },
-  {
-   "url": "https://asm-editor.specy.app/",
-   "title": "A browser IDE for m68000, Z80 assembly (and more), with graphics",
-   "votes": 31,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49608665",
-   "created": 1788865733,
-   "domain": "asm-editor.specy.app",
-   "embeddable": true,
-   "category": "apps"
-  },
-  {
-   "url": "https://www.billmender.com/hospital-prices",
-   "title": "What 482 hospitals charge vs. what insurers pay, from their own files",
-   "votes": 30,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49926185",
-   "created": 1790883729,
-   "domain": "billmender.com",
-   "embeddable": false,
-   "category": "other"
-  },
-  {
-   "url": "https://www.kadoa.com/food-prices",
-   "title": "A website that tracks US food prices every day",
-   "votes": 29,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49792076",
-   "created": 1790018650,
-   "domain": "kadoa.com",
-   "embeddable": false,
-   "category": "other"
-  },
-  {
-   "url": "https://runboli.com/",
-   "title": "Halo 3's Guardian, playable in the browser, as my personal website",
-   "votes": 29,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49732259",
-   "created": 1789589296,
-   "domain": "runboli.com",
-   "embeddable": true,
-   "category": "games"
-  },
-  {
-   "url": "https://biffweb.com/",
-   "title": "Biff 2.0 (Clojure web framework)",
-   "votes": 29,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49647635",
-   "created": 1789062351,
-   "domain": "biffweb.com",
-   "embeddable": true,
-   "category": "other"
-  },
-  {
-   "url": "https://skillbay.sh/",
-   "title": "Craigslist for agent skills, curated by a human",
-   "votes": 28,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49743459",
-   "created": 1789664031,
-   "domain": "skillbay.sh",
-   "embeddable": true,
-   "category": "apps"
-  },
-  {
-   "url": "https://lanes.sh/showcase/personal-context-mcp",
-   "title": "Personal Context MCP",
-   "votes": 28,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49571566",
-   "created": 1788566102,
-   "domain": "lanes.sh",
-   "embeddable": true,
-   "category": "other"
-  },
-  {
-   "url": "https://jgthms.com/hopera/",
-   "title": "Hopera, a free musical soothing rhythmic game",
-   "votes": 28,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49660111",
-   "created": 1789140608,
-   "domain": "jgthms.com",
-   "embeddable": true,
-   "category": "games"
-  },
-  {
-   "url": "https://nh2.me/low-fps-spinners/low-fps-spinners.html",
-   "title": "Avoid smooth spinners, use low-FPS spinners",
-   "votes": 27,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49839672",
-   "created": 1790304732,
-   "domain": "nh2.me",
-   "embeddable": true,
-   "category": "other"
-  },
-  {
-   "url": "https://page-rage.com/",
-   "title": "Free game to destroy any web page",
-   "votes": 27,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49746963",
-   "created": 1789681218,
-   "domain": "page-rage.com",
-   "embeddable": true,
-   "category": "games"
-  },
-  {
-   "url": "https://restarted.io/",
-   "title": "Restarted \u2013 a 2026 remake of the classic 2015 startup generator",
-   "votes": 26,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49710968",
-   "created": 1789472085,
-   "domain": "restarted.io",
-   "embeddable": false,
-   "category": "apps"
-  },
-  {
-   "url": "https://rickub.com/",
-   "title": "Rickub \u2013 The Smartest Git in the Universe",
-   "votes": 25,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49755312",
-   "created": 1789743401,
-   "domain": "rickub.com",
-   "embeddable": false,
-   "category": "other"
-  },
-  {
-   "url": "https://vellum.blueprintr.io/",
-   "title": "Vellum, the best diagram editor you'll ever use",
-   "votes": 25,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49789066",
-   "created": 1790006742,
-   "domain": "vellum.blueprintr.io",
-   "embeddable": false,
-   "category": "apps"
-  },
-  {
-   "url": "https://www.openappa.com/",
-   "title": "OpenAPPA \u2013 open-source deterministic guardrails that don't break agents",
-   "votes": 25,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49877515",
-   "created": 1790601644,
-   "domain": "openappa.com",
-   "embeddable": true,
-   "category": "apps"
-  },
-  {
-   "url": "https://whatjustpingedme.com/",
-   "title": "What Just Pinged Me?",
-   "votes": 25,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49689178",
-   "created": 1789337107,
-   "domain": "whatjustpingedme.com",
-   "embeddable": true,
-   "category": "other"
-  },
-  {
-   "url": "https://rdltr.app/",
-   "title": "Rdltr \u2013 Inbox zero for your reading list",
-   "votes": 24,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49629747",
-   "created": 1788973581,
-   "domain": "rdltr.app",
-   "embeddable": true,
-   "category": "apps"
-  },
-  {
-   "url": "https://strata.do/",
-   "title": "Strata \u2013 an expressive semantic layer that can say no to your LLM",
-   "votes": 24,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49909913",
-   "created": 1790780397,
-   "domain": "strata.do",
-   "embeddable": true,
-   "category": "other"
-  },
-  {
-   "url": "https://pushie.net/",
-   "title": "Pushie \u2013 Get notified with a simple webhook",
-   "votes": 24,
-   "source": "Hacker News",
-   "source_url": "https://news.ycombinator.com/show",
-   "post_url": "https://news.ycombinator.com/item?id=49697912",
-   "created": 1789397514,
-   "domain": "pushie.net",
-   "embeddable": true,
-   "category": "other"
   }
  ]
 }
