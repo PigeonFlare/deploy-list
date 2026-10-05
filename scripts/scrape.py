@@ -39,7 +39,7 @@ REDDIT_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "reddit-cac
 # listings and RSS feeds all fail. Filled a little at a time across daily runs.
 ARCHIVE_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "archive-cache.json")
 UA = "deploylist/1.0 (+https://deploylist.com)"
-POOL_SIZE = 100  # candidates kept; the pages show the top 25 per category
+POOL_SIZE = 100  # sites kept and shown, split across the categories
 MIN_VOTES = 10  # Show HN points or Reddit upvotes a post needs to be ranked
 REFRESH_INTERVAL = dt.timedelta(days=3)
 # Match the daily due-check in .github/workflows/deploy.yml.
