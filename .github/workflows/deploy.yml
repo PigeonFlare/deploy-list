@@ -45,6 +45,14 @@ jobs:
           else
             python3 -B scripts/scrape.py --if-due
           fi
+      # Last-resort Reddit source: while the Arctic Shift fallback is in use, top up its
+      # cache a little every day so its rate limit is spread across days. No-op otherwise.
+      - name: Sync Reddit archive fallback
+        id: archive
+        if: github.event_name != 'push'
+        continue-on-error: true
+        timeout-minutes: 10
+        run: python3 -B scripts/scrape.py --archive-sync
       # Small stills of each ranked site for the homepage. Runs without the push token,
       # in the runner's own Chrome; stills are kept until their site leaves the rankings.
       - name: Capture site snapshots
@@ -60,13 +68,13 @@ jobs:
         if: steps.scrape.outcome == 'failure'
         run: echo "::warning::Direct Reddit ingestion failed. Retaining the last successful rankings and update timestamp."
       - name: Commit refreshed data
-        if: steps.scrape.outcome == 'success'
+        if: steps.scrape.outcome == 'success' || steps.archive.outcome == 'success'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/data/sites.json data/reddit-cache.json site/snapshots
+          git add site/data/sites.json data site/snapshots
           git diff --cached --quiet || (git commit -m "Refresh rankings data" && git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main)
       # GitHub Pages lets browsers cache files for 10 minutes; tagging the stylesheet and
       # scripts with the commit makes each deploy show up on the next page load.

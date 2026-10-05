@@ -11,6 +11,8 @@ Your best look into the online development scene: the month's most-upvoted small
 
 1. Settings → Pages → Source: **GitHub Actions**. Custom domain: `deploylist.com`.
 2. Reddit's public listings supply posts and live vote counts, and its RSS feeds supply website links from text posts. Reddit blocks those listings from GitHub's servers, so on GitHub a blocked subreddit falls back to its RSS feed with vote counts from the Arctic Shift archive (somewhat behind live counts, never lower than a count seen earlier). Optional: set `REDDIT_CLIENT_ID` / `REDDIT_CLIENT_SECRET` repo secrets to use Reddit's API, which works from GitHub with exact counts.
+Last resort: if Reddit's API, listing and RSS feed all fail for a subreddit (Reddit ends RSS on 2026-11-13), its posts come from the Arctic Shift archive instead. The archive rate-limits, so each run spends a small request budget, saves its progress in `data/archive-cache.json`, and resumes on the next run; while this fallback is in use, the workflow also tops up the cache every day. Archive vote counts lag behind Reddit's, and new posts show near zero until the archive re-reads them about 36 hours later.
+
 3. If Reddit returns no posts with known scores, or Show HN can't be reached, the workflow reports a warning and retains the last successful rankings and their original update timestamp. `data/reddit-cache.json` records each successful Reddit scrape; its vote counts are only used so an archived count never drops below one seen earlier.
 
 ## Local

@@ -15,6 +15,7 @@ import scrape
 
 
 SINCE = dt.datetime(2026, 9, 4, tzinfo=dt.timezone.utc)
+REAL_ARCHIVE_GET = scrape.ArchiveClient.get
 
 
 def listing_html(pid="example", cursor=None, **overrides):
@@ -47,6 +48,11 @@ class RedditIngestionTests(unittest.TestCase):
         self.log = io.StringIO()
         self.enterContext(contextlib.redirect_stdout(self.log))
         self.enterContext(contextlib.redirect_stderr(self.log))
+        # Keep tests off the network and away from the real archive cache.
+        self.archive_path = Path(self.enterContext(tempfile.TemporaryDirectory())) / "archive-cache.json"
+        self.enterContext(patch.object(scrape, "ARCHIVE_CACHE", str(self.archive_path)))
+        self.enterContext(patch.object(scrape.ArchiveClient, "get", side_effect=scrape.ArchivePaused("offline")))
+        self.enterContext(patch.object(scrape, "ARCHIVE_PAUSE", 0))
 
     def test_html_entities_and_attribute_order_preserve_a_real_zero_score(self):
         post = listed_post()
@@ -255,6 +261,81 @@ class RedditIngestionTests(unittest.TestCase):
                     with self.subTest(payload=payload):
                         out.write_text(json.dumps(payload))
                         self.assertTrue(scrape.refresh_due(now))
+
+
+    # ---- Arctic Shift last-resort fallback ----
+
+    def archive_post(self, pid, created, score, url=None):
+        return {"id": pid, "title": "Tool", "url": url or f"https://{pid}.example/", "selftext": "",
+                "score": score, "created_utc": created, "over_18": False, "stickied": False}
+
+    def test_archive_is_used_only_when_listing_and_rss_both_fail(self):
+        with patch.object(scrape, "SUBREDDITS", ["Working", "RssOnly", "Blocked"]), \
+             patch.object(scrape, "listing_posts", side_effect=[[listed_post()], RuntimeError("403"), RuntimeError("403")]), \
+             patch.object(scrape, "feed_fallback", side_effect=[[entry("https://rss.example/", 20)], RuntimeError("RSS gone")]), \
+             patch.object(scrape, "archive_sync", side_effect=lambda cache, since: cache) as sync:
+            scrape.reddit_pages(SINCE)
+        cache = json.loads(self.archive_path.read_text())
+        self.assertTrue(cache["active"])
+        self.assertEqual(cache["subreddits"], ["Blocked"])
+        sync.assert_called_once()
+
+    def test_archive_stays_off_while_other_routes_work(self):
+        with patch.object(scrape, "SUBREDDITS", ["Working"]), \
+             patch.object(scrape, "listing_posts", return_value=[listed_post()]), \
+             patch.object(scrape, "archive_sync") as sync:
+            scrape.reddit_pages(SINCE)
+        sync.assert_not_called()
+        self.assertFalse(self.archive_path.exists())
+
+    def test_archive_sync_pauses_on_rate_limit_and_resumes_from_its_cursor(self):
+        now = SINCE.timestamp() + 20 * 86400
+        page = [self.archive_post(f"p{i}", int(SINCE.timestamp()) + 60 * i, 50) for i in range(100)]
+        cache = {"active": True, "subreddits": ["Blocked"], "cursors": {}, "posts": {}}
+        with patch.object(scrape.ArchiveClient, "get", side_effect=[page, scrape.ArchivePaused("slow down")]):
+            scrape.archive_sync(cache, SINCE, now=now)
+        self.assertEqual(len(cache["posts"]), 100)
+        resume = cache["cursors"]["Blocked"]
+        self.assertEqual(resume, page[-1]["created_utc"] + 1)
+        with patch.object(scrape.ArchiveClient, "get", return_value=[]) as get:
+            scrape.archive_sync(cache, SINCE, now=now)
+        self.assertEqual(get.call_args_list[0].args[1]["after"], resume)
+
+    def test_archive_budget_caps_requests_per_run(self):
+        cache = {"active": True, "subreddits": ["Blocked"], "cursors": {}, "posts": {}}
+        start = int(SINCE.timestamp())
+        pages = iter(range(10))
+        def full_page(url, *args, **kwargs):
+            n = next(pages)
+            return json.dumps({"data": [self.archive_post(f"r{n}_{i}", start + n * 1000 + i, 5) for i in range(100)]}).encode()
+        with patch.object(scrape.ArchiveClient, "get", REAL_ARCHIVE_GET), \
+             patch.object(scrape, "fetch", side_effect=full_page) as fetch:
+            scrape.archive_sync(cache, SINCE, budget=2, now=start + 20 * 86400)
+        self.assertEqual(fetch.call_count, 2)
+        self.assertEqual(len(cache["posts"]), 200)
+        self.assertIn("pausing until the next run", self.log.getvalue())
+
+    def test_settled_posts_get_their_counts_re_read(self):
+        created = int(SINCE.timestamp())
+        now = created + 3 * 86400
+        cache = {"active": True, "subreddits": ["Blocked"], "cursors": {"Blocked": now}, "posts": {
+            "fresh": {"sub": "Blocked", "title": "Tool", "score": 1, "direct": "https://fresh.example/", "body": [],
+                      "permalink": "/r/Blocked/comments/fresh/tool/", "created": created + 60, "settled": False}}}
+        with patch.object(scrape.ArchiveClient, "get", side_effect=[[], [{"id": "fresh", "score": 321}]]):
+            scrape.archive_sync(cache, SINCE, now=now)
+        self.assertEqual(cache["posts"]["fresh"]["score"], 321)
+        self.assertTrue(cache["posts"]["fresh"]["settled"])
+        with patch.object(scrape, "cached_scores", return_value={"fresh": 400}):
+            self.assertEqual(scrape.archive_entries(cache, "Blocked", SINCE)[0]["votes"], 400)
+
+    def test_daily_sync_does_nothing_unless_the_fallback_is_active(self):
+        with patch.object(scrape, "archive_sync") as sync:
+            scrape.archive_daily_sync()
+        sync.assert_not_called()
+        self.archive_path.write_text(json.dumps({"active": True, "subreddits": ["Blocked"], "cursors": {}, "posts": {}}))
+        with patch.object(scrape, "archive_sync", side_effect=lambda cache, since: cache) as sync:
+            scrape.archive_daily_sync()
+        sync.assert_called_once()
 
 
 if __name__ == "__main__":
