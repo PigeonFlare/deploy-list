@@ -42,6 +42,7 @@ function render() {
           ${s.embeddable ? "" : '<span class="tag" title="This site can\'t be shown inside Live view">Not in Live</span>'}
         </div>
         <div class="title" title="${esc(s.title)}">${esc(s.title)}</div>
+        <a class="src-line" href="${esc(safeUrl(s.post_url))}" target="_blank" rel="noopener noreferrer">${sourceLabel(s.source)}${ext}</a>
         <div class="meter" aria-hidden="true"><span data-w="${Math.max(2, Math.round((s.votes / max) * 100))}"></span></div>
       </td>
       <td class="num votes">${fmt.format(s.votes)}</td>

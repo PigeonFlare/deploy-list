@@ -365,6 +365,8 @@ a:hover > .ext { opacity: 0.9; transform: translate(1px, -1px); }
 .src a .sn { overflow: hidden; text-overflow: ellipsis; }
 .src a .pre { color: var(--faint); }
 .src a:hover .sn { text-decoration: underline; text-underline-offset: 3px; }
+/* On phones the source moves under the description instead of its own column. */
+.src-line { display: none; }
 .src-head { position: relative; overflow: visible !important; }
 .src-head button { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; padding: 4px 8px; margin: -4px -8px; border-radius: 8px; }
 .src-head button:hover { background: var(--menu-hover); color: var(--text); }
@@ -409,6 +411,11 @@ footer.site-foot a:hover { text-decoration: underline; }
   .badge { width: 30px; height: 30px; border-radius: 9px; font-size: 14px; }
   .domain { font-size: 15.5px; }
   .domain-cell .title { font-size: 13px; }
+  .ranks td { height: auto; padding-top: 12px; padding-bottom: 12px; }
+  .src-line { display: inline-flex; align-items: center; gap: 5px; margin-top: 2px; font-size: 12.5px; font-weight: 500; color: var(--text); text-decoration: none; max-width: 100%; }
+  .src-line .sn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .src-line .pre { color: var(--faint); }
+  .src-line .ext { width: 10px; height: 10px; }
   .votes { font-size: 15px; }
   .dd-toggle { height: 38px; padding: 0 14px 0 12px; }
   .pill { height: 50px; padding: 0 24px; font-size: 16px; }
