@@ -1,0 +1,19 @@
+# Response headers on Cloudflare Pages (GitHub Pages ignores this file).
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Fonts never change; stylesheets and scripts are linked with ?v=<commit>.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*.css
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*.js
+  Cache-Control: public, max-age=31536000, immutable
+/assets/bg/*
+  Cache-Control: public, max-age=86400
+/snapshots/*.jpg
+  Cache-Control: public, max-age=86400
