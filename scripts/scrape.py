@@ -81,12 +81,19 @@ BLOCKED_HOSTS = {
 BLOG_PATH = re.compile(r"/(blog|posts?|articles?|news|p|story|stories|writing|essays?|\d{4}/\d{2})(/|$)", re.I)
 BLOG_TITLE = re.compile(r"^(how|why|what) i\b|\bi wrote\b|\bwrite-?up\b|\bpost-?mortem\b|\blessons learned\b|\bblog\b|"
                         r"^(why|how to|hot take|opinion|explaining|introducing|announcing)\b", re.I)
-# Only words that clearly mean "a game"; looser ones like play, simulator or levels
-# also describe plenty of tools.
+# Words that mean the post is about a game. Only the post title is held to this list:
+# a site's own description mentions games in passing far too often ("mini games",
+# "references to memes, games, films", "a cursor, a clicker and a slide remote").
 GAME_WORDS = re.compile(
-    r"\b(game|games|gaming|gameplay|playable|puzzle|puzzles|wordle|chess|arcade|trivia|sudoku|crossword|"
-    r"roguelike|roguelite|platformer|clicker|quiz|geoguessr|tetris|minesweeper|solitaire|rpg|mmo|io game|"
+    r"\b(game|gameplay|playable|puzzle game|wordle|chess|arcade|trivia|sudoku|crossword|"
+    r"roguelike|roguelite|platformer|clicker game|idle game|quiz game|geoguessr|tetris|minesweeper|solitaire|rpg|mmo|io game|"
     r"shooter|stickman|pok[eé]mon|tower defense|pinball|speedrun|match-3|flight simulator)\b", re.I)
+# In a site's description, only phrases that say the site itself is a game.
+GAME_PAGE = re.compile(
+    r"\b(?:(?:a|an|free|online|browser|web|multiplayer|puzzle|word|card|board|idle|casual|indie|daily|"
+    r"retro|pixel|arcade|strategy|racing|platform|survival|physics|rhythm|trivia|2d|3d)[- ]game|"
+    r"play (?:it )?(?:now|free|online|for free|in your browser)|roguelike|roguelite|platformer|sudoku|crossword|"
+    r"wordle|tetris|minesweeper|solitaire|tower defense|pinball|match-3|geoguessr)\b", re.I)
 APP_WORDS = re.compile(
     r"\b(app|apps|tool|tools|editor|generator|tracker|converter|platform|dashboard|ai|saas|api|manager|"
     r"builder|calculator|planner|extension|assistant|analytics|search|engine|notes?|budget|finance|"
@@ -158,10 +165,16 @@ def page_summary(body):
     return html.unescape(" ".join(p.strip() for p in parts))[:2000]
 
 
-def category(text, source):
-    if source == "r/WebGames" or GAME_WORDS.search(text):
+def category(title, source, summary=""):
+    """The post title decides first; the site's own description only fills in when the
+    title doesn't say what the project is."""
+    if source == "r/WebGames" or GAME_WORDS.search(title):
         return "games"
-    if APP_WORDS.search(text):
+    if APP_WORDS.search(title):
+        return "apps"
+    if GAME_PAGE.search(summary):
+        return "games"
+    if APP_WORDS.search(summary):
         return "apps"
     return "other"
 
@@ -738,8 +751,12 @@ def recheck():
         data = json.load(f)
     sites = data.get("sites") or []
     before = {s["url"]: dict(s) for s in sites}
-    check_live(sites, before)
-    for s in sites:
+    summaries = check_live(sites, before)
+    for s, summary in zip(sites, summaries):
+        # Recategorize with the site's current description; a site that didn't answer
+        # keeps its category.
+        if summary:
+            s["category"] = category(s["title"], s["source"], summary)
         if s["embeddable"]:
             s["url"] = s["url"].replace("http://", "https://", 1)
     tmp = OUT + ".tmp"
@@ -793,7 +810,7 @@ def main(if_due=False):
     summaries = check_live(sites, previous)
     for s, summary in zip(sites, summaries):
         # The post title plus the site's own title and description.
-        s["category"] = category(s["title"] + " " + summary, s["source"])
+        s["category"] = category(s["title"], s["source"], summary)
         s["url"] = s["url"].replace("http://", "https://", 1) if s["embeddable"] else s["url"]
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)

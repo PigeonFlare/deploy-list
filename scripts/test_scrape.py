@@ -44,7 +44,7 @@ class ScraperTests(unittest.TestCase):
         self.assertIn("shoot any web page", summary)
         self.assertEqual(scrape.category("I built a website for safe area insets in Simulator", "r/SideProject"), "other")
         self.assertIn("Page Rage & friends", summary)
-        self.assertEqual(scrape.category("Destroy any web page " + summary, "r/webdev"), "games")
+        self.assertEqual(scrape.category("Destroy any web page", "r/webdev", summary), "games")
 
     def test_maker_title(self):
         for title in ["Made a Destroy Any Website game", "I made a virtual lounge", "My SaaS crossed 1M users",
@@ -81,6 +81,14 @@ class ScraperTests(unittest.TestCase):
         self.assertEqual(scrape.category("Random project", "r/WebGames"), "games")
         self.assertEqual(scrape.category("AI task manager and calendar", "r/SideProject"), "apps")
         self.assertEqual(scrape.category("A generative art showcase", "r/SideProject"), "other")
+        # Passing mentions of games in a site's description don't make it a game.
+        self.assertEqual(scrape.category("I turned Oura ring into a controller for Mac", "r/SideProject",
+                                         "FunOura turns a spare Oura Ring into a cursor, a clicker and a slide remote"), "other")
+        self.assertEqual(scrape.category("An endless, zoomable pixel animation", "r/InternetIsBeautiful",
+                                         "A huge animation scene with many references to memes, games, films"), "other")
+        self.assertEqual(scrape.category("My fun spatial 3D online meeting app", "Hacker News",
+                                         "A playful virtual space for team socials. Spatial audio, mini games"), "apps")
+        self.assertEqual(scrape.category("Tiny boats", "r/SideProject", "A free browser game about tilting"), "games")
 
     def test_pick_site(self):
         self.assertEqual(
