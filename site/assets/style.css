@@ -288,15 +288,41 @@ body.live { overflow: hidden; height: 100%; }
 }
 
 /* Leaderboard */
-/* A soft aurora: blue and violet washes up top, a faint rose glow low on the page. */
+/* A photo of the city fills the page behind everything: daytime in light mode, the purple
+   night in dark. rankings.js drifts it upward at a fraction of the scroll speed (parallax). */
 body.board-page { background: var(--bg); }
-body.board-page::before {
-  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    radial-gradient(55% 60% at 12% -8%, var(--aurora-1), transparent 70%),
-    radial-gradient(50% 55% at 88% -4%, var(--aurora-2), transparent 70%),
-    radial-gradient(70% 50% at 50% 115%, var(--aurora-3), transparent 70%),
-    linear-gradient(180deg, var(--aurora-top), var(--bg) 70%);
+.paris {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 0; pointer-events: none; will-change: transform;
+  height: calc(100vh + var(--travel, 0px)); height: calc(100lvh + var(--travel, 0px));
+  --paris-scrim: linear-gradient(180deg, rgba(245, 246, 250, 0.08) 0%, rgba(245, 246, 250, 0.3) 40%, rgba(245, 246, 250, 0.66) 100%);
+  background: var(--paris-scrim), url(bg/paris-light.jpg) center top / cover no-repeat, var(--bg);
+  background: var(--paris-scrim), image-set(url(bg/paris-light-1800.webp) type("image/webp"), url(bg/paris-light.jpg) type("image/jpeg")) center top / cover no-repeat, var(--bg);
+}
+/* Over the busy night photo the dark card needs more body to keep rows readable. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .board-page { --surface: rgba(14, 11, 28, 0.8); }
+}
+:root[data-theme="dark"] .board-page { --surface: rgba(14, 11, 28, 0.8); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .paris {
+    --paris-scrim: linear-gradient(180deg, rgba(10, 8, 22, 0.12) 0%, rgba(10, 8, 22, 0.35) 45%, rgba(10, 8, 22, 0.55) 100%);
+    background: var(--paris-scrim), url(bg/paris-dark.jpg) center top / cover no-repeat, var(--bg);
+    background: var(--paris-scrim), image-set(url(bg/paris-dark-1800.webp) type("image/webp"), url(bg/paris-dark.jpg) type("image/jpeg")) center top / cover no-repeat, var(--bg);
+  }
+}
+:root[data-theme="dark"] .paris {
+  --paris-scrim: linear-gradient(180deg, rgba(10, 8, 22, 0.12) 0%, rgba(10, 8, 22, 0.35) 45%, rgba(10, 8, 22, 0.55) 100%);
+  background: var(--paris-scrim), url(bg/paris-dark.jpg) center top / cover no-repeat, var(--bg);
+  background: var(--paris-scrim), image-set(url(bg/paris-dark-1800.webp) type("image/webp"), url(bg/paris-dark.jpg) type("image/jpeg")) center top / cover no-repeat, var(--bg);
+}
+@media (max-width: 720px) {
+  .paris { background-image: var(--paris-scrim), image-set(url(bg/paris-light-1000.webp) type("image/webp"), url(bg/paris-light.jpg) type("image/jpeg")); }
+}
+@media (max-width: 720px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .paris { background-image: var(--paris-scrim), image-set(url(bg/paris-dark-1000.webp) type("image/webp"), url(bg/paris-dark.jpg) type("image/jpeg")); }
+}
+@media (max-width: 720px) {
+  :root[data-theme="dark"] .paris { background-image: var(--paris-scrim), image-set(url(bg/paris-dark-1000.webp) type("image/webp"), url(bg/paris-dark.jpg) type("image/jpeg")); }
 }
 .board { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 100px 20px 32px; }
 /* Title: heavy sans "Top-voted" set against a large italic serif noun, like the homepage wordmark. */
