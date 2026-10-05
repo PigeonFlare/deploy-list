@@ -251,7 +251,17 @@ body.live { overflow: hidden; height: 100%; }
 .now-playing .meta { font-size: 12px; line-height: 1.35; color: var(--muted); display: flex; gap: 6px; justify-content: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .now-playing .meta a { color: var(--text); text-decoration: none; font-weight: 500; }
 .now-playing .meta a:hover { text-decoration: underline; }
-.now-playing .meta > * + *::before { content: "·"; margin-right: 6px; color: var(--faint); }
+.now-playing .meta .sep { color: var(--faint); user-select: none; }
+/* On devices with a pointer, Live's controls stay out of the way until the pointer
+   reaches the spot they sit in. A padded hit area makes the spot easier to find. */
+@media (hover: hover) and (pointer: fine) {
+  body.live .corner, body.live .live-controls { opacity: 0; transition: opacity 0.35s ease; }
+  body.live .corner { padding: 14px; margin: -14px; }
+  body.live .live-controls { padding: 14px; margin-top: -14px; }
+  body.live .corner:hover, body.live .corner:focus-within, body.live .corner.open,
+  body.live .live-controls:hover, body.live .live-controls:focus-within,
+  body.live.peek .corner, body.live.peek .live-controls { opacity: 1; transition-duration: 0.18s; }
+}
 
 /* Leaderboard */
 body.board-page {
