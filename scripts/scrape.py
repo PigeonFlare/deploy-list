@@ -34,6 +34,9 @@ from html.parser import HTMLParser
 OUT = os.path.join(os.path.dirname(__file__), "..", "site", "data", "sites.json")
 # Save successful direct scrapes for inspection. Failed runs leave this snapshot
 # and the published rankings unchanged.
+# Sites that pass every automatic check but still break inside Live's frame (they switch
+# features off when framed, or rely on cookies a frame doesn't get). Domain -> why.
+LIVE_EXCLUDE = os.path.join(os.path.dirname(__file__), "..", "data", "live-exclude.json")
 REDDIT_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "reddit-cache.json")
 # Posts collected from the Arctic Shift archive, used only when Reddit's API,
 # listings and RSS feeds all fail. Filled a little at a time across daily runs.
@@ -723,6 +726,11 @@ def check_live(sites, previous=None):
     running after the overall limit keeps the site's previous status (or counts as down),
     so one slow refresh doesn't flip sites in and out of Live. Returns page summaries."""
     previous = previous or {}
+    try:
+        with open(LIVE_EXCLUDE, encoding="utf-8") as f:
+            excluded = json.load(f)
+    except (OSError, ValueError):
+        excluded = {}
     ex = ThreadPoolExecutor(32)
     futures = [ex.submit(probe, s["url"]) for s in sites]
     wait(futures, timeout=PROBE_DEADLINE * 4)
@@ -734,6 +742,8 @@ def check_live(sites, previous=None):
             before = previous.get(s["url"], {})
             status = "ok" if before.get("embeddable") else before.get("live_issue", DOWN)
             summary = ""
+        if status == "ok" and host_of(s["url"]) in excluded:
+            status = NO_FRAME
         s["embeddable"] = status == "ok"
         if status == "ok":
             s.pop("live_issue", None)
