@@ -182,6 +182,7 @@
     let reduce = motionQuery.matches;
     let w = 0, h = 0, cx = 0, cy = 0, dpr = 1, stars = [];
     const DEPTH = 1000;
+    let maxDpr = 1.5;
     const N = Math.round(Math.min(1100, Math.max(350, ((innerWidth || 800) * (innerHeight || 600)) / 900)));
 
     function resetStar(s, fresh) {
@@ -206,7 +207,9 @@
     }
 
     function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Streaks look the same at 1.5x as at 2x, and painting 44% fewer pixels a frame
+      // keeps the animation smooth on retina screens; slow devices drop to 1x.
+      dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
       w = canvas.width = snapCanvas.width = Math.max(1, Math.floor((innerWidth || 800) * dpr));
       h = canvas.height = snapCanvas.height = Math.max(1, Math.floor((innerHeight || 600) * dpr));
       cx = w / 2; cy = h / 2;
@@ -267,7 +270,7 @@
     // ---- site snapshots ----
     const pics = [], cards = [];
     const MAX_CARDS = 8, CARD_W = 34, CARD_H = CARD_W * 0.625; // world units; stills are 16:10
-    let spawnIn = 600, seeded = false;
+    let spawnIn = 600, seeded = false, cardsDrawn = false;
     // Stills load a dozen up front, then one more each time a card launches, so the
     // homepage doesn't download all of them before anyone has watched for long.
     let queue = [];
@@ -277,15 +280,19 @@
       const img = new Image();
       img.decoding = "async";
       img.onload = () => {
-        pics.push(img);
-        // As soon as there are enough, place a full set mid-flight at random depths,
-        // like the stars, so the page doesn't open on an empty field.
-        if (!seeded && pics.length >= MAX_CARDS) {
-          seeded = true;
-          for (let i = 0; i < MAX_CARDS; i++) spawnCard(300 + Math.random() * (DEPTH - 300));
-        }
+        // Decode off the main thread before first use, so a new still never stalls a frame.
+        (img.decode ? img.decode() : Promise.resolve()).catch(() => {}).then(() => addPic(img));
       };
       img.src = ROOT + "snapshots/" + n;
+    }
+    function addPic(img) {
+      pics.push(img);
+      // As soon as there are enough, place a full set mid-flight at random depths,
+      // like the stars, so the page doesn't open on an empty field.
+      if (!seeded && pics.length >= MAX_CARDS) {
+        seeded = true;
+        for (let i = 0; i < MAX_CARDS; i++) spawnCard(300 + Math.random() * (DEPTH - 300));
+      }
     }
     fetch(ROOT + "snapshots/index.json")
       .then((r) => (r.ok ? r.json() : []))
@@ -308,7 +315,8 @@
     }
 
     function drawCards(dt, speed) {
-      sctx.clearRect(0, 0, w, h);
+      if (cards.length || cardsDrawn) sctx.clearRect(0, 0, w, h);
+      cardsDrawn = cards.length > 0;
       if (reduce) return;
       spawnIn -= dt;
       if (spawnIn <= 0) { spawnCard(); spawnIn = 350 + Math.random() * 450; }
@@ -341,10 +349,24 @@
     let last = performance.now();
     let animId = null;
 
+    // If frames keep running long (a slow GPU or a busy machine), drop to 1x resolution once.
+    let slowFrames = 0, seenFrames = 0;
+    function watchSpeed(dt) {
+      if (maxDpr === 1 || ++seenFrames < 30) return;
+      slowFrames = dt > 24 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
+      if (slowFrames > 20) {
+        maxDpr = 1;
+        resize();
+        ctx.fillStyle = space;
+        ctx.fillRect(0, 0, w, h);
+      }
+    }
+
     function renderFrame(now) {
       if (!colorsResolved) refreshColors(); // keep checking until the stylesheet's colors are in
       const dt = Math.min(50, now - last);
       last = now;
+      watchSpeed(dt);
       const speed = 0.09 * dt;
       ctx.fillStyle = fade;
       ctx.fillRect(0, 0, w, h);
