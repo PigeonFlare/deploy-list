@@ -1,6 +1,7 @@
 """Unit tests for scraper logic and URL validation."""
 
 import datetime as dt
+import os
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -219,6 +220,14 @@ class ScraperTests(unittest.TestCase):
             scrape.check_live(sites)
         self.assertEqual(sites[0], {"url": "https://a.example/", "embeddable": False, "live_issue": "down"})
         self.assertEqual(sites[1], {"url": "https://b.example/", "embeddable": True})
+
+    def test_check_live_honors_the_exclude_list(self):
+        sites = [{"url": "https://www.page-rage.com/"}, {"url": "https://fine.example/"}]
+        with patch("scrape.probe", return_value=("ok", "")), \
+                patch("scrape.LIVE_EXCLUDE", os.path.join(os.path.dirname(__file__), "..", "data", "live-exclude.json")):
+            scrape.check_live(sites)
+        self.assertEqual(sites[0]["live_issue"], "iframe")
+        self.assertTrue(sites[1]["embeddable"])
 
 
 if __name__ == "__main__":
