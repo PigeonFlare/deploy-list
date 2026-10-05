@@ -1,16 +1,8 @@
 // Page script; inline scripts are blocked by the Content-Security-Policy.
 const fmt = new Intl.NumberFormat("en-US");
 const $ = (id) => document.getElementById(id);
-// History of viewed sites lives in sessionStorage, so it's cleared when the session ends.
-const KEY = "deploylist.live";
+// History of viewed sites lives only in memory, so closing or reloading the page clears it.
 let pool = [], byId = {}, hist = { ids: [], pos: -1 };
-try {
-  const parsed = JSON.parse(sessionStorage.getItem(KEY));
-  if (parsed && Array.isArray(parsed.ids) && typeof parsed.pos === "number") {
-    hist = parsed;
-  }
-} catch {}
-const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(hist)); } catch {} };
 
 function candidates() { return pool.filter((s) => DL.inCategory(s)); }
 
@@ -104,27 +96,25 @@ function next() {
   // Walk forward through history first, then pick a random site, preferring unseen ones.
   if (hist.pos < hist.ids.length - 1) {
     hist.pos++;
-    save();
     return show(byId[hist.ids[hist.pos]]);
   }
   const pick = upcoming && DL.inCategory(upcoming) && !hist.ids.includes(upcoming.id) ? upcoming : randomPick();
   upcoming = null;
   if (!pick) return empty("No live-viewable sites in this category yet.");
   hist.ids.push(pick.id);
-  if (hist.ids.length > 200) {
-    const trim = hist.ids.length - 200;
+  // Keep at most one entry per site Live can show.
+  if (hist.ids.length > pool.length) {
+    const trim = hist.ids.length - pool.length;
     hist.ids = hist.ids.slice(trim);
     hist.pos = Math.max(0, hist.pos - trim);
   }
   hist.pos = hist.ids.length - 1;
-  save();
   show(pick);
 }
 
 function prev() {
   if (hist.pos <= 0) return;
   hist.pos--;
-  save();
   show(byId[hist.ids[hist.pos]]);
 }
 
@@ -144,16 +134,7 @@ DL.loadData().then((d) => {
   pool = (d.sites || []).filter((s) => s.embeddable);
   pool.forEach((s) => (byId[s.id] = s));
   DL.setCounts(pool);
-  // Drop history entries that are no longer in the data.
-  hist.ids = hist.ids.filter((id) => byId[id]);
-  hist.pos = Math.min(hist.pos, hist.ids.length - 1);
-  const cur = byId[hist.ids[hist.pos]];
-  if (cur && DL.inCategory(cur)) {
-    show(cur);
-  } else {
-    hist.ids = hist.ids.slice(0, Math.max(0, hist.pos + 1));
-    next();
-  }
+  next();
   DL.onCategory((c) => {
     const active = byId[hist.ids[hist.pos]];
     if (active && DL.inCategory(active, c)) return;
