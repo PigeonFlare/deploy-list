@@ -23,7 +23,7 @@ function render() {
       r.style.animation = "";
     }
   }
-  const rows = (data?.sites || []).filter((s) => DL.inCategory(s)).slice(0, 25);
+  const rows = DL.ranked(data?.sites || [], DL.category, 25);
   const max = rows[0]?.votes || 1;
   const tbody = document.getElementById("rows");
   if (!tbody) return;

@@ -141,11 +141,22 @@
     return dataPromise;
   }
   function inCategory(s, c = category) { return c === "all" || s.category === c; }
+  // Each site belongs to exactly one category. With a limit, each category keeps its
+  // top `limit` sites and "All" is those lists combined, so the counts add up.
+  function ranked(sites, c = category, limit) {
+    const keep = (s) => {
+      if (!limit) return true;
+      const own = sites.filter((x) => x.category === s.category);
+      return own.indexOf(s) < limit;
+    };
+    return sites.filter((s) => inCategory(s, c) && keep(s));
+  }
   function setCounts(sites, limit) {
-    counts = {};
+    counts = { all: 0 };
     CATS.forEach((c) => {
-      const n = sites.filter((s) => inCategory(s, c.key)).length;
-      counts[c.key] = limit ? Math.min(n, limit) : n;
+      if (c.key === "all") return;
+      counts[c.key] = ranked(sites, c.key, limit).length;
+      counts.all += counts[c.key];
     });
     renderCategoryMenu();
   }
@@ -417,7 +428,7 @@
   }
 
   window.DL = {
-    ROOT, CATS, store, loadData, inCategory, setCounts, safeUrl, esc, icon,
+    ROOT, CATS, store, loadData, inCategory, ranked, setCounts, safeUrl, esc, icon,
     get category() { return category; },
     onCategory(fn) { listeners.push(fn); },
   };
