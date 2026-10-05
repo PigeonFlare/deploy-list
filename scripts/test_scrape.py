@@ -66,7 +66,8 @@ class ScraperTests(unittest.TestCase):
             scrape.pick_site("App", None, ["https://example.com/", "https://other.com/"])
         )
 
-    def test_embeddable_headers(self):
+    @patch("scrape.public_host", return_value=True)
+    def test_embeddable_headers(self, _public):
         def make_mock_response(url="https://example.com", status=200, headers=None):
             headers = headers or {}
             mock = MagicMock()
@@ -79,58 +80,44 @@ class ScraperTests(unittest.TestCase):
             return mock
 
         # Normal HTTPS site is embeddable
-        with patch("urllib.request.urlopen") as mock_open:
+        with patch.object(scrape._PROBE, "open") as mock_open:
             mock_open.return_value.__enter__.return_value = make_mock_response()
             self.assertTrue(scrape.embeddable("https://example.com"))
 
         # X-Frame-Options DENY / SAMEORIGIN block framing
         for xfo in ["DENY", "SAMEORIGIN"]:
-            with patch("urllib.request.urlopen") as mock_open:
+            with patch.object(scrape._PROBE, "open") as mock_open:
                 mock_open.return_value.__enter__.return_value = make_mock_response(
                     headers={"X-Frame-Options": xfo}
                 )
                 self.assertFalse(scrape.embeddable("https://example.com"))
 
         # ALLOW-FROM is ignored by current browsers, so the site still frames
-        with patch("urllib.request.urlopen") as mock_open:
+        with patch.object(scrape._PROBE, "open") as mock_open:
             mock_open.return_value.__enter__.return_value = make_mock_response(
                 headers={"X-Frame-Options": "ALLOW-FROM https://other.com"}
             )
             self.assertTrue(scrape.embeddable("https://example.com"))
 
         # CSP frame-ancestors
-        with patch("urllib.request.urlopen") as mock_open:
+        with patch.object(scrape._PROBE, "open") as mock_open:
             mock_open.return_value.__enter__.return_value = make_mock_response(
                 headers={"Content-Security-Policy": "frame-ancestors 'none'"}
             )
             self.assertFalse(scrape.embeddable("https://example.com"))
 
-        with patch("urllib.request.urlopen") as mock_open:
+        with patch.object(scrape._PROBE, "open") as mock_open:
             mock_open.return_value.__enter__.return_value = make_mock_response(
                 headers={"Content-Security-Policy": "frame-ancestors *"}
             )
             self.assertTrue(scrape.embeddable("https://example.com"))
 
-        # Non-HTTPS URL after redirect is rejected
-        with patch("urllib.request.urlopen") as mock_open:
-            mock_open.return_value.__enter__.return_value = make_mock_response(
-                url="http://insecure.example.com"
-            )
-            self.assertFalse(scrape.embeddable("https://example.com"))
-
-        # Redirect to a blocked host is rejected
-        with patch("urllib.request.urlopen") as mock_open:
-            mock_open.return_value.__enter__.return_value = make_mock_response(
-                url="https://github.com/my/repo"
-            )
-            self.assertFalse(scrape.embeddable("https://example.com"))
-
-        # Redirect to an IP address is rejected
-        with patch("urllib.request.urlopen") as mock_open:
-            mock_open.return_value.__enter__.return_value = make_mock_response(
-                url="https://169.254.169.254/secret"
-            )
-            self.assertFalse(scrape.embeddable("https://example.com"))
+        # Redirects to plain HTTP, blocked hosts, or IP addresses are refused before connecting
+        for target in ["http://insecure.example.com", "https://github.com/my/repo", "https://169.254.169.254/secret"]:
+            redirect = scrape.urllib.error.HTTPError("https://example.com", 302, "Found", {"Location": target}, None)
+            with patch.object(scrape._PROBE, "open", side_effect=redirect) as mock_open:
+                self.assertFalse(scrape.embeddable("https://example.com"))
+                self.assertEqual(mock_open.call_count, 1)
 
     def test_reddit_feed_malformed_resilience(self):
         bad_feed = "<entry><title>Test</title><published>invalid-date</published></entry>"
@@ -138,6 +125,24 @@ class ScraperTests(unittest.TestCase):
             since = dt.datetime(2026, 1, 1, tzinfo=dt.timezone.utc)
             posts = scrape.reddit_feed("SideProject", since)
             self.assertEqual(posts, [])
+
+
+    def test_site_url_rejects_malformed_ports(self):
+        self.assertIsNone(scrape.site_url("https://example.com:abc/", "Title"))
+        self.assertIsNone(scrape.site_url("https://example.com:99999/", "Title"))
+
+    def test_embeddable_refuses_private_destinations(self):
+        with patch("scrape.public_host", return_value=False), patch.object(scrape._PROBE, "open") as mock_open:
+            self.assertFalse(scrape.embeddable("https://example.com"))
+            mock_open.assert_not_called()
+
+    def test_embeddable_checks_redirect_targets_before_connecting(self):
+        redirect = scrape.urllib.error.HTTPError("https://example.com", 302, "Found",
+                                                 {"Location": "https://internal.example/"}, None)
+        with patch("scrape.public_host", side_effect=lambda h: h == "example.com"), \
+                patch.object(scrape._PROBE, "open", side_effect=redirect) as mock_open:
+            self.assertFalse(scrape.embeddable("https://example.com"))
+            self.assertEqual(mock_open.call_count, 1)
 
 
 if __name__ == "__main__":
