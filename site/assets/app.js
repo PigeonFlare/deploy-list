@@ -613,6 +613,37 @@
     document.querySelectorAll(".lg").forEach((el) => ro.observe(el));
   }
 
+  // ---- glass lighting ----
+  // One light sits above the top center of the window. Each glass button's rim glint
+  // (style.css) slides along its top edge toward that light and keeps about the same
+  // size whatever the button's width, the shading tilts with it, and buttons farther
+  // from it catch a little less.
+  function lightRims() {
+    const els = document.querySelectorAll(".lg");
+    if (!els.length) return;
+    function aim() {
+      const vw = innerWidth, vh = innerHeight, lx = vw / 2, ly = -0.4 * vh;
+      els.forEach((el) => {
+        const b = el.getBoundingClientRect();
+        if (!b.width) return;
+        const dx = (lx - (b.left + b.width / 2)) / vw;          // -0.5 … 0.5
+        const dy = (b.top + b.height / 2 - ly) / vh;            // 0.4 … 1.4
+        const x = Math.max(10, Math.min(90, 50 + dx * 110));
+        el.style.setProperty("--lg-lx", x.toFixed(1) + "%");
+        el.style.setProperty("--lg-lw", Math.max(28, Math.min(60, 3600 / b.width)).toFixed(1) + "%");
+        el.style.setProperty("--lg-la", (180 + Math.atan2(dx * vw, dy * vh) * 90 / Math.PI).toFixed(1) + "deg");
+        el.style.setProperty("--lg-li", Math.max(0.7, 1.12 - dy * 0.3).toFixed(2));
+      });
+    }
+    let queued = false;
+    const later = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; aim(); }); } };
+    aim();
+    addEventListener("resize", later);
+    addEventListener("scroll", later, { passive: true });
+    addEventListener("animationend", later);
+    if (window.ResizeObserver) { const ro = new ResizeObserver(later); els.forEach((el) => ro.observe(el)); }
+  }
+
   window.DL = {
     ROOT, CATS, store, loadData, inRange, inCategory, ranked, setCounts, safeUrl, esc, icon,
     get category() { return category; },
@@ -635,4 +666,5 @@
   if (PAGE === "home") { hyperspace(); playIntro(); }
   initMenus();
   liquidGlass();
+  lightRims();
 })();
