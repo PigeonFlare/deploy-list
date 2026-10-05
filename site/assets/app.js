@@ -97,17 +97,9 @@
   }
 
   function initMenus() {
-    catMenu = dropdown("left", "cat-menu");
-    catMenu.querySelector(".dd-menu").addEventListener("click", (e) => {
-      const b = e.target.closest("[data-cat]");
-      if (b) {
-        setCategory(b.dataset.cat);
-        closeAll();
-      }
-    });
-    renderCategoryMenu();
-
-    const nav = dropdown("right", "nav-menu");
+    // Page menu on the left, category menu on the right (created in that order so
+    // keyboard focus moves left to right).
+    const nav = dropdown("left", "nav-menu");
     const curPage = PAGES.find((p) => p.key === PAGE) || PAGES[0];
     const navLabel = nav.querySelector(".dd-label");
     if (navLabel) navLabel.textContent = curPage.label;
@@ -117,6 +109,16 @@
         <a role="menuitem" href="${p.href}" aria-current="${p.key === PAGE}">
           <span>${p.label}</span>${icon("check")}</a>`).join("");
     }
+
+    catMenu = dropdown("right", "cat-menu");
+    catMenu.querySelector(".dd-menu").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-cat]");
+      if (b) {
+        setCategory(b.dataset.cat);
+        closeAll();
+      }
+    });
+    renderCategoryMenu();
   }
 
   // ---- data ----
