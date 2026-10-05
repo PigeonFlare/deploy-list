@@ -37,6 +37,7 @@ OUT = os.path.join(os.path.dirname(__file__), "..", "site", "data", "sites.json"
 REDDIT_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "reddit-cache.json")
 UA = "deploylist/1.0 (+https://deploylist.com)"
 POOL_SIZE = 100  # candidates kept; the pages show the top 25 per category
+MIN_VOTES = 10  # Show HN points or Reddit upvotes a post needs to be ranked
 REFRESH_INTERVAL = dt.timedelta(days=3)
 # Match the daily due-check in .github/workflows/deploy.yml.
 REFRESH_HOUR, REFRESH_MINUTE = 6, 17
@@ -138,7 +139,7 @@ def window_start():
 def show_hn(since):
     q = urllib.parse.urlencode({
         "tags": "show_hn",
-        "numericFilters": f"created_at_i>={int(since.timestamp())},points>=10",
+        "numericFilters": f"created_at_i>={int(since.timestamp())},points>={MIN_VOTES}",
         "hitsPerPage": 1000,
     })
     hits = json.loads(fetch(f"https://hn.algolia.com/api/v1/search?{q}"))["hits"]
@@ -499,6 +500,7 @@ def main(if_due=False):
         sys.exit(f"Show HN failed ({e}); keeping existing data")
     print(f"Show HN: {len(hn)} candidate posts")
     posts += hn
+    posts = [p for p in posts if p["votes"] >= MIN_VOTES]
 
     # One entry per domain, keeping its best-voted post.
     best = {}

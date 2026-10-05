@@ -409,7 +409,7 @@
       if (raw.endsWith("%")) r = (r / 100) * Math.min(w, h);
       r = Math.round(Math.min(r, w / 2, h / 2));
       const blur = parseFloat(cs.getPropertyValue("--lg-blur")) || 1;
-      el.style.backdropFilter = `url(#${filterFor(w, h, r, blur)}) saturate(190%) brightness(1.04)`;
+      el.style.backdropFilter = `url(#${filterFor(w, h, r, blur)}) saturate(170%)`;
     }
 
     const ro = new ResizeObserver((entries) => entries.forEach((e) => apply(e.target)));
