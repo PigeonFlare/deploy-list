@@ -239,9 +239,11 @@
     // light-mode colors painted under dark-mode text. Fall back by the system theme, and
     // read again once the page has loaded or is restored from the back/forward cache.
     const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+    let colorsResolved = false;
     function readColors() {
       const cs = getComputedStyle(document.documentElement);
       const dark = darkQuery.matches;
+      colorsResolved = !!cs.getPropertyValue("--space").trim();
       star = cs.getPropertyValue("--star").trim() || (dark ? "214, 90%, 84%" : "228, 62%, 26%");
       space = cs.getPropertyValue("--space").trim() || (dark ? "#04050b" : "#dde3f0");
       const rgb = parseHex(space);
@@ -326,6 +328,7 @@
     let animId = null;
 
     function renderFrame(now) {
+      if (!colorsResolved) refreshColors(); // keep checking until the stylesheet's colors are in
       const dt = Math.min(50, now - last);
       last = now;
       const speed = 0.09 * dt;
