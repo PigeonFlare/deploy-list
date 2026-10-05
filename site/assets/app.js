@@ -8,6 +8,12 @@
     { key: "games", label: "Games", noun: "games" },
     { key: "other", label: "Other", noun: "projects" },
   ];
+  // Rankings and Live can show the last month or just the last week.
+  const RANGES = [
+    { key: "month", label: "Last month" },
+    { key: "week", label: "Last week" },
+  ];
+  const HAS_RANGE = PAGE === "rankings" || PAGE === "live";
   const PAGES = [
     { key: "home", label: "Home", href: ROOT || "./" },
     { key: "rankings", label: "Rankings", href: ROOT + "leaderboards/" },
@@ -27,6 +33,24 @@
 
   let category = getCategory();
   const listeners = [];
+
+  function getRange() {
+    const r = new URLSearchParams(location.search).get("range") || store.get("deploylist.range") || "month";
+    return RANGES.some((x) => x.key === r) ? r : "month";
+  }
+  let range = HAS_RANGE ? getRange() : "month";
+  const rangeListeners = [];
+
+  function setRange(r) {
+    if (!RANGES.some((x) => x.key === r)) r = "month";
+    range = r;
+    store.set("deploylist.range", r);
+    const url = new URL(location.href);
+    if (r === "month") url.searchParams.delete("range"); else url.searchParams.set("range", r);
+    history.replaceState(history.state, "", url);
+    renderRangeMenu();
+    rangeListeners.forEach((fn) => fn(r));
+  }
 
   function setCategory(c) {
     if (!CATS.some((x) => x.key === c)) c = "all";
@@ -50,9 +74,9 @@
   }
 
   // ---- dropdowns ----
-  function dropdown(side, id) {
+  function dropdown(side, id, parent) {
     const wrap = document.createElement("div");
-    wrap.className = `corner ${side} dropdown`;
+    wrap.className = parent ? "dropdown" : `corner ${side} dropdown`;
     wrap.id = id;
     wrap.innerHTML = `<button class="lg dd-toggle" aria-haspopup="true" aria-expanded="false">
       <span class="dd-label"></span>${icon("chev")}</button>
@@ -65,7 +89,7 @@
       wrap.classList.toggle("open", open);
       btn.setAttribute("aria-expanded", String(open));
     });
-    document.body.appendChild(wrap);
+    (parent || document.body).appendChild(wrap);
     return wrap;
   }
   function closeAll() {
@@ -96,6 +120,16 @@
     }
   }
 
+  let rangeMenu;
+  function renderRangeMenu() {
+    if (!rangeMenu) return;
+    const cur = RANGES.find((r) => r.key === range) || RANGES[0];
+    rangeMenu.querySelector(".dd-label").textContent = cur.label;
+    rangeMenu.querySelector(".dd-menu").innerHTML = RANGES.map((r) => `
+      <button role="menuitemradio" data-range="${r.key}" aria-current="${r.key === range}">
+        <span>${r.label}</span>${icon("check")}</button>`).join("");
+  }
+
   function initMenus() {
     // Page menu on the left, category menu on the right (created in that order so
     // keyboard focus moves left to right).
@@ -110,7 +144,23 @@
           <span>${p.label}</span>${icon("check")}</a>`).join("");
     }
 
-    catMenu = dropdown("right", "cat-menu");
+    // On Rankings and Live the time menu sits just left of the category menu.
+    let right;
+    if (HAS_RANGE) {
+      right = document.createElement("div");
+      right.className = "corner right corner-group";
+      document.body.appendChild(right);
+      rangeMenu = dropdown("right", "range-menu", right);
+      rangeMenu.querySelector(".dd-menu").addEventListener("click", (e) => {
+        const b = e.target.closest("[data-range]");
+        if (b) {
+          setRange(b.dataset.range);
+          closeAll();
+        }
+      });
+      renderRangeMenu();
+    }
+    catMenu = dropdown("right", "cat-menu", right);
     catMenu.querySelector(".dd-menu").addEventListener("click", (e) => {
       const b = e.target.closest("[data-cat]");
       if (b) {
@@ -132,7 +182,7 @@
         })
         .then((d) => {
           if (!d || !Array.isArray(d.sites)) d = { ...(d || {}), sites: [] };
-          d.sites.forEach((s, i) => (s.id = s.domain || String(i)));
+          d.sites.forEach((s, i) => (s.id = s.post_url || s.domain || String(i)));
           return d;
         })
         .catch((err) => {
@@ -141,6 +191,19 @@
         });
     }
     return dataPromise;
+  }
+  // The month's ranked sites, or the top sites posted in the 7 days before the data was
+  // collected (one per domain, best-voted first). Sites only in the week's list carry
+  // "month": false.
+  const WEEK = 7 * 24 * 3600;
+  function inRange(d, r = range) {
+    const sites = (d && d.sites) || [];
+    if (r !== "week") return sites.filter((s) => s.month !== false);
+    const end = Date.parse(d.generated_at) / 1000 || Date.now() / 1000;
+    const seen = new Set();
+    return sites
+      .filter((s) => s.created >= end - WEEK && !seen.has(s.domain) && seen.add(s.domain))
+      .slice(0, 100);
   }
   function inCategory(s, c = category) { return c === "all" || s.category === c; }
   // Each site belongs to exactly one category. With a limit, each category keeps its
@@ -549,9 +612,11 @@
   }
 
   window.DL = {
-    ROOT, CATS, store, loadData, inCategory, ranked, setCounts, safeUrl, esc, icon,
+    ROOT, CATS, store, loadData, inRange, inCategory, ranked, setCounts, safeUrl, esc, icon,
     get category() { return category; },
+    get range() { return range; },
     onCategory(fn) { listeners.push(fn); },
+    onRange(fn) { rangeListeners.push(fn); },
   };
 
   if (PAGE === "home") hyperspace();
