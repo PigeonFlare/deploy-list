@@ -177,7 +177,8 @@ class RedditIngestionTests(unittest.TestCase):
         hn = {**entry("https://hn.example/", 50), "source": "Hacker News"}
         with tempfile.TemporaryDirectory() as directory:
             out = Path(directory) / "sites.json"
-            posts = [entry(votes=0), entry("https://example.com/demo", 25), entry("https://other.example/", 10)]
+            posts = [entry(votes=0), entry("https://example.com/demo", 25), entry("https://other.example/", 10),
+                     entry("https://few-votes.example/", 9)]
             with patch.object(scrape, "OUT", str(out)), patch.object(scrape, "reddit", return_value=posts), \
                  patch.object(scrape, "show_hn", return_value=[hn]), \
                  patch.object(scrape, "embeddable", return_value=True):
