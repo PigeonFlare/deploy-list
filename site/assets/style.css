@@ -267,12 +267,12 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 }
 /* Kept close under the wordmark so the title, line and buttons read as one block. */
 .tagline { font-size: clamp(17px, 2.3vw, 22px); font-weight: 500; color: color-mix(in srgb, var(--text) 72%, transparent); margin: 16px 0 30px; letter-spacing: -0.015em; max-width: 40ch; text-wrap: balance; }
-.cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.cta { display: flex; gap: 22px; flex-wrap: wrap; justify-content: center; }
 .pill {
-  display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 28px; border-radius: 16px;
-  font-size: 17px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 9px; height: 48px; padding: 0 25px; border-radius: 14px;
+  font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none;
 }
-.pill svg.icon { width: 18px; height: 18px; }
+.pill svg.icon { width: 16px; height: 16px; }
 
 /* Live view: the site fills the screen and the controls float over it.
    Embedded sites can be any color, so Live's glass carries more tint to keep text readable. */
@@ -488,7 +488,7 @@ footer.site-foot a:hover { text-decoration: underline; }
   .src-line .ext { display: none; }
   .votes { font-size: 15px; }
   .dd-toggle { height: 38px; padding: 0 14px 0 12px; }
-  .pill { height: 50px; padding: 0 24px; font-size: 16px; }
+  .pill { height: 45px; padding: 0 22px; font-size: 15px; }
   .top-donate { height: 38px; font-size: 13px; }
 }
 
