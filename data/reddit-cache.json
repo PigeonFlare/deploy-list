@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-10-05T00:09:13+00:00",
+ "scraped_at": "2026-10-05T01:48:04+00:00",
  "posts": [
   {
    "url": "https://repchek.vercel.app/",
@@ -22,7 +22,7 @@
   {
    "url": "https://pixady.com/",
    "title": "I made an open mic for the internet: book a slot, go live, then hand the stage to the next person",
-   "votes": 830,
+   "votes": 831,
    "source": "r/SideProject",
    "source_url": "https://www.reddit.com/r/SideProject/",
    "post_url": "https://www.reddit.com/r/SideProject/comments/1wpib92/i_made_an_open_mic_for_the_internet_book_a_slot/",
@@ -40,7 +40,7 @@
   {
    "url": "https://kinoku.app/features/journeys",
    "title": "I'm building a fitness tracker (yes one of the most crowded app categories), so I built something I couldn't find and actually needed + some fun quirky stuff",
-   "votes": 615,
+   "votes": 620,
    "source": "r/SideProject",
    "source_url": "https://www.reddit.com/r/SideProject/",
    "post_url": "https://www.reddit.com/r/SideProject/comments/1wv85zh/im_building_a_fitness_tracker_yes_one_of_the_most/",
@@ -99,15 +99,6 @@
    "source_url": "https://www.reddit.com/r/SideProject/",
    "post_url": "https://www.reddit.com/r/SideProject/comments/1wn05d1/my_side_project_went_from_500_to_15000_users_a/",
    "created": 1790053365
-  },
-  {
-   "url": "https://www.viberant.app/",
-   "title": "Opinion: Don't stop building useless apps",
-   "votes": 283,
-   "source": "r/SideProject",
-   "source_url": "https://www.reddit.com/r/SideProject/",
-   "post_url": "https://www.reddit.com/r/SideProject/comments/1wjqq6d/opinion_dont_stop_building_useless_apps/",
-   "created": 1789739304
   },
   {
    "url": "https://winduo.baselashraf.com/",
@@ -211,7 +202,7 @@
   {
    "url": "https://repchek.fit/",
    "title": "Last week I posted the app that tells me when my lifting form is wrong. This is what I fixed after your feedback",
-   "votes": 119,
+   "votes": 120,
    "source": "r/SideProject",
    "source_url": "https://www.reddit.com/r/SideProject/",
    "post_url": "https://www.reddit.com/r/SideProject/comments/1wwlll9/last_week_i_posted_the_app_that_tells_me_when_my/",
@@ -265,7 +256,7 @@
   {
    "url": "http://shelbykho.com/",
    "title": "I spent 5 weeks building my portfolio with lots of hand-drawn illustrations and whimsical interactions",
-   "votes": 90,
+   "votes": 91,
    "source": "r/SideProject",
    "source_url": "https://www.reddit.com/r/SideProject/",
    "post_url": "https://www.reddit.com/r/SideProject/comments/1wsufjh/i_spent_5_weeks_building_my_portfolio_with_lots/",
@@ -400,7 +391,7 @@
   {
    "url": "https://crawlerzoo.com/",
    "title": "A live zoo of the bots and crawlers visiting one website, with a trap for the ones that ignore robots.txt",
-   "votes": 2944,
+   "votes": 3054,
    "source": "r/InternetIsBeautiful",
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wx5hlp/a_live_zoo_of_the_bots_and_crawlers_visiting_one/",
@@ -409,7 +400,7 @@
   {
    "url": "https://floor796.com/",
    "title": "An endless, zoomable pixel animation of a space station floor that one artist has been expanding every weekend since 2022",
-   "votes": 1711,
+   "votes": 1712,
    "source": "r/InternetIsBeautiful",
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wkxqt9/an_endless_zoomable_pixel_animation_of_a_space/",
@@ -445,7 +436,7 @@
   {
    "url": "https://everyphonumber.com/",
    "title": "Every Pho Number",
-   "votes": 278,
+   "votes": 279,
    "source": "r/InternetIsBeautiful",
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wucqlm/every_pho_number/",
@@ -463,7 +454,7 @@
   {
    "url": "https://techmatt.github.io/fractals/explorer/",
    "title": "A browser fractal explorer seeded with thousands of wallpapers found by searching fractal space for hundreds of hours. Zoom, recolor, and download any view at any resolution.",
-   "votes": 189,
+   "votes": 191,
    "source": "r/InternetIsBeautiful",
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wvly5y/a_browser_fractal_explorer_seeded_with_thousands/",
@@ -499,7 +490,7 @@
   {
    "url": "https://www.droidfiletransfer.com/",
    "title": "A web page that copies files between your Mac and Android phone over USB (Chrome)",
-   "votes": 118,
+   "votes": 119,
    "source": "r/InternetIsBeautiful",
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wtjtsx/a_web_page_that_copies_files_between_your_mac_and/",
@@ -517,7 +508,7 @@
   {
    "url": "https://0xhzsa.github.io/flapboard/",
    "title": "FLAPBOARD \u2014 turn any TV into a split-flap board",
-   "votes": 88,
+   "votes": 89,
    "source": "r/InternetIsBeautiful",
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wra2gw/flapboard_turn_any_tv_into_a_splitflap_board/",
@@ -542,22 +533,22 @@
    "created": 1790106684
   },
   {
-   "url": "https://livejam.conde.workers.dev/?ref=dc-dev",
-   "title": "Turn your keyboard into a musical instrument and jam with up to three friends, right in the browser",
-   "votes": 14,
-   "source": "r/InternetIsBeautiful",
-   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
-   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1ww54fd/turn_your_keyboard_into_a_musical_instrument_and/",
-   "created": 1790974919
-  },
-  {
    "url": "https://actualscale.com/",
    "title": "Interactive map that rescales cities based on population density as you drag",
-   "votes": 9,
+   "votes": 16,
    "source": "r/InternetIsBeautiful",
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wvtirq/interactive_map_that_rescales_cities_based_on/",
    "created": 1790946894
+  },
+  {
+   "url": "https://livejam.conde.workers.dev/?ref=dc-dev",
+   "title": "Turn your keyboard into a musical instrument and jam with up to three friends, right in the browser",
+   "votes": 15,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1ww54fd/turn_your_keyboard_into_a_musical_instrument_and/",
+   "created": 1790974919
   },
   {
    "url": "https://birthdaytraffic.com/",
@@ -578,936 +569,9 @@
    "created": 1790530237
   },
   {
-   "url": "https://redblue.benjamincrozat.com/",
-   "title": "Pok\u00e9mon Red and Blue as a MMO, on the web, desktop and mobile, 100% free",
-   "votes": 121,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtid2n/pok\u00e9mon_red_and_blue_as_a_mmo_on_the_web_desktop/",
-   "created": 1790707265
-  },
-  {
-   "url": "https://onemillionhp.com/",
-   "title": "I made a tiny web game where everyone is fighting the same boss.",
-   "votes": 68,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wrx14z/i_made_a_tiny_web_game_where_everyone_is_fighting/",
-   "created": 1790546536
-  },
-  {
-   "url": "https://www.geoguessr.com/",
-   "title": "12 decent browser games I actually played this year",
-   "votes": 67,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1whcloe/12_decent_browser_games_i_actually_played_this/",
-   "created": 1789505662
-  },
-  {
-   "url": "https://car-soccer.com/",
-   "title": "Car Soccer - A Rocket League-inspired game you can play in your browser, even on mobile, that has the same feel as the original",
-   "votes": 47,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wbmfbe/car_soccer_a_rocket_leagueinspired_game_you_can/",
-   "created": 1788962416
-  },
-  {
-   "url": "https://theendlessmuseum.com/?play=1",
-   "title": "The Endless Museum - I turned Wikipedia into a walkable 3D museum",
-   "votes": 39,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wdi35a/the_endless_museum_i_turned_wikipedia_into_a/",
-   "created": 1789137408
-  },
-  {
-   "url": "https://fundrstudio.com/games/cancel-your-subscription/",
-   "title": "Cancel Your Subscription: your only job is to cancel a subscription. The app has retention offers, an exit survey, and Dennis",
-   "votes": 26,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wjkq81/cancel_your_subscription_your_only_job_is_to/",
-   "created": 1789721191
-  },
-  {
-   "url": "https://trail.franzai.com/",
-   "title": "Trail - One line. Every tile.",
-   "votes": 20,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wqkugr/trail_one_line_every_tile/",
-   "created": 1790409721
-  },
-  {
-   "url": "https://onegetsthrough.com/",
-   "title": "One Gets Through, reverse Missile Command where you\u2019re the incoming fire",
-   "votes": 20,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wg5lif/one_gets_through_reverse_missile_command_where/",
-   "created": 1789397505
-  },
-  {
-   "url": "https://www.balladspan.com/",
-   "title": "I made a little game for people who think they know their music.",
-   "votes": 19,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wse3mi/i_made_a_little_game_for_people_who_think_they/",
-   "created": 1790600725
-  },
-  {
-   "url": "https://honeychroma.com/1/d",
-   "title": "Honeychroma - Colored Hex puzzle game",
-   "votes": 18,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wo9w0r/honeychroma_colored_hex_puzzle_game/",
-   "created": 1790178960
-  },
-  {
-   "url": "https://tentpolegame.com/",
-   "title": "Tentpole \u2014 draft a genre, rating, director and cast; see how much your fake movie made at the box office and what the critics said",
-   "votes": 18,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wjzzri/tentpole_draft_a_genre_rating_director_and_cast/",
-   "created": 1789759952
-  },
-  {
-   "url": "https://www.fasterorslower.com/",
-   "title": "Faster or Slower: one car shows its 0-60 time, guess if the other one beats it.",
-   "votes": 18,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wfmbwj/faster_or_slower_one_car_shows_its_060_time_guess/",
-   "created": 1789340044
-  },
-  {
-   "url": "https://www.deathday.online/",
-   "title": "Deathday \u2014 a five-minute historical life simulator",
-   "votes": 17,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wipcec/deathday_a_fiveminute_historical_life_simulator/",
-   "created": 1789637935
-  },
-  {
-   "url": "https://halfsies.dev/",
-   "title": "Halfsies \u2014 cut five objects in half by weight (free daily game)",
-   "votes": 16,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wv5nr8/halfsies_cut_five_objects_in_half_by_weight_free/",
-   "created": 1790875770
-  },
-  {
-   "url": "https://www.sputlab.com/webapp/neonhorde/",
-   "title": "NeonHorde - A free vertical horde shooter, straight in your browser.",
-   "votes": 16,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wa80bk/neonhorde_a_free_vertical_horde_shooter_straight/",
-   "created": 1788823904
-  },
-  {
-   "url": "https://riddlecat.com/eightup/",
-   "title": "EightUp: a somewhat difficult word game",
-   "votes": 14,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wo8vkr/eightup_a_somewhat_difficult_word_game/",
-   "created": 1790176698
-  },
-  {
-   "url": "https://relicguessr.com/",
-   "title": "RelicGuessr - A Game of Guessing History",
-   "votes": 13,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1we75mq/relicguessr_a_game_of_guessing_history/",
-   "created": 1789202292
-  },
-  {
-   "url": "https://worldsweeper.site/",
-   "title": "[World Sweeper] Rougelike minesweeper on a world map with 100 million tiles",
-   "votes": 12,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1w9l4l6/world_sweeper_rougelike_minesweeper_on_a_world/",
-   "created": 1788765434
-  },
-  {
-   "url": "http://definitelynotwindows.com/",
-   "title": "Windows 11 1/2 (Parody)",
-   "votes": 11,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wmweks/windows_11_12_parody/",
-   "created": 1790042263
-  },
-  {
-   "url": "http://farkleandsons.com/",
-   "title": "Farkle & Sons: A roguelike Farkle dice game",
-   "votes": 11,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wl14sd/farkle_sons_a_roguelike_farkle_dice_game/",
-   "created": 1789861039
-  },
-  {
-   "url": "https://playfumes.com/",
-   "title": "Fumes: the 80s arcade racer I grew up on, rebuilt from memory and playable in a browser [playfumes.com]",
-   "votes": 11,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wceux0/fumes_the_80s_arcade_racer_i_grew_up_on_rebuilt/",
-   "created": 1789034672
-  },
-  {
-   "url": "https://www.time-machine-society.org/en/play/worst/",
-   "title": "The Worst-Choice Challenge - Grandpa's will says you inherit $1B only if you lose $10M in the stock market.",
-   "votes": 10,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtk15e/the_worstchoice_challenge_grandpas_will_says_you/",
-   "created": 1790711083
-  },
-  {
-   "url": "https://sector196.com/",
-   "title": "Sector 196 - a draft-and-conquer strategy game: build a nation from real countries and see if it can take over the world in 40 years",
-   "votes": 8,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wvpvjm/sector_196_a_draftandconquer_strategy_game_build/",
-   "created": 1790935367
-  },
-  {
-   "url": "https://thesecretsproject.com/",
-   "title": "The Secrets Project",
-   "votes": 8,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtbdmt/the_secrets_project/",
-   "created": 1790691528
-  },
-  {
-   "url": "https://wikileaks.lcbgames.com/",
-   "title": "Wikileaks: Type any word and race liquid down its Wikipedia article through the gaps between words",
-   "votes": 7,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wx3myj/wikileaks_type_any_word_and_race_liquid_down_its/",
-   "created": 1791078237
-  },
-  {
-   "url": "https://kicks.oceanxi.app/",
-   "title": "Maggio Kicks: 3D free kicks in five taps against a keeper who dives. A free fan remake of the Flash game Magical Kicks, on phone and desktop, no sign-up",
-   "votes": 7,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wsspr5/maggio_kicks_3d_free_kicks_in_five_taps_against_a/",
-   "created": 1790633843
-  },
-  {
-   "url": "https://geolympia.com/",
-   "title": "Geolympia - A free geography trivia game with daily puzzles like Georadar and competitive modes",
-   "votes": 7,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wntajt/geolympia_a_free_geography_trivia_game_with_daily/",
-   "created": 1790129818
-  },
-  {
-   "url": "https://warofantasia.com/",
-   "title": "I'll Play Your Game And Give You Honest Feedback",
-   "votes": 7,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wlnmmh/ill_play_your_game_and_give_you_honest_feedback/",
-   "created": 1789926382
-  },
-  {
-   "url": "https://actorle.com/cinections/?utm_source=reddit&utm_medium=post&utm_campaign=webgames_launch",
-   "title": "Cinections: a daily Connections-style puzzle with movie posters",
-   "votes": 7,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wi123x/cinections_a_daily_connectionsstyle_puzzle_with/",
-   "created": 1789573863
-  },
-  {
-   "url": "https://foxing.shivammittal.in/",
-   "title": "FOXING- A painting is hidden in the dark. You get one small window to move around it, and one scrap of it to find.",
-   "votes": 7,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1waun1q/foxing_a_painting_is_hidden_in_the_dark_you_get/",
-   "created": 1788887829
-  },
-  {
-   "url": "https://moonshot.day/",
-   "title": "Moonshot.day - A fun daily space golf game",
-   "votes": 7,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1w8gfp6/moonshotday_a_fun_daily_space_golf_game/",
-   "created": 1788652316
-  },
-  {
-   "url": "https://calltheline.site/",
-   "title": "Call The Line: Do you think it is easy to be a professional tennis line judge?",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wva5rm/call_the_line_do_you_think_it_is_easy_to_be_a/",
-   "created": 1790885983
-  },
-  {
-   "url": "http://hotlap.online/",
-   "title": "Hotlap.Online | Free Browser Racing Game",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wukx7q/hotlaponline_free_browser_racing_game/",
-   "created": 1790813144
-  },
-  {
-   "url": "https://chaoschemy.com/games/pocket-market/play/",
-   "title": "Pocket Market \u2014 grow, stock and serve in a two-minute browser shop",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wuaohv/pocket_market_grow_stock_and_serve_in_a_twominute/",
-   "created": 1790788316
-  },
-  {
-   "url": "https://finnmarinov-lgtm.github.io/Petri_Heil/",
-   "title": "Petri Heil \u2013 a pixel fishing game in the browser. 60-second rounds, and everyone fishes the same lake each day",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtcpr9/petri_heil_a_pixel_fishing_game_in_the_browser/",
-   "created": 1790694655
-  },
-  {
-   "url": "https://kindredstars.io/",
-   "title": "Kindred Stars: I built a daily game where every answer is a star in a shared night sky",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wszb18/kindred_stars_i_built_a_daily_game_where_every/",
-   "created": 1790652058
-  },
-  {
-   "url": "https://cornersgame.com/",
-   "title": "Corners \u2014 tilt the lines, don't get CORNERED",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wr84vw/corners_tilt_the_lines_dont_get_cornered/",
-   "created": 1790475118
-  },
-  {
-   "url": "https://arcade.cx/pipes/1",
-   "title": "Pipes - turn the tiles until every pipe joins up and the water runs",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wm31tb/pipes_turn_the_tiles_until_every_pipe_joins_up/",
-   "created": 1789966144
-  },
-  {
-   "url": "https://www.playgridcity.com/",
-   "title": "I built GridCity, a free browser city builder in the style of classic SimCity, no install needed",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1whxdlv/i_built_gridcity_a_free_browser_city_builder_in/",
-   "created": 1789565573
-  },
-  {
-   "url": "https://vexi-game.pages.dev/",
-   "title": "Vexi - a daily flag game where each flag is hidden three different ways",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wfym9g/vexi_a_daily_flag_game_where_each_flag_is_hidden/",
-   "created": 1789378137
-  },
-  {
-   "url": "https://explorersmap.net/game/homeground",
-   "title": "Homeground - Name all the cities in the world with a twist ! Name one city and you claim its entire region. Can you fill all 4,359 regions of the world?",
-   "votes": 6,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1w8ac9u/homeground_name_all_the_cities_in_the_world_with/",
-   "created": 1788637175
-  },
-  {
-   "url": "https://www.playkraft.app/case/048",
-   "title": "Jasons Suicide - You are a hired detective who has to investigate a case by searching the internet.",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwor7p/jasons_suicide_you_are_a_hired_detective_who_has/",
-   "created": 1791038079
-  },
-  {
-   "url": "https://www.grindsat.com/?mode=guard",
-   "title": "Margin Guard - Free SAT tower defense on grindsat.com (I built it)",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwjhgk/margin_guard_free_sat_tower_defense_on/",
-   "created": 1791021596
-  },
-  {
-   "url": "https://arpent.day/",
-   "title": "Arpent \u2014 a free daily tile-placement puzzle where everyone gets the same challenge",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wvnzhs/arpent_a_free_daily_tileplacement_puzzle_where/",
-   "created": 1790927994
-  },
-  {
-   "url": "https://playmadlands.com/",
-   "title": "Madlands: a ROTMG-like bullet hell MMO",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wukbyd/madlands_a_rotmglike_bullet_hell_mmo/",
-   "created": 1790811543
-  },
-  {
-   "url": "https://finnmarinov-lgtm.github.io/Feuer_Frei/",
-   "title": "Feuer Frei \u2013 3D-Shooter in the Browser **New Update with online Multiplayer and open lobbys**",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wu80b5/feuer_frei_3dshooter_in_the_browser_new_update/",
-   "created": 1790782248
-  },
-  {
-   "url": "https://sunday-pins.com/",
-   "title": "SundayPins - a golf career sim where the big putts are yours to hole [free, browser, no sign-up]",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wu2k2z/sundaypins_a_golf_career_sim_where_the_big_putts/",
-   "created": 1790768138
-  },
-  {
-   "url": "https://flipsies.dev/",
-   "title": "Flipsies \u2013 flip five objects and try to land them upright (free daily game)",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtq3bw/flipsies_flip_five_objects_and_try_to_land_them/",
-   "created": 1790726131
-  },
-  {
-   "url": "https://omacontra.pages.dev/",
-   "title": "OMACONTRA: Contra Inspired Arcade Shooter",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wpjk74/omacontra_contra_inspired_arcade_shooter/",
-   "created": 1790300107
-  },
-  {
-   "url": "https://hide-ascii.com/",
-   "title": "hide @$\u00a9!! - First game out now",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wnf54m/hide_first_game_out_now/",
-   "created": 1790096404
-  },
-  {
-   "url": "https://yup.gr/pinball",
-   "title": "Open Cadet - Space Cadet pinball in the browser, with a network leaderboard",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wkl0os/open_cadet_space_cadet_pinball_in_the_browser/",
-   "created": 1789821092
-  },
-  {
-   "url": "https://eowcat.click/",
-   "title": "EowCat \u2014 make this black cat eow and help your country climb the leaderboard \ud83d\udc08\u200d\u2b1b",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wj9ck1/eowcat_make_this_black_cat_eow_and_help_your/",
-   "created": 1789686451
-  },
-  {
-   "url": "https://herring-harbor.pages.dev/",
-   "title": "Herring Harbor - A cosy fishing game",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wi36z8/herring_harbor_a_cosy_fishing_game/",
-   "created": 1789578395
-  },
-  {
-   "url": "https://atom-clicker.ayfri.com/",
-   "title": "Atom Clicker - free incremental game with a nuclear reactor realm, offline progress and a leaderboard, no signup needed",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1whjyqe/atom_clicker_free_incremental_game_with_a_nuclear/",
-   "created": 1789524151
-  },
-  {
-   "url": "https://ezcha.net/games/spinwhisker",
-   "title": "SpinWhisker - Help a cat find his way home after getting stuck in an alternate dimension.",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wh54aq/spinwhisker_help_a_cat_find_his_way_home_after/",
-   "created": 1789489557
-  },
-  {
-   "url": "https://morov.fun/",
-   "title": "Morov: Guess which country has more of...",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wgpy99/morov_guess_which_country_has_more_of/",
-   "created": 1789445820
-  },
-  {
-   "url": "https://omnigamestudio.com/omniword/",
-   "title": "Omniword",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wey129/omniword/",
-   "created": 1789274515
-  },
-  {
-   "url": "https://stuntcoaster.lcbgames.com/",
-   "title": "STUNTCOASTER - Build impossible roller coasters and ride them.",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wco96l/stuntcoaster_build_impossible_roller_coasters_and/",
-   "created": 1789058092
-  },
-  {
-   "url": "https://kyoyugame.com/",
-   "title": "Ky\u014dy\u016b - a daily logic puzzle",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wcnthu/ky\u014dy\u016b_a_daily_logic_puzzle/",
-   "created": 1789057151
-  },
-  {
-   "url": "https://signatureseasons.app/",
-   "title": "Signature Seasons:  daily sports puzzle",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wcm8if/signature_seasons_daily_sports_puzzle/",
-   "created": 1789053695
-  },
-  {
-   "url": "https://starwars.guide/red-five/play/",
-   "title": "Red Five, an endless Death Star trench run you play in the browser",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wb1byx/red_five_an_endless_death_star_trench_run_you/",
-   "created": 1788901967
-  },
-  {
-   "url": "https://www.nightlyfeed.com/",
-   "title": "Nightly Feed: a daily vampire stealth puzzle for people who like quick ritual games",
-   "votes": 5,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wa3wnc/nightly_feed_a_daily_vampire_stealth_puzzle_for/",
-   "created": 1788813854
-  },
-  {
-   "url": "https://daily.geowrecked.com/",
-   "title": "I made a daily geography game: five questions, one globe, one weird fact per pin",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wuwkhi/i_made_a_daily_geography_game_five_questions_one/",
-   "created": 1790852844
-  },
-  {
-   "url": "https://quiblys.com/play",
-   "title": "Quiblys \u2013 a daily trivia game: same 10 questions for everyone, 30 seconds each, one shot per day",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wufqhl/quiblys_a_daily_trivia_game_same_10_questions_for/",
-   "created": 1790799754
-  },
-  {
-   "url": "https://catchy.games/game/zepdrop/",
-   "title": "Battle Royale game on browser, Zepdrop",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wu5zps/battle_royale_game_on_browser_zepdrop/",
-   "created": 1790777481
-  },
-  {
-   "url": "https://wishfall.live.page/",
-   "title": "Wishfall: a cozy daily typing game where words turn into stars",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtyot8/wishfall_a_cozy_daily_typing_game_where_words/",
-   "created": 1790753713
-  },
-  {
-   "url": "https://finnmarinov-lgtm.github.io/Feuer_Frei/",
-   "title": "Feuer Frei \u2013 3D-Shooter in the Browser",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtcuqp/feuer_frei_3dshooter_in_the_browser/",
-   "created": 1790694978
-  },
-  {
-   "url": "https://www.predictionmarketclicker.com/",
-   "title": "Prediction Market Clicker: my latest mini game. Is it gambling if you rig it?",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wrqh7t/prediction_market_clicker_my_latest_mini_game_is/",
-   "created": 1790530973
-  },
-  {
-   "url": "https://shiftyshapes.xyz/",
-   "title": "Shifty Shapes",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wrimev/shifty_shapes/",
-   "created": 1790510972
-  },
-  {
-   "url": "https://itordle.org/",
-   "title": "I was bad at Doctordle because I'm not a doctor, so I made one for IT: ITordle",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wojll5/i_was_bad_at_doctordle_because_im_not_a_doctor_so/",
-   "created": 1790200781
-  },
-  {
-   "url": "https://geostats.xyz/",
-   "title": "GeoStats - I love daily geography games, so I built the one I kept wishing existed",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wnkdyc/geostats_i_love_daily_geography_games_so_i_built/",
-   "created": 1790107570
-  },
-  {
-   "url": "https://dramahouse.io/",
-   "title": "Drama House - A single-player social strategy game inspired by Big Brother",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wmmm85/drama_house_a_singleplayer_social_strategy_game/",
-   "created": 1790018583
-  },
-  {
-   "url": "https://hieu-lee.github.io/slay-the-spire-the-boardgame-the-game/",
-   "title": "Slay The Spire The Board Game The Game",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wjnrjq/slay_the_spire_the_board_game_the_game/",
-   "created": 1789731392
-  },
-  {
-   "url": "https://codelet.uk/",
-   "title": "Codelet: a free daily logic puzzle with handwritten clues",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wjjt5c/codelet_a_free_daily_logic_puzzle_with/",
-   "created": 1789717841
-  },
-  {
-   "url": "https://dig-game.pages.dev/",
-   "title": "Dig - Small puzzle game I've built",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wj4zuw/dig_small_puzzle_game_ive_built/",
-   "created": 1789676091
-  },
-  {
-   "url": "https://airlinepioneer.com/",
-   "title": "Airline Pioneer: build an airline empire starting in 1945 (free, no signup)",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1widubv/airline_pioneer_build_an_airline_empire_starting/",
-   "created": 1789602607
-  },
-  {
-   "url": "https://operatormadness.com/",
-   "title": "Operator Madness: Trace the 911 call",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1whfced/operator_madness_trace_the_911_call/",
-   "created": 1789512130
-  },
-  {
-   "url": "https://poptimum.fun/",
-   "title": "[Dev] I made Poptimum, a daily packing puzzle inspired by fridge magnets",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wf39ft/dev_i_made_poptimum_a_daily_packing_puzzle/",
-   "created": 1789292558
-  },
-  {
-   "url": "https://turning.today/",
-   "title": "Turning - Daily chain reaction puzzle. Deceptively simple yet compelling.",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1weo6f0/turning_daily_chain_reaction_puzzle_deceptively/",
-   "created": 1789246966
-  },
-  {
-   "url": "https://mysterycrew.games/",
-   "title": "Mystery Crew - a co-op mystery for one screen and everyone's phones. Every player gets different clues",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wdl1s8/mystery_crew_a_coop_mystery_for_one_screen_and/",
-   "created": 1789143976
-  },
-  {
-   "url": "https://vol-de-mots-atelier.miuci-studio.chatgpt.site/en/vol/?level=vol-en-tutorial",
-   "title": "Letterhaven \u2014 looking for a few people to try a free browser word puzzle for 5\u201310 minutes",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wc57my/letterhaven_looking_for_a_few_people_to_try_a/",
-   "created": 1789004755
-  },
-  {
-   "url": "https://mokddang.com/",
-   "title": "Mokddang - 50 nations grab the Korean peninsula in 8 minutes, no sign-up",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wbez7c/mokddang_50_nations_grab_the_korean_peninsula_in/",
-   "created": 1788939994
-  },
-  {
-   "url": "https://quintaingames.com/ramio/defi/?defi=1dbcleh&src=reddit-webgames&v=2",
-   "title": "Ramio \u2014 rearrange the cards already on the table so every card in your hand fits in. One short puzzle, no sign-up",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wa2l1m/ramio_rearrange_the_cards_already_on_the_table_so/",
-   "created": 1788810885
-  },
-  {
-   "url": "https://www.wordends.com/",
-   "title": "Wordends: a 1v1 browser word game",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1w9tnlj/wordends_a_1v1_browser_word_game/",
-   "created": 1788791183
-  },
-  {
-   "url": "https://www.trenttroyer.com/CoconutSim3/",
-   "title": "Coconut Sim 3 \u2014 you are a coconut",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1w9si7q/coconut_sim_3_you_are_a_coconut/",
-   "created": 1788788455
-  },
-  {
-   "url": "https://www.playtidefall.com/",
-   "title": "Tidefall: Live out your pirate fantasy in a browser-based Age of Sail MMO",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1w9n0ho/tidefall_live_out_your_pirate_fantasy_in_a/",
-   "created": 1788771990
-  },
-  {
-   "url": "https://sprawlcrawl.com/",
-   "title": "Sprawl Crawl! Guess 10 cities from their raw satellite image",
-   "votes": 4,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1w7z8dz/sprawl_crawl_guess_10_cities_from_their_raw/",
-   "created": 1788610694
-  },
-  {
-   "url": "https://chaoschemy.com/games/mix-anything/play/",
-   "title": "Mix Anything \u2013 start with 4 elements and combine anything [browser]",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wx3de4/mix_anything_start_with_4_elements_and_combine/",
-   "created": 1791077386
-  },
-  {
-   "url": "https://www.playcyclorama.com/erg-striplight/",
-   "title": "ERG: STRIPLIGHT - free browser shoot-'em-up where your helmet lamp is both health and beam fuel",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwzqw6/erg_striplight_free_browser_shootemup_where_your/",
-   "created": 1791066324
-  },
-  {
-   "url": "https://www.gamedev.pl/play/unicorn-snap",
-   "title": "Unicorn Snap - style a unicorn, then try to photograph her. Every shot gets a verdict.",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwx7zn/unicorn_snap_style_a_unicorn_then_try_to/",
-   "created": 1791059488
-  },
-  {
-   "url": "https://siam-works.com/works/last-crown/en/?utm_source=reddit&utm_medium=social&utm_campaign=launch&utm_content=webgames",
-   "title": "LAST CROWN | Free Roguelite TCG in Your Browser",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwnoyw/last_crown_free_roguelite_tcg_in_your_browser/",
-   "created": 1791035250
-  },
-  {
-   "url": "https://nothing2lose.eu/",
-   "title": "Nothing2Lose.eu: I made a free browser zombie shooter co-op up to 25 players, no download",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwmzlb/nothing2loseeu_i_made_a_free_browser_zombie/",
-   "created": 1791033270
-  },
-  {
-   "url": "https://desktopdestroyer.lol/",
-   "title": "[Free, no download] Desktop Destroyer: wreck a fake desktop with 9 weapons",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwikqg/free_no_download_desktop_destroyer_wreck_a_fake/",
-   "created": 1791018126
-  },
-  {
-   "url": "https://cubewords.xyz/",
-   "title": "Cubewords: Crossword on a Cube",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wvww15/cubewords_crossword_on_a_cube/",
-   "created": 1790955191
-  },
-  {
-   "url": "https://golfdle.app/",
-   "title": "Golfdle - New season is live!",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wv09jc/golfdle_new_season_is_live/",
-   "created": 1790863349
-  },
-  {
-   "url": "https://playdots.io/",
-   "title": "Dots - A pen and paper game we used to play as kids in school when the teacher didn't show up",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wus6qb/dots_a_pen_and_paper_game_we_used_to_play_as_kids/",
-   "created": 1790836321
-  },
-  {
-   "url": "https://beta.astoriainsight.com/",
-   "title": "Astoria Insight. My attempt at making the stock market fun to learn",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wunt9y/astoria_insight_my_attempt_at_making_the_stock/",
-   "created": 1790821630
-  },
-  {
-   "url": "https://hardcases.app/",
-   "title": "Game where you judge real court cases",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wu34g3/game_where_you_judge_real_court_cases/",
-   "created": 1790769862
-  },
-  {
-   "url": "https://kerblob.com/",
-   "title": "Kerblob: 3-player crystal grab. Steal from rival zones, dash to knock them over, first to 3 wins (free, no signup, works on mobile)",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtu5v9/kerblob_3player_crystal_grab_steal_from_rival/",
-   "created": 1790737887
-  },
-  {
-   "url": "https://killedbyapixel.github.io/Reversiology",
-   "title": "Reversiology - Learn Reversi by playing, with a coach that grades every move",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wts1hi/reversiology_learn_reversi_by_playing_with_a/",
-   "created": 1790731574
-  },
-  {
-   "url": "https://core-blast.pages.dev/",
-   "title": "Core Blast - made a a turn-based puzzle game, would love some feedback",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtmju9/core_blast_made_a_a_turnbased_puzzle_game_would/",
-   "created": 1790716900
-  },
-  {
-   "url": "https://arcadewhale.com/games/slip-angle/",
-   "title": "Slip Angle - 3D drift game where touching a wall burns your whole combo",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wt7lzm/slip_angle_3d_drift_game_where_touching_a_wall/",
-   "created": 1790681381
-  },
-  {
-   "url": "http://creaturefeature.gg/",
-   "title": "CreatureFeature.gg",
-   "votes": 3,
-   "source": "r/WebGames",
-   "source_url": "https://www.reddit.com/r/WebGames/",
-   "post_url": "https://www.reddit.com/r/WebGames/comments/1wt31hf/creaturefeaturegg/",
-   "created": 1790664632
-  },
-  {
    "url": "https://inflightsimulator.com/",
    "title": "Lol I made a flight simulator..except you're just a passenger",
-   "votes": 365,
+   "votes": 366,
    "source": "r/IMadeThis",
    "source_url": "https://www.reddit.com/r/IMadeThis/",
    "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wcicvo/lol_i_made_a_flight_simulatorexcept_youre_just_a/",
@@ -1534,7 +598,7 @@
   {
    "url": "http://remixly.io/",
    "title": "Guyyyyys, 28 paying users in one week!!",
-   "votes": 216,
+   "votes": 217,
    "source": "r/IMadeThis",
    "source_url": "https://www.reddit.com/r/IMadeThis/",
    "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wc1imz/guyyyyys_28_paying_users_in_one_week/",
@@ -1579,7 +643,7 @@
   {
    "url": "https://anysaver.app/",
    "title": "I got tired of online video downloaders with 5 fake download buttons, so I built a simple one",
-   "votes": 60,
+   "votes": 61,
    "source": "r/IMadeThis",
    "source_url": "https://www.reddit.com/r/IMadeThis/",
    "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wwv988/i_got_tired_of_online_video_downloaders_with_5/",
@@ -2016,6 +1080,141 @@
    "source_url": "https://www.reddit.com/r/IMadeThis/",
    "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wv7vb1/i_built_a_notes_app_like_notion_and_actually/",
    "created": 1790880753
+  },
+  {
+   "url": "https://alistair-roberts.co.uk/blackbody",
+   "title": "I used Claude to make 106 almost all black OLED wallpapers, plotting the graphics from real scientific data and code. No image generation. Hope you like them!",
+   "votes": 2071,
+   "source": "r/ClaudeAI",
+   "source_url": "https://www.reddit.com/r/ClaudeAI/",
+   "post_url": "https://www.reddit.com/r/ClaudeAI/comments/1wwxsle/i_used_claude_to_make_106_almost_all_black_oled/",
+   "created": 1791060999
+  },
+  {
+   "url": "https://getle.ad/",
+   "title": "I MADE $492 TODAY!! (I'm solo founder)",
+   "votes": 494,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wv57i1/i_made_492_today_im_solo_founder/",
+   "created": 1790874741
+  },
+  {
+   "url": "https://trustmrr.com/startup/opentweet",
+   "title": "My little side project is not that little anymore",
+   "votes": 323,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wtkzsd/my_little_side_project_is_not_that_little_anymore/",
+   "created": 1790713251
+  },
+  {
+   "url": "https://tenzen.studio/photon",
+   "title": "I replaced Adobe Photoshop with a free, better alternative, and it generates revenue from donations",
+   "votes": 311,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wsac6d/i_replaced_adobe_photoshop_with_a_free_better/",
+   "created": 1790589081
+  },
+  {
+   "url": "https://superhumanizer.ai/",
+   "title": "My SAAS just crossed 1.7M active users and over 1.2 billion tokens",
+   "votes": 264,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wht0qf/my_saas_just_crossed_17m_active_users_and_over_12/",
+   "created": 1789553219
+  },
+  {
+   "url": "https://nixra.ai/",
+   "title": "My first customer!!!",
+   "votes": 231,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1w97h1l/my_first_customer/",
+   "created": 1788726979
+  },
+  {
+   "url": "http://www.shipnative.dev/",
+   "title": "$1k MRR in 6 months! No paid marketing, here is what I learned.",
+   "votes": 204,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wf4u3p/1k_mrr_in_6_months_no_paid_marketing_here_is_what/",
+   "created": 1789297883
+  },
+  {
+   "url": "https://www.daydreamvideo.com/",
+   "title": "It's such a cool feeling having people use your app from all over the world",
+   "votes": 199,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wmk3ow/its_such_a_cool_feeling_having_people_use_your/",
+   "created": 1790013227
+  },
+  {
+   "url": "https://www.linkforge.site/",
+   "title": "111k people watched me make $0.000 \ud83d\ude05",
+   "votes": 193,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wn1080/111k_people_watched_me_make_0000/",
+   "created": 1790056169
+  },
+  {
+   "url": "https://mworld.tech/",
+   "title": "We spent 60k on Google ads and got only 20 conversions",
+   "votes": 156,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wqrtwr/we_spent_60k_on_google_ads_and_got_only_20/",
+   "created": 1790432658
+  },
+  {
+   "url": "https://vectorize.stemonte.io/",
+   "title": "I needed one SVG, not another subscription, so I built the tool myself",
+   "votes": 113,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1weljli/i_needed_one_svg_not_another_subscription_so_i/",
+   "created": 1789240768
+  },
+  {
+   "url": "https://www.indieappcircle.com/",
+   "title": "After one year of GRINDING... I finally hit 2k in earnings!",
+   "votes": 78,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wuvtq2/after_one_year_of_grinding_i_finally_hit_2k_in/",
+   "created": 1790850285
+  },
+  {
+   "url": "https://investors.bendingspoons.com/newsroom/bending-spoons-agrees-to-acquire-miro",
+   "title": "Bending Spoons buying Miro for $1.355B",
+   "votes": 63,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wd3l7q/bending_spoons_buying_miro_for_1355b/",
+   "created": 1789093943
+  },
+  {
+   "url": "http://talysman.app/",
+   "title": "Got my first internet stranger to give me money for my product",
+   "votes": 50,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wq9go2/got_my_first_internet_stranger_to_give_me_money/",
+   "created": 1790374237
+  },
+  {
+   "url": "https://appblockr.com/",
+   "title": "I just got my first paying subscriber \ud83c\udf89",
+   "votes": 49,
+   "source": "r/SaaS",
+   "source_url": "https://www.reddit.com/r/SaaS/",
+   "post_url": "https://www.reddit.com/r/SaaS/comments/1wut7r8/i_just_got_my_first_paying_subscriber/",
+   "created": 1790840162
   }
  ]
 }
