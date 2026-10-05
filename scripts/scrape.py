@@ -446,6 +446,18 @@ PROBE_HOPS = 5
 PROBE_DEADLINE = 30  # seconds per site, across all redirects
 
 
+def _probe_open(req):
+    # One retry on a dropped connection or timeout, so a momentary network blip
+    # doesn't keep a frameable site out of Live until the next refresh.
+    try:
+        return _PROBE.open(req, timeout=10)
+    except urllib.error.HTTPError:
+        raise
+    except (urllib.error.URLError, TimeoutError, ConnectionError):
+        time.sleep(1)
+        return _PROBE.open(req, timeout=10)
+
+
 def embeddable(url):
     """True when the site loads over HTTPS and doesn't forbid framing."""
     url = url.replace("http://", "https://", 1)
@@ -458,7 +470,7 @@ def embeddable(url):
                 return False
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (deploylist iframe check)"})
             try:
-                r = _PROBE.open(req, timeout=10)
+                r = _probe_open(req)
             except urllib.error.HTTPError as e:
                 location = e.headers.get("Location") if e.code in (301, 302, 303, 307, 308) else None
                 e.close()
@@ -512,9 +524,9 @@ def main(if_due=False):
 
     # Probe sites in parallel; any probe still running after the overall limit
     # counts as not embeddable instead of holding up the refresh.
-    ex = ThreadPoolExecutor(16)
+    ex = ThreadPoolExecutor(32)
     futures = [ex.submit(embeddable, s["url"]) for s in sites]
-    wait(futures, timeout=PROBE_DEADLINE * 3)
+    wait(futures, timeout=PROBE_DEADLINE * 4)
     flags = [f.done() and not f.cancelled() and f.exception() is None and f.result() for f in futures]
     ex.shutdown(wait=False, cancel_futures=True)
     for s, ok in zip(sites, flags):

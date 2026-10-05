@@ -144,6 +144,17 @@ class ScraperTests(unittest.TestCase):
             self.assertFalse(scrape.embeddable("https://example.com"))
             self.assertEqual(mock_open.call_count, 1)
 
+    @patch("scrape.public_host", return_value=True)
+    @patch("scrape.time.sleep")
+    def test_embeddable_retries_a_dropped_connection(self, _sleep, _public):
+        ok = MagicMock()
+        ok.status = 200
+        ok.headers.get_all = lambda k, d=None: d or []
+        ok.__enter__.return_value = ok
+        with patch.object(scrape._PROBE, "open", side_effect=[scrape.urllib.error.URLError("reset"), ok]) as mock_open:
+            self.assertTrue(scrape.embeddable("https://example.com"))
+            self.assertEqual(mock_open.call_count, 2)
+
 
 if __name__ == "__main__":
     unittest.main()
