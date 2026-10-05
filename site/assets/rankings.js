@@ -23,7 +23,7 @@ function render() {
       r.style.animation = "";
     }
   }
-  const rows = DL.ranked(data?.sites || [], DL.category, 25);
+  const rows = DL.ranked(data?.sites || [], DL.category);
   const max = rows[0]?.votes || 1;
   const tbody = document.getElementById("rows");
   if (!tbody) return;
@@ -79,7 +79,7 @@ if (srcBtn && pop) {
 
 DL.loadData().then((d) => {
   data = d;
-  DL.setCounts(d.sites, 25);
+  DL.setCounts(d.sites);
   const srcList = document.getElementById("src-list");
   if (srcList && Array.isArray(d.sources)) {
     srcList.innerHTML = d.sources.map((s) =>
