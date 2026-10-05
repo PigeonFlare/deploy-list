@@ -35,6 +35,9 @@ OUT = os.path.join(os.path.dirname(__file__), "..", "site", "data", "sites.json"
 # Save successful direct scrapes for inspection. Failed runs leave this snapshot
 # and the published rankings unchanged.
 REDDIT_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "reddit-cache.json")
+# Posts collected from the Arctic Shift archive, used only when Reddit's API,
+# listings and RSS feeds all fail. Filled a little at a time across daily runs.
+ARCHIVE_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "archive-cache.json")
 UA = "deploylist/1.0 (+https://deploylist.com)"
 POOL_SIZE = 100  # candidates kept; the pages show the top 25 per category
 MIN_VOTES = 10  # Show HN points or Reddit upvotes a post needs to be ranked
@@ -404,8 +407,130 @@ def feed_fallback(sub, since):
     return out
 
 
-def reddit_pages(since):
+# ---- Last resort: the Arctic Shift archive ----
+# Used only for subreddits where the API, the listing and the RSS feed all fail
+# (Reddit ends RSS on 2026-11-13). The archive rate-limits, so each run spends a
+# small request budget, saves its progress, and picks up where it left off; while
+# the fallback is active, the workflow also runs a sync every day between refreshes.
+ARCHIVE_API = "https://arctic-shift.photon-reddit.com/api/posts"
+ARCHIVE_BUDGET = 30   # requests per run
+ARCHIVE_PAUSE = 3     # seconds between requests
+ARCHIVE_SETTLE = 36 * 3600  # the archive updates a post's score about 36 hours after it's posted
+# The search endpoint rejects some field names (permalink, is_self, stickied); permalink is derived.
+ARCHIVE_FIELDS = "id,title,url,selftext,score,created_utc,over_18"
+
+
+class ArchivePaused(Exception):
+    """The run's request budget is spent or the archive asked us to slow down."""
+
+
+class ArchiveClient:
+    def __init__(self, budget):
+        self.budget = budget
+
+    def get(self, path, params):
+        if self.budget <= 0:
+            raise ArchivePaused("request budget spent")
+        self.budget -= 1
+        time.sleep(ARCHIVE_PAUSE)
+        try:
+            data = json.loads(fetch(f"{ARCHIVE_API}/{path}?{urllib.parse.urlencode(params)}", timeout=40))
+        except urllib.error.HTTPError as e:
+            if e.code in (422, 429, 503):
+                raise ArchivePaused(f"rate limited (HTTP {e.code})")
+            raise
+        if data.get("error"):
+            raise ArchivePaused(data["error"]) if "slow down" in str(data["error"]).lower() else RuntimeError(data["error"])
+        return data.get("data") or []
+
+
+def load_archive():
+    try:
+        with open(ARCHIVE_CACHE, encoding="utf-8") as f:
+            cache = json.load(f)
+        if isinstance(cache.get("posts"), dict) and isinstance(cache.get("cursors"), dict):
+            return cache
+    except (OSError, ValueError, AttributeError):
+        pass
+    return {"active": False, "subreddits": [], "cursors": {}, "posts": {}}
+
+
+def save_archive(cache):
+    os.makedirs(os.path.dirname(ARCHIVE_CACHE), exist_ok=True)
+    cache["synced_at"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    tmp = ARCHIVE_CACHE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(cache, f, separators=(",", ":"), ensure_ascii=False)
+    os.replace(tmp, ARCHIVE_CACHE)
+
+
+def archive_sync(cache, since, budget=ARCHIVE_BUDGET, now=None):
+    """Spend up to `budget` archive requests: first collect new posts for each fallback
+    subreddit (oldest first, resuming from a saved cursor), then re-read counts for
+    posts that have settled since they were collected. Progress is kept on pause."""
+    now = now or time.time()
+    client = ArchiveClient(budget)
+    posts, cursors = cache["posts"], cache["cursors"]
+    for pid in [k for k, p in posts.items() if p["created"] < since.timestamp()]:
+        del posts[pid]
+    try:
+        for sub in cache["subreddits"]:
+            while True:
+                after = max(int(cursors.get(sub, 0)), int(since.timestamp()))
+                batch = client.get("search", {"subreddit": sub, "after": after, "sort": "asc",
+                                              "limit": 100, "fields": ARCHIVE_FIELDS})
+                for p in batch:
+                    if p.get("over_18") or p.get("selftext") in ("[removed]", "[deleted]"):
+                        continue
+                    posts[p["id"]] = {
+                        # A text post's url is its own Reddit page, which pick_site() rejects.
+                        "sub": sub, "title": p.get("title") or "", "score": p.get("score"),
+                        "direct": p.get("url"), "body": URL_RE.findall(p.get("selftext") or ""),
+                        "permalink": f"/r/{sub}/comments/{p['id']}/", "created": int(p["created_utc"]),
+                        "settled": now - p["created_utc"] > ARCHIVE_SETTLE,
+                    }
+                if batch:
+                    cursors[sub] = int(batch[-1]["created_utc"]) + 1
+                if len(batch) < 100:
+                    break
+        # Counts collected before a post settled are re-read once it has.
+        stale = sorted((k for k, p in posts.items() if not p["settled"] and now - p["created"] > ARCHIVE_SETTLE),
+                       key=lambda k: posts[k]["created"])
+        for i in range(0, len(stale), 500):
+            ids = stale[i:i + 500]
+            for p in client.get("ids", {"ids": ",".join(ids), "fields": "id,score"}):
+                if p.get("id") in posts and isinstance(p.get("score"), int):
+                    posts[p["id"]].update(score=p["score"], settled=True)
+    except ArchivePaused as e:
+        print(f"Arctic Shift: pausing until the next run ({e}); progress saved", flush=True)
+    return cache
+
+
+def archive_entries(cache, sub, since):
+    cache_votes = cached_scores()
     out = []
+    for pid, p in cache["posts"].items():
+        if p["sub"] != sub or p["created"] < since.timestamp() or NSFW.search(p["title"]):
+            continue
+        votes = max([v for v in (p["score"], cache_votes.get(pid)) if isinstance(v, int)], default=None)
+        url = pick_site(p["title"], p["direct"], p["body"])
+        if url and votes is not None:
+            out.append(reddit_entry(sub, url, p["title"], votes, p["permalink"], p["created"]))
+    return out
+
+
+def archive_daily_sync():
+    """Between refreshes, keep filling the archive cache while the fallback is in use."""
+    cache = load_archive()
+    if not cache.get("active") or not cache["subreddits"]:
+        print("Arctic Shift fallback not in use; nothing to sync")
+        return
+    save_archive(archive_sync(cache, window_start()))
+    print(f"Arctic Shift: {len(cache['posts'])} posts cached for " + ", ".join(f"r/{s}" for s in cache["subreddits"]))
+
+
+def reddit_pages(since):
+    out, unreachable = [], []
     for sub in SUBREDDITS:
         try:
             posts = listing_posts(sub)
@@ -413,10 +538,14 @@ def reddit_pages(since):
             print(f"warn: r/{sub} listing: {e}; using its RSS feed with archived vote counts", file=sys.stderr)
             try:
                 got = feed_fallback(sub, since)
-                out += got
-                print(f"r/{sub}: {len(got)} sites (archived scores)", flush=True)
             except Exception as e2:
-                print(f"warn: r/{sub}: {e2}", file=sys.stderr)
+                print(f"warn: r/{sub} RSS: {e2}", file=sys.stderr)
+                got = []
+            if got:
+                out += got
+                print(f"r/{sub}: {len(got)} sites (RSS, archived scores)", flush=True)
+            else:
+                unreachable.append(sub)
             continue
         posts = [p for p in posts if p["created"] >= since.timestamp()
                  and not p["excluded"] and not NSFW.search(p["title"])]
@@ -434,6 +563,22 @@ def reddit_pages(since):
                 out.append(reddit_entry(sub, url, p["title"], p["votes"], p["permalink"], p["created"]))
                 kept += 1
         print(f"r/{sub}: {kept} sites (live Reddit scores)", flush=True)
+
+    # Nothing else worked for these subreddits: fall back to the archive.
+    cache = load_archive()
+    cache["active"], cache["subreddits"] = bool(unreachable), unreachable
+    if unreachable:
+        print("Arctic Shift fallback for " + ", ".join(f"r/{s}" for s in unreachable), flush=True)
+        try:
+            archive_sync(cache, since)
+        except Exception as e:  # keep whatever is already cached
+            print(f"warn: Arctic Shift: {e}", file=sys.stderr)
+        for sub in unreachable:
+            got = archive_entries(cache, sub, since)
+            out += got
+            print(f"r/{sub}: {len(got)} sites (Arctic Shift archive)", flush=True)
+    if unreachable or os.path.exists(ARCHIVE_CACHE):
+        save_archive(cache)
     return out
 
 
@@ -598,4 +743,10 @@ def main(if_due=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--if-due", action="store_true", help="skip collection until the next three-day refresh is due")
-    main(if_due=parser.parse_args().if_due)
+    parser.add_argument("--archive-sync", action="store_true",
+                        help="only top up the Arctic Shift fallback cache (no-op unless the fallback is in use)")
+    args = parser.parse_args()
+    if args.archive_sync:
+        archive_daily_sync()
+    else:
+        main(if_due=args.if_due)
