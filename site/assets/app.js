@@ -267,7 +267,7 @@
     // ---- site snapshots ----
     const pics = [], cards = [];
     const MAX_CARDS = 8, CARD_W = 34, CARD_H = CARD_W * 0.625; // world units; stills are 16:10
-    let spawnIn = 600;
+    let spawnIn = 600, seeded = false;
     fetch(ROOT + "snapshots/index.json")
       .then((r) => (r.ok ? r.json() : []))
       .then((names) => {
@@ -277,20 +277,28 @@
         names.forEach((n) => {
           const img = new Image();
           img.decoding = "async";
-          img.onload = () => pics.push(img);
+          img.onload = () => {
+            pics.push(img);
+            // As soon as there are enough, place a full set mid-flight at random depths,
+            // like the stars, so the page doesn't open on an empty field.
+            if (!seeded && pics.length >= MAX_CARDS) {
+              seeded = true;
+              for (let i = 0; i < MAX_CARDS; i++) spawnCard(300 + Math.random() * (DEPTH - 300));
+            }
+          };
           img.src = ROOT + "snapshots/" + n;
         });
       })
       .catch(() => {});
 
-    function spawnCard() {
+    function spawnCard(z = DEPTH) {
       if (!pics.length || cards.length >= MAX_CARDS) return;
       const used = new Set(cards.map((c) => c.img));
       const free = pics.filter((p) => !used.has(p));
       if (!free.length) return;
       // Start away from the center so cards pass beside the title rather than through it.
       const a = Math.random() * Math.PI * 2, r = 130 + Math.random() * 100;
-      cards.push({ img: free[Math.floor(Math.random() * free.length)], x: Math.cos(a) * r, y: Math.sin(a) * r * 0.6, z: DEPTH });
+      cards.push({ img: free[Math.floor(Math.random() * free.length)], x: Math.cos(a) * r, y: Math.sin(a) * r * 0.6, z });
     }
 
     function drawCards(dt, speed) {
