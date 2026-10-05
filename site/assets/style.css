@@ -50,7 +50,7 @@
   --lg-accent: #2f6bff;
   --lg-accent-hover: #255ff0;
   /* Frosted menus */
-  --frost: rgba(255, 255, 255, 0.76);
+  --frost: rgba(255, 255, 255, 0.4);
   --frost-border: rgba(255, 255, 255, 0.9);
   --frost-shadow: 0 18px 50px -12px rgba(22, 32, 60, 0.3), 0 0 0 0.5px rgba(14, 16, 22, 0.1);
   --menu-hover: rgba(14, 16, 22, 0.06);
@@ -84,7 +84,7 @@
     --lg-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.7), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
     --lg-inner: inset 0 0 14px rgba(255, 255, 255, 0.06), inset 0 -10px 18px -14px rgba(255, 255, 255, 0.25);
     --lg-accent: #3a74ff; --lg-accent-hover: #4b82ff;
-    --frost: rgba(28, 31, 40, 0.78); --frost-border: rgba(255, 255, 255, 0.12);
+    --frost: rgba(24, 26, 34, 0.42); --frost-border: rgba(255, 255, 255, 0.12);
     --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
     --menu-hover: rgba(255, 255, 255, 0.09);
     --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
@@ -106,7 +106,7 @@
   --lg-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.7), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
   --lg-inner: inset 0 0 14px rgba(255, 255, 255, 0.06), inset 0 -10px 18px -14px rgba(255, 255, 255, 0.25);
   --lg-accent: #3a74ff; --lg-accent-hover: #4b82ff;
-  --frost: rgba(28, 31, 40, 0.78); --frost-border: rgba(255, 255, 255, 0.12);
+  --frost: rgba(24, 26, 34, 0.42); --frost-border: rgba(255, 255, 255, 0.12);
   --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
   --menu-hover: rgba(255, 255, 255, 0.09);
   --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
@@ -178,14 +178,15 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 .lg.tinted::before { opacity: 0.45; }
 .lg.tinted:hover { background: var(--lg-accent-hover); }
 
-/* Frosted menus and popovers. */
-.frost {
+/* Menus and popovers: the same liquid glass as the buttons, with a bit more tint and
+   blur so their text stays readable over whatever they open on top of. */
+.frost.lg {
   background: var(--frost);
-  border: 0.5px solid var(--frost-border);
-  box-shadow: var(--frost-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  color: var(--text);
+  box-shadow: var(--frost-shadow), var(--lg-inner);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  --lg-blur: 7;
+  text-shadow: none;
 }
 
 /* Corner dropdowns: the toggle hugs its label, so there's no dead space. */

@@ -56,7 +56,7 @@
     wrap.id = id;
     wrap.innerHTML = `<button class="lg dd-toggle" aria-haspopup="true" aria-expanded="false">
       <span class="dd-label"></span>${icon("chev")}</button>
-      <div class="frost dd-menu" role="menu"></div>`;
+      <div class="lg frost dd-menu" role="menu"></div>`;
     const btn = wrap.querySelector(".dd-toggle");
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
