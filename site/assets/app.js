@@ -168,9 +168,16 @@
     canvas.setAttribute("aria-hidden", "true");
     const veil = document.createElement("div");
     veil.className = "veil";
+    // Snapshots of ranked sites fly past on their own layer, cleared every frame,
+    // so they don't smear like the star trails do.
+    const snapCanvas = document.createElement("canvas");
+    snapCanvas.id = "snapshots";
+    snapCanvas.setAttribute("aria-hidden", "true");
     document.body.prepend(veil);
+    document.body.prepend(snapCanvas);
     document.body.prepend(canvas);
     const ctx = canvas.getContext("2d", { alpha: false });
+    const sctx = snapCanvas.getContext("2d");
     const motionQuery = matchMedia("(prefers-reduced-motion: reduce)");
     let reduce = motionQuery.matches;
     let w = 0, h = 0, cx = 0, cy = 0, dpr = 1, stars = [];
@@ -200,8 +207,8 @@
 
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      w = canvas.width = Math.max(1, Math.floor((innerWidth || 800) * dpr));
-      h = canvas.height = Math.max(1, Math.floor((innerHeight || 600) * dpr));
+      w = canvas.width = snapCanvas.width = Math.max(1, Math.floor((innerWidth || 800) * dpr));
+      h = canvas.height = snapCanvas.height = Math.max(1, Math.floor((innerHeight || 600) * dpr));
       cx = w / 2; cy = h / 2;
       updateBucketWidths();
     }
@@ -243,6 +250,66 @@
     readColors();
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readColors);
 
+    // ---- site snapshots ----
+    const pics = [], cards = [];
+    const MAX_CARDS = 4, CARD_W = 34, CARD_H = CARD_W * 0.625; // world units; stills are 16:10
+    let spawnIn = 600;
+    fetch(ROOT + "snapshots/index.json")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((names) => {
+        if (!Array.isArray(names)) return;
+        // Shuffle, then load a handful at a time as they're needed.
+        names = names.filter((n) => /^[\w.-]+\.jpg$/.test(n)).sort(() => Math.random() - 0.5).slice(0, 40);
+        names.forEach((n) => {
+          const img = new Image();
+          img.decoding = "async";
+          img.onload = () => pics.push(img);
+          img.src = ROOT + "snapshots/" + n;
+        });
+      })
+      .catch(() => {});
+
+    function spawnCard() {
+      if (!pics.length || cards.length >= MAX_CARDS) return;
+      const used = new Set(cards.map((c) => c.img));
+      const free = pics.filter((p) => !used.has(p));
+      if (!free.length) return;
+      // Start away from the center so cards pass beside the title rather than through it.
+      const a = Math.random() * Math.PI * 2, r = 130 + Math.random() * 100;
+      cards.push({ img: free[Math.floor(Math.random() * free.length)], x: Math.cos(a) * r, y: Math.sin(a) * r * 0.6, z: DEPTH });
+    }
+
+    function drawCards(dt, speed) {
+      sctx.clearRect(0, 0, w, h);
+      if (reduce) return;
+      spawnIn -= dt;
+      if (spawnIn <= 0) { spawnCard(); spawnIn = 1400 + Math.random() * 1200; }
+      const scale = Math.max(w, h);
+      for (let i = cards.length - 1; i >= 0; i--) {
+        const c = cards[i];
+        c.z -= speed * 0.55 * (1 + (DEPTH - c.z) / 500);
+        const k = scale / c.z;
+        const cw = CARD_W * k, ch = CARD_H * k;
+        const x = cx + c.x * k - cw / 2, y = cy + c.y * k - ch / 2;
+        if (c.z < 20 || x > w || y > h || x + cw < 0 || y + ch < 0) { cards.splice(i, 1); continue; }
+        // Fade in from the distance.
+        sctx.globalAlpha = Math.min(1, (DEPTH - c.z) / 250) * 0.92;
+        const rad = Math.min(cw, ch) * 0.07;
+        sctx.save();
+        sctx.beginPath();
+        sctx.roundRect(x, y, cw, ch, rad);
+        sctx.clip();
+        sctx.drawImage(c.img, x, y, cw, ch);
+        sctx.restore();
+        sctx.lineWidth = Math.max(1, dpr);
+        sctx.strokeStyle = "rgba(255,255,255,0.35)";
+        sctx.beginPath();
+        sctx.roundRect(x, y, cw, ch, rad);
+        sctx.stroke();
+      }
+      sctx.globalAlpha = 1;
+    }
+
     let last = performance.now();
     let animId = null;
 
@@ -278,6 +345,7 @@
         for (let i = 0; i < pts.length; i += 4) { ctx.moveTo(pts[i], pts[i + 1]); ctx.lineTo(pts[i + 2], pts[i + 3]); }
         ctx.stroke();
       }
+      drawCards(dt, speed);
     }
 
     function loop(now) {

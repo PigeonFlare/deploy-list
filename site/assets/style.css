@@ -133,7 +133,7 @@ svg.icon { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor
 
 /* Hyperspace (homepage only) */
 body.home { background: var(--space); }
-#hyperspace { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; }
+#hyperspace, #snapshots { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
 .veil { position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background:
     radial-gradient(ellipse 46% 36% at 50% 50%, var(--glow), transparent 100%),
