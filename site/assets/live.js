@@ -126,10 +126,11 @@ $("next").addEventListener("click", next);
 document.body.classList.add("peek");
 setTimeout(() => document.body.classList.remove("peek"), 2500);
 $("prev").addEventListener("click", prev);
-addEventListener("keydown", (e) => {
-  if (e.target.closest("input, textarea, select")) return;
-  if (e.key === "ArrowRight") next();
-  if (e.key === "ArrowLeft") prev();
+// No keyboard shortcuts of Live's own. After a click on ‹ or ›, hand the keyboard to the
+// site that loads, so Space, arrows and the rest go to it instead of pressing the button again.
+$("frame").addEventListener("load", () => {
+  const f = document.activeElement;
+  if (!f || f === document.body || f.id === "next" || f.id === "prev") $("frame").focus();
 });
 
 DL.loadData().then((d) => {
