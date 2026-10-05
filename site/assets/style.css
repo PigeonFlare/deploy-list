@@ -207,6 +207,9 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 }
 .corner.left .dd-menu { left: 0; transform-origin: top left; }
 .corner.right .dd-menu { right: 0; transform-origin: top right; }
+/* Rankings and Live keep the time and category menus side by side in the right corner. */
+.corner-group { display: flex; gap: 8px; }
+.corner-group .dropdown { position: relative; }
 .dropdown.open .dd-menu { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; }
 .dd-menu a, .dd-menu button {
   display: flex; justify-content: space-between; align-items: center; gap: 18px; width: 100%;
@@ -268,7 +271,7 @@ body.live { overflow: hidden; height: 100%; }
 .corner > *, .live-controls > * { pointer-events: auto; }
 .live-controls {
   position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 10;
-  display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 280px);
+  display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 520px);
 }
 .round { width: 44px; height: 44px; border-radius: 50%; flex: none; display: grid; place-items: center; padding: 0; }
 .round svg.icon { width: 18px; height: 18px; stroke-width: 2.4; }
@@ -382,12 +385,19 @@ table.ranks { width: 100%; border-collapse: separate; border-spacing: 0; table-l
 .ranks tbody tr:hover td { background: var(--row-hover); }
 .ranks td.updated { height: 120px; }
 
-/* Rank squares stay flat: solid color, no gradient or glass. */
+/* The top three squares are brushed metal in gold, silver and bronze: fine horizontal
+   hairlines over a soft bright band down the middle, tinted per medal. No shadow. */
 .badge { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--muted); }
-.badge.medal { color: #1d1a12; }
-.badge.r1 { background: #f6d44c; }
-.badge.r2 { background: #d3d8e0; }
-.badge.r3 { background: #eeaa6a; }
+.badge.medal {
+  color: #1d1a12; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.8' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.6 0 0 0 -0.62'/%3E%3C/filter%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008 0.7' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0 0 0 -0.4'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23l)'/%3E%3Crect width='120' height='120' filter='url(%23d)'/%3E%3C/svg%3E") center / 120px 120px,
+    linear-gradient(90deg, transparent 18%, rgba(255, 255, 255, 0.5) 46%, rgba(255, 255, 255, 0.58) 52%, transparent 82%),
+    linear-gradient(90deg, var(--m-edge), var(--m-mid) 50%, var(--m-edge));
+}
+.badge.r1 { --m-edge: #d6ad2c; --m-mid: #f3d260; }
+.badge.r2 { --m-edge: #a9b0bb; --m-mid: #d6dbe3; }
+.badge.r3 { --m-edge: #c27c42; --m-mid: #e8a46a; }
 
 .domain-cell { min-width: 0; }
 .domain-cell .line { display: flex; align-items: center; gap: 10px; min-width: 0; }

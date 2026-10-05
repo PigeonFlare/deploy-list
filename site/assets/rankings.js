@@ -23,7 +23,7 @@ function render() {
       r.style.animation = "";
     }
   }
-  const rows = DL.ranked(data?.sites || [], DL.category);
+  const rows = DL.ranked(DL.inRange(data), DL.category);
   const max = rows[0]?.votes || 1;
   const tbody = document.getElementById("rows");
   if (!tbody) return;
@@ -79,7 +79,7 @@ if (srcBtn && pop) {
 
 DL.loadData().then((d) => {
   data = d;
-  DL.setCounts(d.sites);
+  DL.setCounts(DL.inRange(d));
   const srcList = document.getElementById("src-list");
   if (srcList && Array.isArray(d.sources)) {
     srcList.innerHTML = d.sources.map((s) =>
@@ -95,6 +95,10 @@ DL.loadData().then((d) => {
   }
   render();
   DL.onCategory(render);
+  DL.onRange(() => {
+    DL.setCounts(DL.inRange(d));
+    render();
+  });
 }).catch(() => {
   const tbody = document.getElementById("rows");
   if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="updated">Couldn\'t load rankings.</td></tr>';

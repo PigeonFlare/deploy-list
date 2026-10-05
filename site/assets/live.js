@@ -2,9 +2,11 @@
 const fmt = new Intl.NumberFormat("en-US");
 const $ = (id) => document.getElementById(id);
 // History of viewed sites lives only in memory, so closing or reloading the page clears it.
-let pool = [], byId = {}, hist = { ids: [], pos: -1 };
+let data, pool = [], byId = {}, hist = { ids: [], pos: -1 };
 
-function candidates() { return pool.filter((s) => DL.inCategory(s)); }
+// Sites Live can show in the chosen time range.
+function inRangePool() { return DL.inRange(data).filter((s) => s.embeddable); }
+function candidates() { return inRangePool().filter((s) => DL.inCategory(s)); }
 
 function show(site) {
   if (!site) return;
@@ -98,9 +100,9 @@ function next() {
     hist.pos++;
     return show(byId[hist.ids[hist.pos]]);
   }
-  const pick = upcoming && DL.inCategory(upcoming) && !hist.ids.includes(upcoming.id) ? upcoming : randomPick();
+  const pick = upcoming && candidates().includes(upcoming) && !hist.ids.includes(upcoming.id) ? upcoming : randomPick();
   upcoming = null;
-  if (!pick) return empty("No live-viewable sites in this category yet.");
+  if (!pick) return empty(DL.range === "week" ? "No live-viewable sites in this category from the last week." : "No live-viewable sites in this category yet.");
   hist.ids.push(pick.id);
   // Keep at most one entry per site Live can show.
   if (hist.ids.length > pool.length) {
@@ -131,14 +133,21 @@ addEventListener("keydown", (e) => {
 });
 
 DL.loadData().then((d) => {
+  data = d;
   pool = (d.sites || []).filter((s) => s.embeddable);
   pool.forEach((s) => (byId[s.id] = s));
-  DL.setCounts(pool);
+  DL.setCounts(inRangePool());
   next();
-  DL.onCategory((c) => {
+  // When the category or time range changes, keep the current site if it still fits.
+  const refilter = () => {
     const active = byId[hist.ids[hist.pos]];
-    if (active && DL.inCategory(active, c)) return;
+    if (active && candidates().includes(active)) return prepareNext();
     hist.ids = hist.ids.slice(0, Math.max(0, hist.pos + 1));
     next();
+  };
+  DL.onCategory(refilter);
+  DL.onRange(() => {
+    DL.setCounts(inRangePool());
+    refilter();
   });
 }).catch(() => empty("Couldn't load the site list."));
