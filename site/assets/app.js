@@ -8,12 +8,11 @@
     { key: "games", label: "Games", noun: "games" },
     { key: "other", label: "Other", noun: "projects" },
   ];
-  // Rankings and Live can show the last month or just the last week.
+  // Every page can show the last month or just the last week; the choice carries across pages.
   const RANGES = [
     { key: "month", label: "Last month" },
     { key: "week", label: "Last week" },
   ];
-  const HAS_RANGE = PAGE === "rankings" || PAGE === "live";
   const PAGES = [
     { key: "home", label: "Home", href: ROOT || "./" },
     { key: "rankings", label: "Rankings", href: ROOT + "leaderboards/" },
@@ -38,7 +37,7 @@
     const r = new URLSearchParams(location.search).get("range") || store.get("deploylist.range") || "month";
     return RANGES.some((x) => x.key === r) ? r : "month";
   }
-  let range = HAS_RANGE ? getRange() : "month";
+  let range = getRange();
   const rangeListeners = [];
 
   function setRange(r) {
@@ -144,9 +143,9 @@
           <span>${p.label}</span>${icon("check")}</a>`).join("");
     }
 
-    // On Rankings and Live the time menu sits just left of the category menu.
+    // The time menu sits just left of the category menu on every page.
     let right;
-    if (HAS_RANGE) {
+    {
       right = document.createElement("div");
       right.className = "corner right corner-group";
       document.body.appendChild(right);
