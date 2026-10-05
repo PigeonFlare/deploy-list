@@ -288,7 +288,9 @@ def listing_posts(sub):
     """Read a bounded number of pages directly from Reddit, with live scores."""
     posts, after = {}, None
     for _ in range(LISTING_PAGES):
-        q = {"t": "MONTH", "name": sub, **({"after": after} if after else {})}
+        # Reddit hands out the cursor without its base64 padding but only accepts it padded;
+        # unpadded, page 2 comes back with no posts.
+        q = {"t": "MONTH", "name": sub, **({"after": after + "=" * (-len(after) % 4)} if after else {})}
         try:
             page = reddit_get("https://www.reddit.com/svc/shreddit/community-more-posts/top/?" + urllib.parse.urlencode(q))
             listing = RedditListing()
