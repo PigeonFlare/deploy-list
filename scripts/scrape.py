@@ -19,12 +19,13 @@ import ipaddress
 import json
 import os
 import re
+import socket
 import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait
 from html.parser import HTMLParser
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "site", "data", "sites.json")
@@ -102,13 +103,17 @@ def site_url(url, title):
     host = host_of(url)
     if parts.scheme not in ("http", "https") or not host or "." not in host or is_ip(host) or blocked(host):
         return None
-    if parts.port and parts.port not in (80, 443, 8080, 8443):
+    try:
+        port = parts.port  # raises ValueError for malformed or out-of-range ports
+    except ValueError:
+        return None
+    if port and port not in (80, 443, 8080, 8443):
         return None
     if BLOG_PATH.search(parts.path) or BLOG_TITLE.search(title or ""):
         return None
     if re.search(r"\.(pdf|png|jpe?g|gif|mp4|zip)$", parts.path, re.I):
         return None
-    netloc = (parts.hostname or "") + (f":{parts.port}" if parts.port else "")
+    netloc = (parts.hostname or "") + (f":{port}" if port else "")
     if not netloc:
         return None
     return urllib.parse.urlunsplit((parts.scheme, netloc, parts.path or "/", parts.query, ""))
@@ -350,28 +355,61 @@ def reddit(since):
     return []
 
 
+def public_host(host):
+    """True when every address the host resolves to is on the public internet."""
+    try:
+        infos = socket.getaddrinfo(host, 443, proto=socket.IPPROTO_TCP)
+    except (OSError, UnicodeError):
+        return False
+    return bool(infos) and all(ipaddress.ip_address(i[4][0].split("%")[0]).is_global for i in infos)
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    # Redirects are followed by hand in embeddable(), so each hop is checked
+    # before connecting and redirect bodies are never read.
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+_PROBE = urllib.request.build_opener(_NoRedirect)
+PROBE_HOPS = 5
+PROBE_DEADLINE = 30  # seconds per site, across all redirects
+
+
 def embeddable(url):
     """True when the site loads over HTTPS and doesn't forbid framing."""
+    url = url.replace("http://", "https://", 1)
+    deadline = time.monotonic() + PROBE_DEADLINE
     try:
-        req = urllib.request.Request(url.replace("http://", "https://", 1),
-                                     headers={"User-Agent": "Mozilla/5.0 (deploylist iframe check)"})
-        with urllib.request.urlopen(req, timeout=10) as r:
-            final_url = r.geturl()
-            if not final_url.startswith("https://") or r.status >= 400:
+        for _ in range(PROBE_HOPS + 1):
+            host = host_of(url)
+            if (not url.startswith("https://") or not host or blocked(host) or is_ip(host)
+                    or not public_host(host) or time.monotonic() > deadline):
                 return False
-            final_host = host_of(final_url)
-            if not final_host or blocked(final_host) or is_ip(final_host):
-                return False
-            for xfo in r.headers.get_all("X-Frame-Options") or []:
-                xfo_lower = xfo.lower()
-                # ALLOW-FROM is ignored by current browsers, so it doesn't block framing.
-                if "deny" in xfo_lower or "sameorigin" in xfo_lower:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (deploylist iframe check)"})
+            try:
+                r = _PROBE.open(req, timeout=10)
+            except urllib.error.HTTPError as e:
+                location = e.headers.get("Location") if e.code in (301, 302, 303, 307, 308) else None
+                e.close()
+                if not location:
                     return False
-            for csp in r.headers.get_all("Content-Security-Policy") or []:
-                m = re.search(r"frame-ancestors([^;]*)", csp, re.I)
-                if m and "*" not in m.group(1).split():
+                url = urllib.parse.urljoin(url, location)
+                continue
+            with r as resp:
+                if resp.status >= 400:
                     return False
-            return True
+                for xfo in resp.headers.get_all("X-Frame-Options") or []:
+                    xfo_lower = xfo.lower()
+                    # ALLOW-FROM is ignored by current browsers, so it doesn't block framing.
+                    if "deny" in xfo_lower or "sameorigin" in xfo_lower:
+                        return False
+                for csp in resp.headers.get_all("Content-Security-Policy") or []:
+                    m = re.search(r"frame-ancestors([^;]*)", csp, re.I)
+                    if m and "*" not in m.group(1).split():
+                        return False
+                return True
+        return False  # too many redirects
     except Exception:
         return False
 
@@ -395,8 +433,13 @@ def main(if_due=False):
             best[d] = {**p, "domain": d}
     sites = sorted(best.values(), key=lambda s: -s["votes"])[:POOL_SIZE]
 
-    with ThreadPoolExecutor(16) as ex:
-        flags = list(ex.map(lambda s: embeddable(s["url"]), sites))
+    # Probe sites in parallel; any probe still running after the overall limit
+    # counts as not embeddable instead of holding up the refresh.
+    ex = ThreadPoolExecutor(16)
+    futures = [ex.submit(embeddable, s["url"]) for s in sites]
+    wait(futures, timeout=PROBE_DEADLINE * 3)
+    flags = [f.done() and not f.cancelled() and f.exception() is None and f.result() for f in futures]
+    ex.shutdown(wait=False, cancel_futures=True)
     for s, ok in zip(sites, flags):
         s["embeddable"] = ok
         s["category"] = category(s["title"], s["source"])
