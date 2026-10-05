@@ -268,26 +268,31 @@
     const pics = [], cards = [];
     const MAX_CARDS = 8, CARD_W = 34, CARD_H = CARD_W * 0.625; // world units; stills are 16:10
     let spawnIn = 600, seeded = false;
+    // Stills load a dozen up front, then one more each time a card launches, so the
+    // homepage doesn't download all of them before anyone has watched for long.
+    let queue = [];
+    function loadNext() {
+      const n = queue.shift();
+      if (!n) return;
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = () => {
+        pics.push(img);
+        // As soon as there are enough, place a full set mid-flight at random depths,
+        // like the stars, so the page doesn't open on an empty field.
+        if (!seeded && pics.length >= MAX_CARDS) {
+          seeded = true;
+          for (let i = 0; i < MAX_CARDS; i++) spawnCard(300 + Math.random() * (DEPTH - 300));
+        }
+      };
+      img.src = ROOT + "snapshots/" + n;
+    }
     fetch(ROOT + "snapshots/index.json")
       .then((r) => (r.ok ? r.json() : []))
       .then((names) => {
         if (!Array.isArray(names)) return;
-        // Shuffle, then load a handful at a time as they're needed.
-        names = names.filter((n) => /^[\w.-]+\.jpg$/.test(n)).sort(() => Math.random() - 0.5).slice(0, 80);
-        names.forEach((n) => {
-          const img = new Image();
-          img.decoding = "async";
-          img.onload = () => {
-            pics.push(img);
-            // As soon as there are enough, place a full set mid-flight at random depths,
-            // like the stars, so the page doesn't open on an empty field.
-            if (!seeded && pics.length >= MAX_CARDS) {
-              seeded = true;
-              for (let i = 0; i < MAX_CARDS; i++) spawnCard(300 + Math.random() * (DEPTH - 300));
-            }
-          };
-          img.src = ROOT + "snapshots/" + n;
-        });
+        queue = names.filter((n) => /^[\w.-]+\.jpg$/.test(n)).sort(() => Math.random() - 0.5);
+        for (let i = 0; i < MAX_CARDS + 4; i++) loadNext();
       })
       .catch(() => {});
 
@@ -299,6 +304,7 @@
       // Start away from the center so cards pass beside the title rather than through it.
       const a = Math.random() * Math.PI * 2, r = 130 + Math.random() * 100;
       cards.push({ img: free[Math.floor(Math.random() * free.length)], x: Math.cos(a) * r, y: Math.sin(a) * r * 0.6, z });
+      loadNext();
     }
 
     function drawCards(dt, speed) {
