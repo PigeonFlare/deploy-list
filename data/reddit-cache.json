@@ -1,5 +1,5 @@
 {
- "scraped_at": "2026-10-04T23:46:21+00:00",
+ "scraped_at": "2026-10-05T00:09:13+00:00",
  "posts": [
   {
    "url": "https://repchek.vercel.app/",
@@ -40,7 +40,7 @@
   {
    "url": "https://kinoku.app/features/journeys",
    "title": "I'm building a fitness tracker (yes one of the most crowded app categories), so I built something I couldn't find and actually needed + some fun quirky stuff",
-   "votes": 613,
+   "votes": 615,
    "source": "r/SideProject",
    "source_url": "https://www.reddit.com/r/SideProject/",
    "post_url": "https://www.reddit.com/r/SideProject/comments/1wv85zh/im_building_a_fitness_tracker_yes_one_of_the_most/",
@@ -92,9 +92,315 @@
    "created": 1789331584
   },
   {
+   "url": "http://spaceplanner.co/",
+   "title": "My side project went from 500 to 15,000 users a day and I had no idea where they were coming from",
+   "votes": 313,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wn05d1/my_side_project_went_from_500_to_15000_users_a/",
+   "created": 1790053365
+  },
+  {
+   "url": "https://www.viberant.app/",
+   "title": "Opinion: Don't stop building useless apps",
+   "votes": 283,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wjqq6d/opinion_dont_stop_building_useless_apps/",
+   "created": 1789739304
+  },
+  {
+   "url": "https://winduo.baselashraf.com/",
+   "title": "WinDuo: the iPhone Duo fold effect on any Windows laptop",
+   "votes": 263,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wex3w4/winduo_the_iphone_duo_fold_effect_on_any_windows/",
+   "created": 1789271658
+  },
+  {
+   "url": "http://killmyidea.stemonte.io/",
+   "title": "I built a side project to test TypeSafe's Jev model with no generative LLM that scores your project idea",
+   "votes": 258,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wiw6tk/i_built_a_side_project_to_test_typesafes_jev/",
+   "created": 1789656745
+  },
+  {
+   "url": "https://ultramock.io/",
+   "title": "I built a tool for creating premium product visuals... then made its entire launch video with it.",
+   "votes": 219,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wnn5oz/i_built_a_tool_for_creating_premium_product/",
+   "created": 1790113815
+  },
+  {
+   "url": "https://tiltanic.com/",
+   "title": "I turned phone tilting into a tiny boat game.",
+   "votes": 217,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wurmh5/i_turned_phone_tilting_into_a_tiny_boat_game/",
+   "created": 1790834263
+  },
+  {
+   "url": "http://bookplate.dev/",
+   "title": "Self-hosted library app",
+   "votes": 204,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wu9rsk/selfhosted_library_app/",
+   "created": 1790786293
+  },
+  {
+   "url": "https://klemm.build/",
+   "title": "I made a skill that turns a photo or an idea into a brick model, instructions included",
+   "votes": 191,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wjjc93/i_made_a_skill_that_turns_a_photo_or_an_idea_into/",
+   "created": 1789716105
+  },
+  {
+   "url": "https://rollcall.platinumgroupe.cc/",
+   "title": "I built a free app that turns every guest's phone into a disposable camera for your event. Looking for people to try it",
+   "votes": 135,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wtp8r8/i_built_a_free_app_that_turns_every_guests_phone/",
+   "created": 1790723786
+  },
+  {
+   "url": "https://www.whengram.com/privacypolicy",
+   "title": "Update: My app just crossed 1,500 downloads in over a month",
+   "votes": 133,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wf8dme/update_my_app_just_crossed_1500_downloads_in_over/",
+   "created": 1789307836
+  },
+  {
+   "url": "https://desimayhem.com/",
+   "title": "I made a Road Rash-inspired browser game set on Indian roads",
+   "votes": 130,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wcrvwc/i_made_a_road_rashinspired_browser_game_set_on/",
+   "created": 1789065751
+  },
+  {
+   "url": "https://1bitapp.com/",
+   "title": "I made a dumb phone app that\u2019s a fun nostalgia filled digital detox",
+   "votes": 128,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wqm9cc/i_made_a_dumb_phone_app_thats_a_fun_nostalgia/",
+   "created": 1790415152
+  },
+  {
+   "url": "https://macbookduo.illusionart.ai/",
+   "title": "Macbook Dua AN macbook lid close animation",
+   "votes": 123,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1whbnxr/macbook_dua_an_macbook_lid_close_animation/",
+   "created": 1789503559
+  },
+  {
+   "url": "https://repchek.fit/",
+   "title": "Last week I posted the app that tells me when my lifting form is wrong. This is what I fixed after your feedback",
+   "votes": 119,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wwlll9/last_week_i_posted_the_app_that_tells_me_when_my/",
+   "created": 1791029114
+  },
+  {
+   "url": "https://reddibee.com/",
+   "title": "I built a Reddit MCP so my AI agent can read subreddits for me",
+   "votes": 115,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wpv4ey/i_built_a_reddit_mcp_so_my_ai_agent_can_read/",
+   "created": 1790339550
+  },
+  {
+   "url": "https://burgerfun.ca/rename-america",
+   "title": "I made a map of America anyone can edit. People have renamed things over 7,800 times",
+   "votes": 112,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1w8wgpm/i_made_a_map_of_america_anyone_can_edit_people/",
+   "created": 1788701905
+  },
+  {
+   "url": "http://ouijev.com/",
+   "title": "Experiment to see if JEV is smart",
+   "votes": 111,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wkzlsw/experiment_to_see_if_jev_is_smart/",
+   "created": 1789856996
+  },
+  {
+   "url": "https://unwatched.world/",
+   "title": "Ten days ago I put 20 AI people on an island. This morning one of them is short thirteen coins for a roof and it's in the paper. OPEN SOURCE",
+   "votes": 99,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1we9yz4/ten_days_ago_i_put_20_ai_people_on_an_island_this/",
+   "created": 1789211976
+  },
+  {
+   "url": "https://page-rage.com/",
+   "title": "Page Rage: A game I made that lets you destroy any web page",
+   "votes": 98,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1whfgp2/page_rage_a_game_i_made_that_lets_you_destroy_any/",
+   "created": 1789512427
+  },
+  {
+   "url": "http://shelbykho.com/",
+   "title": "I spent 5 weeks building my portfolio with lots of hand-drawn illustrations and whimsical interactions",
+   "votes": 90,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wsufjh/i_spent_5_weeks_building_my_portfolio_with_lots/",
+   "created": 1790638314
+  },
+  {
+   "url": "https://romancivilizations.com/",
+   "title": "My 9yo nephew loves learning about ancient history, so I built him an interactive global atlas of 100+ ancient civilizations. His name is Roman, so I call it... RomanCivilizations.com :)",
+   "votes": 84,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wpfwmg/my_9yo_nephew_loves_learning_about_ancient/",
+   "created": 1790289670
+  },
+  {
+   "url": "https://www.marble.surf/",
+   "title": "I built a spatial browser because I kept losing tabs to rabbit holes",
+   "votes": 84,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wi4iwd/i_built_a_spatial_browser_because_i_kept_losing/",
+   "created": 1789581252
+  },
+  {
+   "url": "https://domolition.chirkut.xyz/",
+   "title": "DOMiltion -  demolish sites which you don't like",
+   "votes": 82,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wupnny/domiltion_demolish_sites_which_you_dont_like/",
+   "created": 1790827420
+  },
+  {
+   "url": "https://www.screen.toys/firewood/",
+   "title": "3D scanned my stump and axe and made a satisfying firewood splitting simulator",
+   "votes": 80,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wo9bu0/3d_scanned_my_stump_and_axe_and_made_a_satisfying/",
+   "created": 1790177707
+  },
+  {
+   "url": "https://funoura.com/",
+   "title": "I turned Oura ring into a controller for Mac",
+   "votes": 75,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wtsadn/i_turned_oura_ring_into_a_controller_for_mac/",
+   "created": 1790732288
+  },
+  {
+   "url": "https://readpdfoutloud.com/",
+   "title": "I built a PDF reader that reads research papers like a person would: no page numbers, no \"[12]\"s, and math you can follow by ear!",
+   "votes": 71,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wrmyqo/i_built_a_pdf_reader_that_reads_research_papers/",
+   "created": 1790522643
+  },
+  {
+   "url": "https://jellybox.app/",
+   "title": "JellyBox - a native crossplatform music player for Jellyfin, Emby, Navidrome. A real side project.",
+   "votes": 67,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wl9yoy/jellybox_a_native_crossplatform_music_player_for/",
+   "created": 1789887824
+  },
+  {
+   "url": "https://danielszlaski.com/pacelink-go.html",
+   "title": "I built PaceLink Go to help you keep track of your riding buddies",
+   "votes": 67,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1whq688/i_built_pacelink_go_to_help_you_keep_track_of/",
+   "created": 1789543264
+  },
+  {
+   "url": "https://bioneural.de/",
+   "title": "my sideproject :) game that can be played on all devices",
+   "votes": 64,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wrlzub/my_sideproject_game_that_can_be_played_on_all/",
+   "created": 1790520255
+  },
+  {
+   "url": "https://dust-run-house.writingmate.chatgpt.site/",
+   "title": "I turned photos of my house into a robot vacuum survival game",
+   "votes": 64,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1w8m4jz/i_turned_photos_of_my_house_into_a_robot_vacuum/",
+   "created": 1788668957
+  },
+  {
+   "url": "https://lastonephoto.com/",
+   "title": "I made a website where the entire world shares one photo.",
+   "votes": 63,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wlan2i/i_made_a_website_where_the_entire_world_shares/",
+   "created": 1789890109
+  },
+  {
+   "url": "https://shotcandy.vercel.app/",
+   "title": "I built a free screenshot beautifier that runs entirely in your browser (no signup, no upload, open source)",
+   "votes": 61,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wrrsgk/i_built_a_free_screenshot_beautifier_that_runs/",
+   "created": 1790534053
+  },
+  {
+   "url": "https://srdkn.com/side-project-census/",
+   "title": "Nobody asked for this, but this is what a side project looks like in 2026",
+   "votes": 60,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wfoj1r/nobody_asked_for_this_but_this_is_what_a_side/",
+   "created": 1789345992
+  },
+  {
+   "url": "https://tenzen.studio/light",
+   "title": "I made Lightroom as if Adobe actually shipped it in 2026",
+   "votes": 57,
+   "source": "r/SideProject",
+   "source_url": "https://www.reddit.com/r/SideProject/",
+   "post_url": "https://www.reddit.com/r/SideProject/comments/1wwfn9o/i_made_lightroom_as_if_adobe_actually_shipped_it/",
+   "created": 1791007180
+  },
+  {
    "url": "https://crawlerzoo.com/",
    "title": "A live zoo of the bots and crawlers visiting one website, with a trap for the ones that ignore robots.txt",
-   "votes": 2914,
+   "votes": 2944,
    "source": "r/InternetIsBeautiful",
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wx5hlp/a_live_zoo_of_the_bots_and_crawlers_visiting_one/",
@@ -247,7 +553,7 @@
   {
    "url": "https://actualscale.com/",
    "title": "Interactive map that rescales cities based on population density as you drag",
-   "votes": 6,
+   "votes": 9,
    "source": "r/InternetIsBeautiful",
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wvtirq/interactive_map_that_rescales_cities_based_on/",
@@ -261,6 +567,15 @@
    "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
    "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wx3fro/a_site_that_tells_you_how_rare_your_birthday_is/",
    "created": 1791077594
+  },
+  {
+   "url": "https://bjjtournaments.net/",
+   "title": "BJJ Tournaments - a free site that lists every upcoming Brazilian Jiu-Jitsu tournament in one searchable list",
+   "votes": 0,
+   "source": "r/InternetIsBeautiful",
+   "source_url": "https://www.reddit.com/r/InternetIsBeautiful/",
+   "post_url": "https://www.reddit.com/r/InternetIsBeautiful/comments/1wrq663/bjj_tournaments_a_free_site_that_lists_every/",
+   "created": 1790530237
   },
   {
    "url": "https://redblue.benjamincrozat.com/",
@@ -443,6 +758,753 @@
    "created": 1789861039
   },
   {
+   "url": "https://playfumes.com/",
+   "title": "Fumes: the 80s arcade racer I grew up on, rebuilt from memory and playable in a browser [playfumes.com]",
+   "votes": 11,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wceux0/fumes_the_80s_arcade_racer_i_grew_up_on_rebuilt/",
+   "created": 1789034672
+  },
+  {
+   "url": "https://www.time-machine-society.org/en/play/worst/",
+   "title": "The Worst-Choice Challenge - Grandpa's will says you inherit $1B only if you lose $10M in the stock market.",
+   "votes": 10,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtk15e/the_worstchoice_challenge_grandpas_will_says_you/",
+   "created": 1790711083
+  },
+  {
+   "url": "https://sector196.com/",
+   "title": "Sector 196 - a draft-and-conquer strategy game: build a nation from real countries and see if it can take over the world in 40 years",
+   "votes": 8,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wvpvjm/sector_196_a_draftandconquer_strategy_game_build/",
+   "created": 1790935367
+  },
+  {
+   "url": "https://thesecretsproject.com/",
+   "title": "The Secrets Project",
+   "votes": 8,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtbdmt/the_secrets_project/",
+   "created": 1790691528
+  },
+  {
+   "url": "https://wikileaks.lcbgames.com/",
+   "title": "Wikileaks: Type any word and race liquid down its Wikipedia article through the gaps between words",
+   "votes": 7,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wx3myj/wikileaks_type_any_word_and_race_liquid_down_its/",
+   "created": 1791078237
+  },
+  {
+   "url": "https://kicks.oceanxi.app/",
+   "title": "Maggio Kicks: 3D free kicks in five taps against a keeper who dives. A free fan remake of the Flash game Magical Kicks, on phone and desktop, no sign-up",
+   "votes": 7,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wsspr5/maggio_kicks_3d_free_kicks_in_five_taps_against_a/",
+   "created": 1790633843
+  },
+  {
+   "url": "https://geolympia.com/",
+   "title": "Geolympia - A free geography trivia game with daily puzzles like Georadar and competitive modes",
+   "votes": 7,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wntajt/geolympia_a_free_geography_trivia_game_with_daily/",
+   "created": 1790129818
+  },
+  {
+   "url": "https://warofantasia.com/",
+   "title": "I'll Play Your Game And Give You Honest Feedback",
+   "votes": 7,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wlnmmh/ill_play_your_game_and_give_you_honest_feedback/",
+   "created": 1789926382
+  },
+  {
+   "url": "https://actorle.com/cinections/?utm_source=reddit&utm_medium=post&utm_campaign=webgames_launch",
+   "title": "Cinections: a daily Connections-style puzzle with movie posters",
+   "votes": 7,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wi123x/cinections_a_daily_connectionsstyle_puzzle_with/",
+   "created": 1789573863
+  },
+  {
+   "url": "https://foxing.shivammittal.in/",
+   "title": "FOXING- A painting is hidden in the dark. You get one small window to move around it, and one scrap of it to find.",
+   "votes": 7,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1waun1q/foxing_a_painting_is_hidden_in_the_dark_you_get/",
+   "created": 1788887829
+  },
+  {
+   "url": "https://moonshot.day/",
+   "title": "Moonshot.day - A fun daily space golf game",
+   "votes": 7,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1w8gfp6/moonshotday_a_fun_daily_space_golf_game/",
+   "created": 1788652316
+  },
+  {
+   "url": "https://calltheline.site/",
+   "title": "Call The Line: Do you think it is easy to be a professional tennis line judge?",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wva5rm/call_the_line_do_you_think_it_is_easy_to_be_a/",
+   "created": 1790885983
+  },
+  {
+   "url": "http://hotlap.online/",
+   "title": "Hotlap.Online | Free Browser Racing Game",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wukx7q/hotlaponline_free_browser_racing_game/",
+   "created": 1790813144
+  },
+  {
+   "url": "https://chaoschemy.com/games/pocket-market/play/",
+   "title": "Pocket Market \u2014 grow, stock and serve in a two-minute browser shop",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wuaohv/pocket_market_grow_stock_and_serve_in_a_twominute/",
+   "created": 1790788316
+  },
+  {
+   "url": "https://finnmarinov-lgtm.github.io/Petri_Heil/",
+   "title": "Petri Heil \u2013 a pixel fishing game in the browser. 60-second rounds, and everyone fishes the same lake each day",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtcpr9/petri_heil_a_pixel_fishing_game_in_the_browser/",
+   "created": 1790694655
+  },
+  {
+   "url": "https://kindredstars.io/",
+   "title": "Kindred Stars: I built a daily game where every answer is a star in a shared night sky",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wszb18/kindred_stars_i_built_a_daily_game_where_every/",
+   "created": 1790652058
+  },
+  {
+   "url": "https://cornersgame.com/",
+   "title": "Corners \u2014 tilt the lines, don't get CORNERED",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wr84vw/corners_tilt_the_lines_dont_get_cornered/",
+   "created": 1790475118
+  },
+  {
+   "url": "https://arcade.cx/pipes/1",
+   "title": "Pipes - turn the tiles until every pipe joins up and the water runs",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wm31tb/pipes_turn_the_tiles_until_every_pipe_joins_up/",
+   "created": 1789966144
+  },
+  {
+   "url": "https://www.playgridcity.com/",
+   "title": "I built GridCity, a free browser city builder in the style of classic SimCity, no install needed",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1whxdlv/i_built_gridcity_a_free_browser_city_builder_in/",
+   "created": 1789565573
+  },
+  {
+   "url": "https://vexi-game.pages.dev/",
+   "title": "Vexi - a daily flag game where each flag is hidden three different ways",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wfym9g/vexi_a_daily_flag_game_where_each_flag_is_hidden/",
+   "created": 1789378137
+  },
+  {
+   "url": "https://explorersmap.net/game/homeground",
+   "title": "Homeground - Name all the cities in the world with a twist ! Name one city and you claim its entire region. Can you fill all 4,359 regions of the world?",
+   "votes": 6,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1w8ac9u/homeground_name_all_the_cities_in_the_world_with/",
+   "created": 1788637175
+  },
+  {
+   "url": "https://www.playkraft.app/case/048",
+   "title": "Jasons Suicide - You are a hired detective who has to investigate a case by searching the internet.",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwor7p/jasons_suicide_you_are_a_hired_detective_who_has/",
+   "created": 1791038079
+  },
+  {
+   "url": "https://www.grindsat.com/?mode=guard",
+   "title": "Margin Guard - Free SAT tower defense on grindsat.com (I built it)",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwjhgk/margin_guard_free_sat_tower_defense_on/",
+   "created": 1791021596
+  },
+  {
+   "url": "https://arpent.day/",
+   "title": "Arpent \u2014 a free daily tile-placement puzzle where everyone gets the same challenge",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wvnzhs/arpent_a_free_daily_tileplacement_puzzle_where/",
+   "created": 1790927994
+  },
+  {
+   "url": "https://playmadlands.com/",
+   "title": "Madlands: a ROTMG-like bullet hell MMO",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wukbyd/madlands_a_rotmglike_bullet_hell_mmo/",
+   "created": 1790811543
+  },
+  {
+   "url": "https://finnmarinov-lgtm.github.io/Feuer_Frei/",
+   "title": "Feuer Frei \u2013 3D-Shooter in the Browser **New Update with online Multiplayer and open lobbys**",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wu80b5/feuer_frei_3dshooter_in_the_browser_new_update/",
+   "created": 1790782248
+  },
+  {
+   "url": "https://sunday-pins.com/",
+   "title": "SundayPins - a golf career sim where the big putts are yours to hole [free, browser, no sign-up]",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wu2k2z/sundaypins_a_golf_career_sim_where_the_big_putts/",
+   "created": 1790768138
+  },
+  {
+   "url": "https://flipsies.dev/",
+   "title": "Flipsies \u2013 flip five objects and try to land them upright (free daily game)",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtq3bw/flipsies_flip_five_objects_and_try_to_land_them/",
+   "created": 1790726131
+  },
+  {
+   "url": "https://omacontra.pages.dev/",
+   "title": "OMACONTRA: Contra Inspired Arcade Shooter",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wpjk74/omacontra_contra_inspired_arcade_shooter/",
+   "created": 1790300107
+  },
+  {
+   "url": "https://hide-ascii.com/",
+   "title": "hide @$\u00a9!! - First game out now",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wnf54m/hide_first_game_out_now/",
+   "created": 1790096404
+  },
+  {
+   "url": "https://yup.gr/pinball",
+   "title": "Open Cadet - Space Cadet pinball in the browser, with a network leaderboard",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wkl0os/open_cadet_space_cadet_pinball_in_the_browser/",
+   "created": 1789821092
+  },
+  {
+   "url": "https://eowcat.click/",
+   "title": "EowCat \u2014 make this black cat eow and help your country climb the leaderboard \ud83d\udc08\u200d\u2b1b",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wj9ck1/eowcat_make_this_black_cat_eow_and_help_your/",
+   "created": 1789686451
+  },
+  {
+   "url": "https://herring-harbor.pages.dev/",
+   "title": "Herring Harbor - A cosy fishing game",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wi36z8/herring_harbor_a_cosy_fishing_game/",
+   "created": 1789578395
+  },
+  {
+   "url": "https://atom-clicker.ayfri.com/",
+   "title": "Atom Clicker - free incremental game with a nuclear reactor realm, offline progress and a leaderboard, no signup needed",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1whjyqe/atom_clicker_free_incremental_game_with_a_nuclear/",
+   "created": 1789524151
+  },
+  {
+   "url": "https://ezcha.net/games/spinwhisker",
+   "title": "SpinWhisker - Help a cat find his way home after getting stuck in an alternate dimension.",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wh54aq/spinwhisker_help_a_cat_find_his_way_home_after/",
+   "created": 1789489557
+  },
+  {
+   "url": "https://morov.fun/",
+   "title": "Morov: Guess which country has more of...",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wgpy99/morov_guess_which_country_has_more_of/",
+   "created": 1789445820
+  },
+  {
+   "url": "https://omnigamestudio.com/omniword/",
+   "title": "Omniword",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wey129/omniword/",
+   "created": 1789274515
+  },
+  {
+   "url": "https://stuntcoaster.lcbgames.com/",
+   "title": "STUNTCOASTER - Build impossible roller coasters and ride them.",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wco96l/stuntcoaster_build_impossible_roller_coasters_and/",
+   "created": 1789058092
+  },
+  {
+   "url": "https://kyoyugame.com/",
+   "title": "Ky\u014dy\u016b - a daily logic puzzle",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wcnthu/ky\u014dy\u016b_a_daily_logic_puzzle/",
+   "created": 1789057151
+  },
+  {
+   "url": "https://signatureseasons.app/",
+   "title": "Signature Seasons:  daily sports puzzle",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wcm8if/signature_seasons_daily_sports_puzzle/",
+   "created": 1789053695
+  },
+  {
+   "url": "https://starwars.guide/red-five/play/",
+   "title": "Red Five, an endless Death Star trench run you play in the browser",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wb1byx/red_five_an_endless_death_star_trench_run_you/",
+   "created": 1788901967
+  },
+  {
+   "url": "https://www.nightlyfeed.com/",
+   "title": "Nightly Feed: a daily vampire stealth puzzle for people who like quick ritual games",
+   "votes": 5,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wa3wnc/nightly_feed_a_daily_vampire_stealth_puzzle_for/",
+   "created": 1788813854
+  },
+  {
+   "url": "https://daily.geowrecked.com/",
+   "title": "I made a daily geography game: five questions, one globe, one weird fact per pin",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wuwkhi/i_made_a_daily_geography_game_five_questions_one/",
+   "created": 1790852844
+  },
+  {
+   "url": "https://quiblys.com/play",
+   "title": "Quiblys \u2013 a daily trivia game: same 10 questions for everyone, 30 seconds each, one shot per day",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wufqhl/quiblys_a_daily_trivia_game_same_10_questions_for/",
+   "created": 1790799754
+  },
+  {
+   "url": "https://catchy.games/game/zepdrop/",
+   "title": "Battle Royale game on browser, Zepdrop",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wu5zps/battle_royale_game_on_browser_zepdrop/",
+   "created": 1790777481
+  },
+  {
+   "url": "https://wishfall.live.page/",
+   "title": "Wishfall: a cozy daily typing game where words turn into stars",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtyot8/wishfall_a_cozy_daily_typing_game_where_words/",
+   "created": 1790753713
+  },
+  {
+   "url": "https://finnmarinov-lgtm.github.io/Feuer_Frei/",
+   "title": "Feuer Frei \u2013 3D-Shooter in the Browser",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtcuqp/feuer_frei_3dshooter_in_the_browser/",
+   "created": 1790694978
+  },
+  {
+   "url": "https://www.predictionmarketclicker.com/",
+   "title": "Prediction Market Clicker: my latest mini game. Is it gambling if you rig it?",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wrqh7t/prediction_market_clicker_my_latest_mini_game_is/",
+   "created": 1790530973
+  },
+  {
+   "url": "https://shiftyshapes.xyz/",
+   "title": "Shifty Shapes",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wrimev/shifty_shapes/",
+   "created": 1790510972
+  },
+  {
+   "url": "https://itordle.org/",
+   "title": "I was bad at Doctordle because I'm not a doctor, so I made one for IT: ITordle",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wojll5/i_was_bad_at_doctordle_because_im_not_a_doctor_so/",
+   "created": 1790200781
+  },
+  {
+   "url": "https://geostats.xyz/",
+   "title": "GeoStats - I love daily geography games, so I built the one I kept wishing existed",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wnkdyc/geostats_i_love_daily_geography_games_so_i_built/",
+   "created": 1790107570
+  },
+  {
+   "url": "https://dramahouse.io/",
+   "title": "Drama House - A single-player social strategy game inspired by Big Brother",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wmmm85/drama_house_a_singleplayer_social_strategy_game/",
+   "created": 1790018583
+  },
+  {
+   "url": "https://hieu-lee.github.io/slay-the-spire-the-boardgame-the-game/",
+   "title": "Slay The Spire The Board Game The Game",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wjnrjq/slay_the_spire_the_board_game_the_game/",
+   "created": 1789731392
+  },
+  {
+   "url": "https://codelet.uk/",
+   "title": "Codelet: a free daily logic puzzle with handwritten clues",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wjjt5c/codelet_a_free_daily_logic_puzzle_with/",
+   "created": 1789717841
+  },
+  {
+   "url": "https://dig-game.pages.dev/",
+   "title": "Dig - Small puzzle game I've built",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wj4zuw/dig_small_puzzle_game_ive_built/",
+   "created": 1789676091
+  },
+  {
+   "url": "https://airlinepioneer.com/",
+   "title": "Airline Pioneer: build an airline empire starting in 1945 (free, no signup)",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1widubv/airline_pioneer_build_an_airline_empire_starting/",
+   "created": 1789602607
+  },
+  {
+   "url": "https://operatormadness.com/",
+   "title": "Operator Madness: Trace the 911 call",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1whfced/operator_madness_trace_the_911_call/",
+   "created": 1789512130
+  },
+  {
+   "url": "https://poptimum.fun/",
+   "title": "[Dev] I made Poptimum, a daily packing puzzle inspired by fridge magnets",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wf39ft/dev_i_made_poptimum_a_daily_packing_puzzle/",
+   "created": 1789292558
+  },
+  {
+   "url": "https://turning.today/",
+   "title": "Turning - Daily chain reaction puzzle. Deceptively simple yet compelling.",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1weo6f0/turning_daily_chain_reaction_puzzle_deceptively/",
+   "created": 1789246966
+  },
+  {
+   "url": "https://mysterycrew.games/",
+   "title": "Mystery Crew - a co-op mystery for one screen and everyone's phones. Every player gets different clues",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wdl1s8/mystery_crew_a_coop_mystery_for_one_screen_and/",
+   "created": 1789143976
+  },
+  {
+   "url": "https://vol-de-mots-atelier.miuci-studio.chatgpt.site/en/vol/?level=vol-en-tutorial",
+   "title": "Letterhaven \u2014 looking for a few people to try a free browser word puzzle for 5\u201310 minutes",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wc57my/letterhaven_looking_for_a_few_people_to_try_a/",
+   "created": 1789004755
+  },
+  {
+   "url": "https://mokddang.com/",
+   "title": "Mokddang - 50 nations grab the Korean peninsula in 8 minutes, no sign-up",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wbez7c/mokddang_50_nations_grab_the_korean_peninsula_in/",
+   "created": 1788939994
+  },
+  {
+   "url": "https://quintaingames.com/ramio/defi/?defi=1dbcleh&src=reddit-webgames&v=2",
+   "title": "Ramio \u2014 rearrange the cards already on the table so every card in your hand fits in. One short puzzle, no sign-up",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wa2l1m/ramio_rearrange_the_cards_already_on_the_table_so/",
+   "created": 1788810885
+  },
+  {
+   "url": "https://www.wordends.com/",
+   "title": "Wordends: a 1v1 browser word game",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1w9tnlj/wordends_a_1v1_browser_word_game/",
+   "created": 1788791183
+  },
+  {
+   "url": "https://www.trenttroyer.com/CoconutSim3/",
+   "title": "Coconut Sim 3 \u2014 you are a coconut",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1w9si7q/coconut_sim_3_you_are_a_coconut/",
+   "created": 1788788455
+  },
+  {
+   "url": "https://www.playtidefall.com/",
+   "title": "Tidefall: Live out your pirate fantasy in a browser-based Age of Sail MMO",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1w9n0ho/tidefall_live_out_your_pirate_fantasy_in_a/",
+   "created": 1788771990
+  },
+  {
+   "url": "https://sprawlcrawl.com/",
+   "title": "Sprawl Crawl! Guess 10 cities from their raw satellite image",
+   "votes": 4,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1w7z8dz/sprawl_crawl_guess_10_cities_from_their_raw/",
+   "created": 1788610694
+  },
+  {
+   "url": "https://chaoschemy.com/games/mix-anything/play/",
+   "title": "Mix Anything \u2013 start with 4 elements and combine anything [browser]",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wx3de4/mix_anything_start_with_4_elements_and_combine/",
+   "created": 1791077386
+  },
+  {
+   "url": "https://www.playcyclorama.com/erg-striplight/",
+   "title": "ERG: STRIPLIGHT - free browser shoot-'em-up where your helmet lamp is both health and beam fuel",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwzqw6/erg_striplight_free_browser_shootemup_where_your/",
+   "created": 1791066324
+  },
+  {
+   "url": "https://www.gamedev.pl/play/unicorn-snap",
+   "title": "Unicorn Snap - style a unicorn, then try to photograph her. Every shot gets a verdict.",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwx7zn/unicorn_snap_style_a_unicorn_then_try_to/",
+   "created": 1791059488
+  },
+  {
+   "url": "https://siam-works.com/works/last-crown/en/?utm_source=reddit&utm_medium=social&utm_campaign=launch&utm_content=webgames",
+   "title": "LAST CROWN | Free Roguelite TCG in Your Browser",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwnoyw/last_crown_free_roguelite_tcg_in_your_browser/",
+   "created": 1791035250
+  },
+  {
+   "url": "https://nothing2lose.eu/",
+   "title": "Nothing2Lose.eu: I made a free browser zombie shooter co-op up to 25 players, no download",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwmzlb/nothing2loseeu_i_made_a_free_browser_zombie/",
+   "created": 1791033270
+  },
+  {
+   "url": "https://desktopdestroyer.lol/",
+   "title": "[Free, no download] Desktop Destroyer: wreck a fake desktop with 9 weapons",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wwikqg/free_no_download_desktop_destroyer_wreck_a_fake/",
+   "created": 1791018126
+  },
+  {
+   "url": "https://cubewords.xyz/",
+   "title": "Cubewords: Crossword on a Cube",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wvww15/cubewords_crossword_on_a_cube/",
+   "created": 1790955191
+  },
+  {
+   "url": "https://golfdle.app/",
+   "title": "Golfdle - New season is live!",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wv09jc/golfdle_new_season_is_live/",
+   "created": 1790863349
+  },
+  {
+   "url": "https://playdots.io/",
+   "title": "Dots - A pen and paper game we used to play as kids in school when the teacher didn't show up",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wus6qb/dots_a_pen_and_paper_game_we_used_to_play_as_kids/",
+   "created": 1790836321
+  },
+  {
+   "url": "https://beta.astoriainsight.com/",
+   "title": "Astoria Insight. My attempt at making the stock market fun to learn",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wunt9y/astoria_insight_my_attempt_at_making_the_stock/",
+   "created": 1790821630
+  },
+  {
+   "url": "https://hardcases.app/",
+   "title": "Game where you judge real court cases",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wu34g3/game_where_you_judge_real_court_cases/",
+   "created": 1790769862
+  },
+  {
+   "url": "https://kerblob.com/",
+   "title": "Kerblob: 3-player crystal grab. Steal from rival zones, dash to knock them over, first to 3 wins (free, no signup, works on mobile)",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtu5v9/kerblob_3player_crystal_grab_steal_from_rival/",
+   "created": 1790737887
+  },
+  {
+   "url": "https://killedbyapixel.github.io/Reversiology",
+   "title": "Reversiology - Learn Reversi by playing, with a coach that grades every move",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wts1hi/reversiology_learn_reversi_by_playing_with_a/",
+   "created": 1790731574
+  },
+  {
+   "url": "https://core-blast.pages.dev/",
+   "title": "Core Blast - made a a turn-based puzzle game, would love some feedback",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wtmju9/core_blast_made_a_a_turnbased_puzzle_game_would/",
+   "created": 1790716900
+  },
+  {
+   "url": "https://arcadewhale.com/games/slip-angle/",
+   "title": "Slip Angle - 3D drift game where touching a wall burns your whole combo",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wt7lzm/slip_angle_3d_drift_game_where_touching_a_wall/",
+   "created": 1790681381
+  },
+  {
+   "url": "http://creaturefeature.gg/",
+   "title": "CreatureFeature.gg",
+   "votes": 3,
+   "source": "r/WebGames",
+   "source_url": "https://www.reddit.com/r/WebGames/",
+   "post_url": "https://www.reddit.com/r/WebGames/comments/1wt31hf/creaturefeaturegg/",
+   "created": 1790664632
+  },
+  {
    "url": "https://inflightsimulator.com/",
    "title": "Lol I made a flight simulator..except you're just a passenger",
    "votes": 365,
@@ -603,6 +1665,357 @@
    "source_url": "https://www.reddit.com/r/IMadeThis/",
    "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wpsixo/minimalistic_weekly_planner_and_to_do_app_without/",
    "created": 1790331248
+  },
+  {
+   "url": "http://thesecretentrance.com/",
+   "title": "I\u2019m trying to get 300 strangers to create one book together \u2014 171 have joined so far",
+   "votes": 16,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1w8jtbf/im_trying_to_get_300_strangers_to_create_one_book/",
+   "created": 1788662059
+  },
+  {
+   "url": "https://prognosticz.com/",
+   "title": "I made a Bloomberg Terminal alternative for people who can't justify $24k/year",
+   "votes": 15,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wj3y14/i_made_a_bloomberg_terminal_alternative_for/",
+   "created": 1789673780
+  },
+  {
+   "url": "https://letterpin.vercel.app/app",
+   "title": "I made a way to pin photos and voice memos to a page in my paper notebook",
+   "votes": 13,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wsamqx/i_made_a_way_to_pin_photos_and_voice_memos_to_a/",
+   "created": 1790590111
+  },
+  {
+   "url": "https://quicktalk.useful-things.click/",
+   "title": "I made a tiny open-source Mac dictation app that works with a hold-to-talk shortcut",
+   "votes": 13,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wbjf6b/i_made_a_tiny_opensource_mac_dictation_app_that/",
+   "created": 1788954810
+  },
+  {
+   "url": "https://tractated.com/",
+   "title": "I built a site that renders difficult old philosophy and literature easier to read",
+   "votes": 11,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wvbx12/i_built_a_site_that_renders_difficult_old/",
+   "created": 1790890285
+  },
+  {
+   "url": "https://ortho.so/",
+   "title": "I made Ortho, a posture reminder app that puts your camera, AirPods/Beats, and MacBook sensors to use",
+   "votes": 11,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wcjiil/i_made_ortho_a_posture_reminder_app_that_puts/",
+   "created": 1789047566
+  },
+  {
+   "url": "https://launchorbit.co/",
+   "title": "Drop your product below \ud83d\udc47 I want to see what you\u2019re building",
+   "votes": 11,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wb85a1/drop_your_product_below_i_want_to_see_what_youre/",
+   "created": 1788918910
+  },
+  {
+   "url": "https://www.fleetgen.ai/",
+   "title": "I quit my 6 figure tech job to make free software for freight brokers",
+   "votes": 10,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wczgqp/i_quit_my_6_figure_tech_job_to_make_free_software/",
+   "created": 1789083052
+  },
+  {
+   "url": "http://cloney.app/",
+   "title": "I built the easiest way to generate unlimited viral videos and get views on the internet",
+   "votes": 10,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wcbjiz/i_built_the_easiest_way_to_generate_unlimited/",
+   "created": 1789023367
+  },
+  {
+   "url": "https://freerangestock.com/",
+   "title": "I've spent the last year building a new version of my site where I give away thousands of my own photos. Plus I've curated, acquired, or licensed tens of thousands more stock photos and illustrations, all of which can be used for free. (No AI images, BTW.)",
+   "votes": 9,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wkvdti/ive_spent_the_last_year_building_a_new_version_of/",
+   "created": 1789846573
+  },
+  {
+   "url": "https://certfusion.com/free-certificate-serial-number-generator",
+   "title": "I built a free bulk certificate serial number generator (no signup, runs in your browser)",
+   "votes": 9,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wfrujq/i_built_a_free_bulk_certificate_serial_number/",
+   "created": 1789355415
+  },
+  {
+   "url": "https://macos-lid-closing-animation.catinice.workers.dev/",
+   "title": "Iphone Duo's folding animation clone for MacBooks (Free and open source)",
+   "votes": 9,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wcoo0z/iphone_duos_folding_animation_clone_for_macbooks/",
+   "created": 1789058992
+  },
+  {
+   "url": "https://basicautomation.io/projects/skidbladnir/about",
+   "title": "I made Skidbladnir - a free desktop app that shrinks images on your own computer and shows you the before/after first (this one: 1.81 MB \u2192 183 KB)",
+   "votes": 8,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wwe8in/i_made_skidbladnir_a_free_desktop_app_that/",
+   "created": 1791002175
+  },
+  {
+   "url": "https://jkindex.io/",
+   "title": "Made a site where you guess PSA grades before the card gets sent in",
+   "votes": 8,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wtdrlg/made_a_site_where_you_guess_psa_grades_before_the/",
+   "created": 1790697051
+  },
+  {
+   "url": "http://sip-kitty.pages.dev/",
+   "title": "I made a Chrome extension where a tiny cat reminds you to drink water",
+   "votes": 8,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wre990/i_made_a_chrome_extension_where_a_tiny_cat/",
+   "created": 1790495569
+  },
+  {
+   "url": "https://launchorbit.co/",
+   "title": "Drop your product below \ud83d\udc47 I want to see what you\u2019re building",
+   "votes": 8,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wptsrf/drop_your_product_below_i_want_to_see_what_youre/",
+   "created": 1790335569
+  },
+  {
+   "url": "http://offscreenapp.com/",
+   "title": "I made an app that pays you to stop using your phone",
+   "votes": 8,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wedgyi/i_made_an_app_that_pays_you_to_stop_using_your/",
+   "created": 1789221755
+  },
+  {
+   "url": "https://getroadie.vercel.app/",
+   "title": "Made my first $9.99 on the internet. Someone in Kentucky tried my Mac app and bought it within 30 minutes.",
+   "votes": 8,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1w8yxie/made_my_first_999_on_the_internet_someone_in/",
+   "created": 1788707927
+  },
+  {
+   "url": "http://jobsorah.com/",
+   "title": "I built a tool where you upload your resume and AI finds matching jobs for you instantly",
+   "votes": 7,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wvwy28/i_built_a_tool_where_you_upload_your_resume_and/",
+   "created": 1790955320
+  },
+  {
+   "url": "https://launchorbit.co/",
+   "title": "Drop your product below \ud83d\udc47 I want to see what you\u2019re building",
+   "votes": 7,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wtbel5/drop_your_product_below_i_want_to_see_what_youre/",
+   "created": 1790691590
+  },
+  {
+   "url": "https://docs.dopbase.com/",
+   "title": "I built open sources alternative to paid services secrets manager",
+   "votes": 7,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1ws25ct/i_built_open_sources_alternative_to_paid_services/",
+   "created": 1790560964
+  },
+  {
+   "url": "https://www.freereader.io/",
+   "title": "I built a free text-to-speech app to turn my books into audiobooks",
+   "votes": 7,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wbv88v/i_built_a_free_texttospeech_app_to_turn_my_books/",
+   "created": 1788981327
+  },
+  {
+   "url": "https://apps.microsoft.com/detail/9PJ1DH037TCK",
+   "title": "Made a taskbar pet to keep me company :)",
+   "votes": 7,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wbgrbh/made_a_taskbar_pet_to_keep_me_company/",
+   "created": 1788946308
+  },
+  {
+   "url": "https://kilho.net/zipmania",
+   "title": "ZipMania: preview images and text inside archives before extracting",
+   "votes": 6,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1ww4s2e/zipmania_preview_images_and_text_inside_archives/",
+   "created": 1790974074
+  },
+  {
+   "url": "https://viktornyberg.com/inkline.html",
+   "title": "I made this because my every day work kept getting interrupted by my editor",
+   "votes": 6,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wm6sru/i_made_this_because_my_every_day_work_kept/",
+   "created": 1789978920
+  },
+  {
+   "url": "https://thelastleaf.lol/",
+   "title": "I built a website that gets closer to its end with every visitor",
+   "votes": 6,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wh8sqv/i_built_a_website_that_gets_closer_to_its_end/",
+   "created": 1789497396
+  },
+  {
+   "url": "https://owlcad.com/",
+   "title": "I made a free 3D design app that runs in your browser. It started because I outgrew Tinkercad.",
+   "votes": 6,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wh2ylf/i_made_a_free_3d_design_app_that_runs_in_your/",
+   "created": 1789484789
+  },
+  {
+   "url": "https://www.appscout.co/",
+   "title": "What's your startup idea? Let's self promote.",
+   "votes": 6,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wb6xap/whats_your_startup_idea_lets_self_promote/",
+   "created": 1788915617
+  },
+  {
+   "url": "https://teaonher.org/?utm_source=reddit.com",
+   "title": "I made TeaOnHerChecker \u2014 a self-check service for women concerned about being posted on TeaOnHer",
+   "votes": 5,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wvbc9h/i_made_teaonherchecker_a_selfcheck_service_for/",
+   "created": 1790888840
+  },
+  {
+   "url": "http://vendingmachine.lol/",
+   "title": "I missed the era when the web was full of weird, unexpected, cool websites (remember StumbleUpon?)So I built a vending machine to bring it back. Insert a coin. And it spits out a random holy-crap-this-is-so-cool website",
+   "votes": 5,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wp7pvx/i_missed_the_era_when_the_web_was_full_of_weird/",
+   "created": 1790270423
+  },
+  {
+   "url": "http://highvibe.vercel.app/",
+   "title": "HighVibe \u2014 an app where the only rule is your post has to be something good",
+   "votes": 5,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wlcqc7/highvibe_an_app_where_the_only_rule_is_your_post/",
+   "created": 1789897439
+  },
+  {
+   "url": "https://www.spybroski.com/",
+   "title": "I made free tool to download/view Social Media Stories without account",
+   "votes": 5,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wkqeq0/i_made_free_tool_to_downloadview_social_media/",
+   "created": 1789834793
+  },
+  {
+   "url": "https://chartdrill.app/?ref=reddit",
+   "title": "I made an app that teaches candlestick charts in five-minute drills (free, no signup)",
+   "votes": 5,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wk52lj/i_made_an_app_that_teaches_candlestick_charts_in/",
+   "created": 1789771944
+  },
+  {
+   "url": "https://apps.microsoft.com/detail/9NSTJ7JXM843",
+   "title": "I built Clear Download Manager to manage files, media, playlists and torrents in one place",
+   "votes": 5,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wj8blo/i_built_clear_download_manager_to_manage_files/",
+   "created": 1789683890
+  },
+  {
+   "url": "https://utilix.app/tools/robots-txt-tester",
+   "title": "I made a robots.txt tester that tells you which line actually blocked your page",
+   "votes": 5,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wi4ywz/i_made_a_robotstxt_tester_that_tells_you_which/",
+   "created": 1789582184
+  },
+  {
+   "url": "https://soul-lift.net/",
+   "title": "Been working on this little side project for a while, so figured I\u2019d finally share it here",
+   "votes": 5,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wcghna/been_working_on_this_little_side_project_for_a/",
+   "created": 1789039719
+  },
+  {
+   "url": "http://hoops-gm.com/",
+   "title": "I made this project for 75k in 2 months",
+   "votes": 5,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wbnjg6/i_made_this_project_for_75k_in_2_months/",
+   "created": 1788964967
+  },
+  {
+   "url": "http://getfling.app/",
+   "title": "I kept opening the same apps, folders and shortcuts on my Mac, so I put them around my cursor",
+   "votes": 4,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wxc2cr/i_kept_opening_the_same_apps_folders_and/",
+   "created": 1791108365
+  },
+  {
+   "url": "https://sidepad.vercel.app/",
+   "title": "I built a Notes app like notion and actually started using it",
+   "votes": 4,
+   "source": "r/IMadeThis",
+   "source_url": "https://www.reddit.com/r/IMadeThis/",
+   "post_url": "https://www.reddit.com/r/IMadeThis/comments/1wv7vb1/i_built_a_notes_app_like_notion_and_actually/",
+   "created": 1790880753
   }
  ]
 }

@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""Build site/data/sites.json directly from this month's top Reddit posts.
+"""Build site/data/sites.json from the last 30 days of top Show HN and Reddit posts.
 
 Only posts centred on one standalone website are kept (no GitHub repos,
 store pages, blog posts or social links). Each site is then probed to see
 whether it can be shown inside an <iframe>; sites that can't stay on the
 leaderboard but are left out of live view.
 
-Standard library only. Reddit's API is used when REDDIT_CLIENT_ID and
-REDDIT_CLIENT_SECRET are set; otherwise its public listings and RSS are read.
-Post details and vote counts always come from Reddit itself.
+Show HN comes from hn.algolia.com. Reddit comes from its API when
+REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET are set, otherwise from its public
+listings, which give live vote counts. Reddit blocks those listings from
+GitHub's servers, so a blocked subreddit falls back to Reddit's RSS feed with
+vote counts from the Arctic Shift archive, which run somewhat behind the live
+ones. Standard library only.
 """
 
 import argparse
@@ -132,13 +135,34 @@ def window_start():
     return dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)
 
 
+def show_hn(since):
+    q = urllib.parse.urlencode({
+        "tags": "show_hn",
+        "numericFilters": f"created_at_i>={int(since.timestamp())},points>=10",
+        "hitsPerPage": 1000,
+    })
+    hits = json.loads(fetch(f"https://hn.algolia.com/api/v1/search?{q}"))["hits"]
+    out = []
+    for h in hits:
+        title = re.sub(r"^show hn:\s*", "", h.get("title") or "", flags=re.I)
+        url = site_url(h.get("url") or "", title)
+        if not url or not isinstance(h.get("points"), int):
+            continue
+        out.append({
+            "url": url, "title": title, "votes": h["points"],
+            "source": "Hacker News", "source_url": "https://news.ycombinator.com/show",
+            "post_url": f"https://news.ycombinator.com/item?id={h['objectID']}",
+            "created": h.get("created_at_i"),
+        })
+    return out
+
+
 def refresh_due(now):
-    """Refresh when due, or immediately when migrating the old mixed feed."""
+    """Refresh when the saved next_refresh_at has passed (or the file is unusable)."""
     try:
         with open(OUT, encoding="utf-8") as f:
             data = json.load(f)
-        if (not data.get("sites") or not data.get("next_refresh_at")
-                or any(not p.get("source", "").startswith("r/") for p in data["sites"])):
+        if not data.get("sites") or not data.get("next_refresh_at"):
             return True
         generated = dt.datetime.fromisoformat(data["generated_at"])
         due = dt.datetime.fromisoformat(data["next_refresh_at"])
@@ -310,13 +334,56 @@ def listing_posts(sub):
     return list(posts.values())
 
 
+def archive_scores(ids):
+    scores = {}
+    for i in range(0, len(ids), 100):
+        q = urllib.parse.urlencode({"ids": ",".join(ids[i:i + 100]), "fields": "id,score"})
+        try:
+            data = json.loads(fetch(f"https://arctic-shift.photon-reddit.com/api/posts/ids?{q}", timeout=40))
+            scores.update({p["id"]: p["score"] for p in data.get("data") or [] if isinstance(p.get("score"), int)})
+        except Exception as e:
+            print(f"warn: Arctic Shift: {e}", file=sys.stderr)
+    return scores
+
+
+def cached_scores():
+    """Vote counts from the last successful scrape, keyed by post id."""
+    try:
+        with open(REDDIT_CACHE, encoding="utf-8") as f:
+            posts = json.load(f)["posts"]
+        return {m.group(1): p["votes"] for p in posts if (m := re.search(r"/comments/(\w+)", p.get("post_url", "")))}
+    except (OSError, ValueError, KeyError, TypeError):
+        return {}
+
+
+def feed_fallback(sub, since):
+    """Posts for a subreddit whose listing is blocked: links from its RSS feed,
+    votes from the archive. Archive counts only ever lag, so a post never drops
+    below a count seen in an earlier scrape. Posts with no known count are skipped."""
+    posts = [p for p in reddit_feed(sub, since) if not NSFW.search(p["title"])]
+    archived, cache = archive_scores([p["id"] for p in posts]), cached_scores()
+    out = []
+    for p in posts:
+        known = [v for v in (archived.get(p["id"]), cache.get(p["id"])) if isinstance(v, int)]
+        url = pick_site(p["title"], p["direct"], p["body"])
+        if url and known:
+            out.append(reddit_entry(sub, url, p["title"], max(known), p["permalink"], p["created"]))
+    return out
+
+
 def reddit_pages(since):
     out = []
     for sub in SUBREDDITS:
         try:
             posts = listing_posts(sub)
         except Exception as e:
-            print(f"warn: r/{sub}: {e}", file=sys.stderr)
+            print(f"warn: r/{sub} listing: {e}; using its RSS feed with archived vote counts", file=sys.stderr)
+            try:
+                got = feed_fallback(sub, since)
+                out += got
+                print(f"r/{sub}: {len(got)} sites (archived scores)", flush=True)
+            except Exception as e2:
+                print(f"warn: r/{sub}: {e2}", file=sys.stderr)
             continue
         posts = [p for p in posts if p["created"] >= since.timestamp()
                  and not p["excluded"] and not NSFW.search(p["title"])]
@@ -426,6 +493,12 @@ def main(if_due=False):
     print(f"Reddit: {len(posts)} candidate posts")
     if not posts:
         sys.exit("no fresh, scored Reddit posts scraped; keeping existing data")
+    try:
+        hn = show_hn(since)
+    except Exception as e:
+        sys.exit(f"Show HN failed ({e}); keeping existing data")
+    print(f"Show HN: {len(hn)} candidate posts")
+    posts += hn
 
     # One entry per domain, keeping its best-voted post.
     best = {}
@@ -454,7 +527,8 @@ def main(if_due=False):
             "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
             "next_refresh_at": next_refresh_time(started).isoformat(timespec="seconds"),
             "since": since.isoformat(timespec="seconds"),
-            "sources": [{"name": f"r/{s}", "url": f"https://www.reddit.com/r/{s}/"} for s in SUBREDDITS],
+            "sources": [{"name": "Show HN", "url": "https://news.ycombinator.com/show"}]
+                       + [{"name": f"r/{s}", "url": f"https://www.reddit.com/r/{s}/"} for s in SUBREDDITS],
             "sites": sites,
         }, f, separators=(",", ":"), ensure_ascii=False)
     os.replace(tmp, OUT)

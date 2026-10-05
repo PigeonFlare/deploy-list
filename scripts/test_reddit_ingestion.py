@@ -1,4 +1,4 @@
-"""Offline regression checks for direct Reddit ingestion and its cadence."""
+"""Offline regression checks for Reddit and Show HN ingestion and its cadence."""
 
 import contextlib
 import datetime as dt
@@ -84,11 +84,28 @@ class RedditIngestionTests(unittest.TestCase):
     def test_one_blocked_subreddit_does_not_disable_the_others(self):
         with patch.object(scrape, "SUBREDDITS", ["Blocked", "Working"]), \
              patch.object(scrape, "listing_posts", side_effect=[RuntimeError("403"), [listed_post()]]), \
+             patch.object(scrape, "feed_fallback", side_effect=RuntimeError("also blocked")), \
              patch.object(scrape, "reddit_feed") as feed:
             posts = scrape.reddit_pages(SINCE)
         self.assertEqual([p["source"] for p in posts], ["r/Working"])
         self.assertEqual(posts[0]["votes"], 0)
         feed.assert_not_called()
+
+    def test_blocked_listing_falls_back_to_feed_with_archived_votes(self):
+        feed = [{"id": "a", "title": "Tool", "direct": "https://a.example/", "body": [],
+                 "permalink": "/r/Blocked/comments/a/tool/", "created": 1791028800},
+                {"id": "b", "title": "Tool", "direct": "https://b.example/", "body": [],
+                 "permalink": "/r/Blocked/comments/b/tool/", "created": 1791028800},
+                {"id": "c", "title": "Tool", "direct": "https://c.example/", "body": [],
+                 "permalink": "/r/Blocked/comments/c/tool/", "created": 1791028800}]
+        with patch.object(scrape, "SUBREDDITS", ["Blocked"]), \
+             patch.object(scrape, "listing_posts", side_effect=RuntimeError("403")), \
+             patch.object(scrape, "reddit_feed", return_value=feed), \
+             patch.object(scrape, "archive_scores", return_value={"a": 40, "b": 5}), \
+             patch.object(scrape, "cached_scores", return_value={"b": 90}):
+            posts = scrape.reddit_pages(SINCE)
+        # Archived counts never undercut an earlier count; posts with no known count are skipped.
+        self.assertEqual({p["url"]: p["votes"] for p in posts}, {"https://a.example/": 40, "https://b.example/": 90})
 
     def test_text_post_uses_reddit_feed_links_and_live_listing_score(self):
         post = listed_post(**{"content-href": "https://www.reddit.com/r/SideProject/comments/example/example/", "score": "12"})
@@ -156,18 +173,31 @@ class RedditIngestionTests(unittest.TestCase):
         self.assertEqual(len(posts), 1)
         self.assertEqual(posts[0]["votes"], 0)
 
-    def test_successful_rankings_are_reddit_only_and_keep_highest_vote_per_domain(self):
+    def test_successful_rankings_merge_show_hn_and_keep_highest_vote_per_domain(self):
+        hn = {**entry("https://hn.example/", 50), "source": "Hacker News"}
         with tempfile.TemporaryDirectory() as directory:
             out = Path(directory) / "sites.json"
             posts = [entry(votes=0), entry("https://example.com/demo", 25), entry("https://other.example/", 10)]
             with patch.object(scrape, "OUT", str(out)), patch.object(scrape, "reddit", return_value=posts), \
+                 patch.object(scrape, "show_hn", return_value=[hn]), \
                  patch.object(scrape, "embeddable", return_value=True):
                 scrape.main()
             data = json.loads(out.read_text())
-        self.assertEqual([p["votes"] for p in data["sites"]], [25, 10])
-        self.assertTrue(all(p["source"].startswith("r/") for p in data["sites"]))
-        self.assertTrue(all(s["name"].startswith("r/") for s in data["sources"]))
+        self.assertEqual([p["votes"] for p in data["sites"]], [50, 25, 10])
+        self.assertEqual(data["sites"][0]["source"], "Hacker News")
+        self.assertEqual(data["sources"][0]["name"], "Show HN")
         self.assertIn("next_refresh_at", data)
+
+    def test_show_hn_failure_keeps_existing_data(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory) / "sites.json"
+            out.write_text('{"generated_at":"previous","sites":[]}')
+            previous = out.read_bytes()
+            with patch.object(scrape, "OUT", str(out)), patch.object(scrape, "reddit", return_value=[entry()]), \
+                 patch.object(scrape, "show_hn", side_effect=RuntimeError("down")):
+                with self.assertRaisesRegex(SystemExit, "Show HN failed"):
+                    scrape.main()
+            self.assertEqual(out.read_bytes(), previous)
 
     def test_rate_limit_retries_are_bounded(self):
         error = urllib.error.HTTPError("https://www.reddit.com/", 429, "Too many requests", {}, None)
@@ -201,10 +231,10 @@ class RedditIngestionTests(unittest.TestCase):
             reddit.assert_not_called()
             self.assertEqual(out.read_bytes(), previous)
 
-    def test_mixed_archived_and_malformed_snapshots_are_due_for_migration(self):
+    def test_snapshots_without_a_valid_schedule_are_due(self):
         now = dt.datetime(2026, 10, 4, tzinfo=dt.timezone.utc)
         payloads = [{"sites": [entry()], "generated_at": now.isoformat()},
-                    {"sites": [{**entry(), "source": "Hacker News"}], "generated_at": now.isoformat(), "next_refresh_at": "2026-10-07T00:00:00+00:00"},
+                    {"sites": [], "generated_at": now.isoformat(), "next_refresh_at": "2026-10-07T00:00:00+00:00"},
                     {"sites": [entry()], "generated_at": "invalid", "next_refresh_at": "invalid"}]
         with tempfile.TemporaryDirectory() as directory:
             out = Path(directory) / "sites.json"
