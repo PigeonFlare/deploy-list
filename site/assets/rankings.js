@@ -99,3 +99,28 @@ DL.loadData().then((d) => {
   const tbody = document.getElementById("rows");
   if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="updated">Couldn\'t load rankings.</td></tr>';
 });
+
+// Parallax: the city photo behind the page drifts up at a fraction of the scroll speed,
+// so it trails the title and table. It's made tall enough to never run out at the bottom.
+(() => {
+  const bg = document.querySelector(".paris");
+  if (!bg) return;
+  const still = matchMedia("(prefers-reduced-motion: reduce)");
+  const RATE = 0.3;
+  let queued = false;
+  const rate = () => (still.matches ? 0 : RATE);
+  const move = () => {
+    queued = false;
+    bg.style.transform = `translate3d(0, ${(-scrollY * rate()).toFixed(1)}px, 0)`;
+  };
+  const size = () => {
+    const room = Math.max(0, document.documentElement.scrollHeight - innerHeight);
+    bg.style.setProperty("--travel", `${Math.ceil(room * rate())}px`);
+    move();
+  };
+  addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(move); } }, { passive: true });
+  addEventListener("resize", size);
+  still.addEventListener("change", size);
+  new ResizeObserver(size).observe(document.querySelector(".board") || document.body);
+  size();
+})();
