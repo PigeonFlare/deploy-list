@@ -340,11 +340,8 @@ body.board-page { background: var(--bg); }
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 /* Red brush stroke under the category word, painted in left to right on load. */
-/* Individual bristle lines through the stroke: darker and lighter strands, plus a couple
-   trailing just below it. */
-.brush .brush-dark, .brush .brush-trail { fill: color-mix(in srgb, var(--red) 55%, #000); opacity: 0.6; }
-.brush .brush-faint { opacity: 0.35; }
-.brush .brush-light { fill: #fff; opacity: 0.32; }
+/* Two loose bristles trailing just below the stroke, in the same red. */
+.brush .brush-trail { opacity: 0.75; }
 .brush { position: absolute; left: -4%; width: 108%; bottom: -0.3em; height: 0.5em; fill: var(--red); overflow: visible; z-index: -1; }
 .board h1 .noun { isolation: isolate; }
 .brush-reveal { transform-box: fill-box; transform-origin: left center; animation: paint 0.7s cubic-bezier(0.6, 0.05, 0.3, 1) 0.15s both; }
