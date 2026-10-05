@@ -227,7 +227,7 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 /* Wordmark: a heavy sans "deploy" set against an italic serif "list" in a blue-violet ink. */
 .logo {
   font-family: var(--display); font-size: clamp(60px, 13vw, 140px); font-weight: 700; letter-spacing: -0.05em; margin: 0; line-height: 1;
-  padding-bottom: 0.08em; white-space: nowrap;
+  padding-bottom: 0.04em; white-space: nowrap;
 }
 .logo .w1 {
   padding-right: 0.08em; margin-right: -0.08em;
@@ -246,7 +246,8 @@ button.lg:disabled:hover { background: var(--lg-tint); }
   font-size: 14px; font-weight: 600; letter-spacing: -0.005em; color: var(--text); text-decoration: none;
 }
 .top-donate:hover { text-decoration: underline; text-underline-offset: 3px; }
-.tagline { font-size: clamp(17px, 2.3vw, 22px); color: var(--muted); margin: 20px 0 44px; letter-spacing: -0.01em; max-width: 40ch; }
+/* Kept close under the wordmark so the title, line and buttons read as one block. */
+.tagline { font-size: clamp(17px, 2.3vw, 22px); font-weight: 500; color: color-mix(in srgb, var(--text) 72%, transparent); margin: 6px 0 30px; letter-spacing: -0.015em; max-width: 40ch; text-wrap: balance; }
 .cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 .pill {
   display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 28px; border-radius: 999px;
