@@ -230,7 +230,7 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 }
 .logo .w1 {
   padding-right: 0.08em; margin-right: -0.08em;
-  background: linear-gradient(180deg, var(--text) 35%, color-mix(in srgb, var(--text) 72%, var(--space)));
+  background: linear-gradient(180deg, var(--text) 50%, color-mix(in srgb, var(--text) 90%, var(--space)));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .logo .w2 {
@@ -299,7 +299,7 @@ body.board-page::before {
 .board h1 { font-family: var(--display); font-size: clamp(42px, 7.6vw, 86px); line-height: 1.05; font-weight: 700; text-align: center; margin: 0; letter-spacing: -0.045em; }
 .board h1 .lead {
   display: inline-block; padding-right: 0.06em; margin-right: -0.06em;
-  background: linear-gradient(180deg, var(--text) 40%, color-mix(in srgb, var(--text) 62%, var(--bg)));
+  background: linear-gradient(180deg, var(--text) 50%, color-mix(in srgb, var(--text) 90%, var(--bg)));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .board h1 .noun { position: relative; display: inline-block; margin-left: 0.06em; }
