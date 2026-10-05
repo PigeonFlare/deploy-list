@@ -266,14 +266,14 @@
 
     // ---- site snapshots ----
     const pics = [], cards = [];
-    const MAX_CARDS = 4, CARD_W = 34, CARD_H = CARD_W * 0.625; // world units; stills are 16:10
+    const MAX_CARDS = 8, CARD_W = 34, CARD_H = CARD_W * 0.625; // world units; stills are 16:10
     let spawnIn = 600;
     fetch(ROOT + "snapshots/index.json")
       .then((r) => (r.ok ? r.json() : []))
       .then((names) => {
         if (!Array.isArray(names)) return;
         // Shuffle, then load a handful at a time as they're needed.
-        names = names.filter((n) => /^[\w.-]+\.jpg$/.test(n)).sort(() => Math.random() - 0.5).slice(0, 40);
+        names = names.filter((n) => /^[\w.-]+\.jpg$/.test(n)).sort(() => Math.random() - 0.5).slice(0, 80);
         names.forEach((n) => {
           const img = new Image();
           img.decoding = "async";
@@ -297,7 +297,7 @@
       sctx.clearRect(0, 0, w, h);
       if (reduce) return;
       spawnIn -= dt;
-      if (spawnIn <= 0) { spawnCard(); spawnIn = 700 + Math.random() * 900; }
+      if (spawnIn <= 0) { spawnCard(); spawnIn = 350 + Math.random() * 450; }
       const scale = Math.max(w, h);
       for (let i = cards.length - 1; i >= 0; i--) {
         const c = cards[i];
