@@ -42,7 +42,15 @@ REFRESH_INTERVAL = dt.timedelta(days=3)
 # Match the daily due-check in .github/workflows/deploy.yml.
 REFRESH_HOUR, REFRESH_MINUTE = 6, 17
 
-SUBREDDITS = ["SideProject", "InternetIsBeautiful", "WebGames", "alphaandbetausers", "IMadeThis"]
+# Each contributed at least two standalone sites with 100+ votes in a month (checked Oct 2026);
+# r/WebGames and r/alphaandbetausers didn't and were dropped.
+SUBREDDITS = ["SideProject", "InternetIsBeautiful", "IMadeThis", "ClaudeAI", "SaaS"]
+# Subreddits where most top posts are news, announcements or discussion: only posts
+# whose title says the poster made the thing count.
+MAKER_ONLY = {"ClaudeAI", "SaaS"}
+MAKER_TITLE = re.compile(
+    r"\b(i|we|i've|we've|i'm|we're|my|our)\b|^(made|built|created|launched|introducing my)\b|"
+    r"\b(made|built|build|building|created|launched|shipped|coded|vibe-?coded|remade|recreated)\b", re.I)
 
 # Hosts that are never "a standalone website" for our purposes.
 BLOCKED_HOSTS = {
@@ -58,13 +66,24 @@ BLOCKED_HOSTS = {
     "reddit.com", "redd.it", "redditstatic.com", "redditmedia.com", "reddit.app.link", "onelink.me", "app.link", "imgur.com", "i.imgur.com", "news.ycombinator.com", "discord.gg",
     "discord.com", "t.me", "arxiv.org", "wikipedia.org", "bit.ly", "tinyurl.com", "linktr.ee",
     "deploylist.com", "pigeonflare.github.io",  # never frame our own origin
+    # AI vendors' own pages (announcements, docs, chat links)
+    "anthropic.com", "claude.ai", "claude.com", "openai.com", "chatgpt.com", "gemini.google.com",
+    # News and publishing
+    "businessinsider.com", "theverge.com", "techcrunch.com", "wired.com", "arstechnica.com", "reuters.com",
+    "bloomberg.com", "cnbc.com", "cnn.com", "bbc.com", "bbc.co.uk", "nytimes.com", "theguardian.com",
+    "forbes.com", "axios.com", "wsj.com", "ft.com", "404media.co", "tomshardware.com", "xda-developers.com",
+    "gamesradar.com", "pcgamer.com", "theregister.com", "zdnet.com", "engadget.com", "venturebeat.com",
+    "leaddev.com", "infoq.com", "martinfowler.com",
 }
 BLOG_PATH = re.compile(r"/(blog|posts?|articles?|news|p|story|stories|writing|essays?|\d{4}/\d{2})(/|$)", re.I)
-BLOG_TITLE = re.compile(r"^(how|why|what) i\b|\bi wrote\b|\bwrite-?up\b|\bpost-?mortem\b|\blessons learned\b|\bblog\b", re.I)
+BLOG_TITLE = re.compile(r"^(how|why|what) i\b|\bi wrote\b|\bwrite-?up\b|\bpost-?mortem\b|\blessons learned\b|\bblog\b|"
+                        r"^(why|how to|hot take|opinion|explaining|introducing|announcing)\b", re.I)
+# Only words that clearly mean "a game"; looser ones like play, simulator or levels
+# also describe plenty of tools.
 GAME_WORDS = re.compile(
-    r"\b(game|games|gaming|play|playable|puzzle|puzzles|wordle|chess|arcade|multiplayer|trivia|sudoku|"
-    r"crossword|roguelike|platformer|idle|clicker|quiz|guess|geoguessr|tetris|snake|minesweeper|solitaire|"
-    r"factorio|simulator|rpg|mmo|io game)\b", re.I)
+    r"\b(game|games|gaming|gameplay|playable|puzzle|puzzles|wordle|chess|arcade|trivia|sudoku|crossword|"
+    r"roguelike|roguelite|platformer|clicker|quiz|geoguessr|tetris|minesweeper|solitaire|rpg|mmo|io game|"
+    r"shooter|stickman|pok[eé]mon|tower defense|pinball|speedrun|match-3|flight simulator)\b", re.I)
 APP_WORDS = re.compile(
     r"\b(app|apps|tool|tools|editor|generator|tracker|converter|platform|dashboard|ai|saas|api|manager|"
     r"builder|calculator|planner|extension|assistant|analytics|search|engine|notes?|budget|finance|"
@@ -113,7 +132,7 @@ def site_url(url, title):
         return None
     if port and port not in (80, 443, 8080, 8443):
         return None
-    if BLOG_PATH.search(parts.path) or BLOG_TITLE.search(title or ""):
+    if host.startswith(("blog.", "engineering.")) or host.endswith(".engineering") or BLOG_PATH.search(parts.path) or BLOG_TITLE.search(title or ""):
         return None
     if re.search(r"\.(pdf|png|jpe?g|gif|mp4|zip)$", parts.path, re.I):
         return None
@@ -121,6 +140,19 @@ def site_url(url, title):
     if not netloc:
         return None
     return urllib.parse.urlunsplit((parts.scheme, netloc, parts.path or "/", parts.query, ""))
+
+
+def page_summary(body):
+    """The words a page uses to describe itself: its title, description and keywords."""
+    text = body.decode("utf-8", "replace")
+    parts = re.findall(r"<title[^>]*>(.*?)</title>", text, re.I | re.S)[:1]
+    for m in re.finditer(r"<meta\b[^>]*>", text, re.I):
+        tag = m.group(0)
+        if re.search(r"""(name|property)\s*=\s*["']?(description|keywords|og:title|og:description|twitter:description)["'\s>]""", tag, re.I):
+            c = re.search(r"""content\s*=\s*(["'])(.*?)\1""", tag, re.I | re.S)
+            if c:
+                parts.append(c.group(2))
+    return html.unescape(" ".join(p.strip() for p in parts))[:2000]
 
 
 def category(text, source):
@@ -421,7 +453,7 @@ def reddit(since):
         with open(tmp, "w") as f:
             json.dump({"scraped_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "posts": posts}, f, indent=1)
         os.replace(tmp, REDDIT_CACHE)
-        return posts
+        return [p for p in posts if p["source"].removeprefix("r/") not in MAKER_ONLY or MAKER_TITLE.search(p["title"])]
     return []
 
 
@@ -460,6 +492,12 @@ def _probe_open(req):
 
 def embeddable(url):
     """True when the site loads over HTTPS and doesn't forbid framing."""
+    return probe(url)[0]
+
+
+def probe(url):
+    """(embeddable, page summary): whether the site loads over HTTPS without forbidding
+    framing, and how its landing page describes itself."""
     url = url.replace("http://", "https://", 1)
     deadline = time.monotonic() + PROBE_DEADLINE
     try:
@@ -467,7 +505,7 @@ def embeddable(url):
             host = host_of(url)
             if (not url.startswith("https://") or not host or blocked(host) or is_ip(host)
                     or not public_host(host) or time.monotonic() > deadline):
-                return False
+                return False, ""
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (deploylist iframe check)"})
             try:
                 r = _probe_open(req)
@@ -475,25 +513,31 @@ def embeddable(url):
                 location = e.headers.get("Location") if e.code in (301, 302, 303, 307, 308) else None
                 e.close()
                 if not location:
-                    return False
+                    return False, ""
                 url = urllib.parse.urljoin(url, location)
                 continue
             with r as resp:
                 if resp.status >= 400:
-                    return False
+                    return False, ""
+                summary = ""
+                if "html" in (resp.headers.get("Content-Type") or "").lower():
+                    try:
+                        summary = page_summary(resp.read(200_000))
+                    except Exception:
+                        pass
                 for xfo in resp.headers.get_all("X-Frame-Options") or []:
                     xfo_lower = xfo.lower()
                     # ALLOW-FROM is ignored by current browsers, so it doesn't block framing.
                     if "deny" in xfo_lower or "sameorigin" in xfo_lower:
-                        return False
+                        return False, summary
                 for csp in resp.headers.get_all("Content-Security-Policy") or []:
                     m = re.search(r"frame-ancestors([^;]*)", csp, re.I)
                     if m and "*" not in m.group(1).split():
-                        return False
-                return True
-        return False  # too many redirects
+                        return False, summary
+                return True, summary
+        return False, ""  # too many redirects
     except Exception:
-        return False
+        return False, ""
 
 
 def main(if_due=False):
@@ -525,13 +569,15 @@ def main(if_due=False):
     # Probe sites in parallel; any probe still running after the overall limit
     # counts as not embeddable instead of holding up the refresh.
     ex = ThreadPoolExecutor(32)
-    futures = [ex.submit(embeddable, s["url"]) for s in sites]
+    futures = [ex.submit(probe, s["url"]) for s in sites]
     wait(futures, timeout=PROBE_DEADLINE * 4)
-    flags = [f.done() and not f.cancelled() and f.exception() is None and f.result() for f in futures]
+    results = [f.result() if f.done() and not f.cancelled() and f.exception() is None else (False, "") for f in futures]
+    flags = [ok for ok, _ in results]
     ex.shutdown(wait=False, cancel_futures=True)
-    for s, ok in zip(sites, flags):
+    for s, (ok, summary) in zip(sites, results):
         s["embeddable"] = ok
-        s["category"] = category(s["title"], s["source"])
+        # The post title plus the site's own title and description.
+        s["category"] = category(s["title"] + " " + summary, s["source"])
         s["url"] = s["url"].replace("http://", "https://", 1) if ok else s["url"]
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)

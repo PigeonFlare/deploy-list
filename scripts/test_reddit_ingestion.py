@@ -173,6 +173,17 @@ class RedditIngestionTests(unittest.TestCase):
         self.assertEqual(len(posts), 1)
         self.assertEqual(posts[0]["votes"], 0)
 
+    def test_maker_only_subreddits_keep_only_posts_about_something_made(self):
+        made = scrape.reddit_entry("ClaudeAI", "https://made.example/", "I made a lounge for vibecoders", 900, "/r/ClaudeAI/comments/a/x/", 1)
+        news = scrape.reddit_entry("ClaudeAI", "https://news.example/", "Anthropic researcher quits", 900, "/r/ClaudeAI/comments/b/x/", 1)
+        other = scrape.reddit_entry("SideProject", "https://other.example/", "Plasma UI panels", 50, "/r/SideProject/comments/c/x/", 1)
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(scrape, "REDDIT_CACHE", str(Path(directory) / "cache.json")), \
+             patch.object(scrape, "reddit_token", return_value=None), \
+             patch.object(scrape, "reddit_pages", return_value=[made, news, other]):
+            posts = scrape.reddit(scrape.window_start())
+        self.assertEqual([p["url"] for p in posts], ["https://made.example/", "https://other.example/"])
+
     def test_successful_rankings_merge_show_hn_and_keep_highest_vote_per_domain(self):
         hn = {**entry("https://hn.example/", 50), "source": "Hacker News"}
         with tempfile.TemporaryDirectory() as directory:
@@ -181,7 +192,7 @@ class RedditIngestionTests(unittest.TestCase):
                      entry("https://few-votes.example/", 9)]
             with patch.object(scrape, "OUT", str(out)), patch.object(scrape, "reddit", return_value=posts), \
                  patch.object(scrape, "show_hn", return_value=[hn]), \
-                 patch.object(scrape, "embeddable", return_value=True):
+                 patch.object(scrape, "probe", return_value=(True, "")):
                 scrape.main()
             data = json.loads(out.read_text())
         self.assertEqual([p["votes"] for p in data["sites"]], [50, 25, 10])
