@@ -45,6 +45,17 @@ jobs:
           else
             python3 -B scripts/scrape.py --if-due
           fi
+      # Small stills of each ranked site for the homepage. Runs without the push token,
+      # in the runner's own Chrome; stills are kept until their site leaves the rankings.
+      - name: Capture site snapshots
+        if: steps.scrape.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          npm install --no-save --no-audit --no-fund --prefix "$RUNNER_TEMP/pw" playwright-core@1.63.0
+          NODE_PATH="$RUNNER_TEMP/pw/node_modules" node scripts/snapshots.cjs
       - name: Report retained rankings
         if: steps.scrape.outcome == 'failure'
         run: echo "::warning::Direct Reddit ingestion failed. Retaining the last successful rankings and update timestamp."
@@ -55,7 +66,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/data/sites.json data/reddit-cache.json
+          git add site/data/sites.json data/reddit-cache.json site/snapshots
           git diff --cached --quiet || (git commit -m "Refresh rankings data" && git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main)
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
