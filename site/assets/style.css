@@ -61,6 +61,10 @@
   --space: #dde3f0;
   --space-edge: #c3cce0;
   --glow: rgba(255, 255, 255, 0.85);
+  --aurora-1: rgba(47, 107, 255, 0.26);
+  --aurora-2: rgba(138, 92, 255, 0.24);
+  --aurora-3: rgba(255, 90, 140, 0.14);
+  --aurora-top: #e8eefc;
   --radius: 16px;
   --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --display: "Montserrat", var(--font);
@@ -85,6 +89,7 @@
     --menu-hover: rgba(255, 255, 255, 0.09);
     --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
     --red: #ff5a52; --star: 214, 90%, 84%; --space: #04050b; --space-edge: #010103; --glow: rgba(70, 110, 255, 0.16);
+   --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
   }
 }
 :root[data-theme="dark"] {
@@ -106,6 +111,7 @@
   --menu-hover: rgba(255, 255, 255, 0.09);
   --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
   --red: #ff5a52; --star: 214, 90%, 84%; --space: #04050b; --space-edge: #010103; --glow: rgba(70, 110, 255, 0.16);
+   --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
 }
 
 * { box-sizing: border-box; }
@@ -223,6 +229,7 @@ button.lg:disabled:hover { background: var(--lg-tint); }
   padding-bottom: 0.08em; white-space: nowrap;
 }
 .logo .w1 {
+  padding-right: 0.08em; margin-right: -0.08em;
   background: linear-gradient(180deg, var(--text) 35%, color-mix(in srgb, var(--text) 72%, var(--space)));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -232,11 +239,12 @@ button.lg:disabled:hover { background: var(--lg-tint); }
   background: linear-gradient(105deg, var(--mark-a) 10%, var(--mark-b) 90%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.top-note {
-  position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 2; margin: 0;
-  height: 40px; display: flex; align-items: center; text-align: center;
-  font-size: 13px; font-weight: 500; letter-spacing: 0.01em; color: var(--muted); white-space: nowrap;
+.top-donate {
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 2;
+  height: 40px; display: flex; align-items: center;
+  font-size: 14px; font-weight: 600; letter-spacing: -0.005em; color: var(--text); text-decoration: none;
 }
+.top-donate:hover { text-decoration: underline; text-underline-offset: 3px; }
 .tagline { font-size: clamp(17px, 2.3vw, 22px); color: var(--muted); margin: 20px 0 44px; letter-spacing: -0.01em; max-width: 40ch; }
 .cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 .pill {
@@ -244,12 +252,6 @@ button.lg:disabled:hover { background: var(--lg-tint); }
   font-size: 17px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none;
 }
 .pill svg.icon { width: 18px; height: 18px; }
-.home-foot {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 1; padding: 0 16px max(22px, env(safe-area-inset-bottom));
-  text-align: center; font-size: 13px; color: var(--muted);
-}
-.home-foot a { color: var(--text); text-decoration: none; font-weight: 500; }
-.home-foot a:hover { text-decoration: underline; }
 
 /* Live view: the site fills the screen and the controls float over it.
    Embedded sites can be any color, so Live's glass carries more tint to keep text readable. */
@@ -277,26 +279,50 @@ body.live { overflow: hidden; height: 100%; }
   body.live .corner, body.live .live-controls { opacity: 0; transition: opacity 0.35s ease; }
   body.live .corner { padding: 14px; margin: -14px; }
   body.live .live-controls { padding: 14px; margin-top: -14px; }
-  body.live .corner:hover, body.live .corner:focus-within, body.live .corner.open,
-  body.live .live-controls:hover, body.live .live-controls:focus-within,
-  body.live.peek .corner, body.live.peek .live-controls { opacity: 1; transition-duration: 0.18s; }
+  body.live:has(.corner:hover, .corner:focus-within, .corner.open, .live-controls:hover, .live-controls:focus-within) :is(.corner, .live-controls),
+  body.live.peek :is(.corner, .live-controls) { opacity: 1; transition-duration: 0.18s; }
 }
 
 /* Leaderboard */
-body.board-page {
+/* A soft aurora: blue and violet washes up top, a faint rose glow low on the page. */
+body.board-page { background: var(--bg); }
+body.board-page::before {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 420px at 50% -80px, var(--bg-2), transparent),
-    var(--bg);
+    radial-gradient(55% 60% at 12% -8%, var(--aurora-1), transparent 70%),
+    radial-gradient(50% 55% at 88% -4%, var(--aurora-2), transparent 70%),
+    radial-gradient(70% 50% at 50% 115%, var(--aurora-3), transparent 70%),
+    linear-gradient(180deg, var(--aurora-top), var(--bg) 70%);
 }
 .board { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 100px 20px 32px; }
-.board h1 { font-family: var(--display); font-size: clamp(36px, 6vw, 62px); line-height: 1.08; font-weight: 700; text-align: center; margin: 0; letter-spacing: -0.035em; }
-.board h1 .noun { position: relative; display: inline-block; }
+/* Title: heavy sans "Top-voted" set against a large italic serif noun, like the homepage wordmark. */
+.board h1 { font-family: var(--display); font-size: clamp(42px, 7.6vw, 86px); line-height: 1.05; font-weight: 700; text-align: center; margin: 0; letter-spacing: -0.045em; }
+.board h1 .lead {
+  display: inline-block; padding-right: 0.06em; margin-right: -0.06em;
+  background: linear-gradient(180deg, var(--text) 40%, color-mix(in srgb, var(--text) 62%, var(--bg)));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.board h1 .noun { position: relative; display: inline-block; margin-left: 0.06em; }
+.board h1 #noun {
+  font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 600; font-size: 1.1em; letter-spacing: -0.02em;
+  padding-right: 0.08em;
+  background: linear-gradient(105deg, var(--mark-a) 10%, var(--mark-b) 90%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
 /* Red brush stroke under the category word, painted in left to right on load. */
 .brush { position: absolute; left: -4%; width: 108%; bottom: -0.2em; height: 0.36em; fill: var(--red); overflow: visible; z-index: -1; }
 .board h1 .noun { isolation: isolate; }
 .brush-reveal { transform-box: fill-box; transform-origin: left center; animation: paint 0.7s cubic-bezier(0.6, 0.05, 0.3, 1) 0.15s both; }
 @keyframes paint { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .board .sub { text-align: center; color: var(--muted); margin: 22px auto 40px; font-size: 16px; line-height: 1.5; max-width: 52ch; }
+
+/* Everything rises into place on load; rows follow in a quick cascade (rankings.js sets --i). */
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.board h1, .board .sub, .board .card, .board #updated { animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.board .sub { animation-delay: 0.07s; }
+.board .card { animation-delay: 0.14s; }
+.board #updated { animation-delay: 0.3s; }
+#rows.rise tr { animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(0.18s + var(--i, 0) * 28ms); }
 
 .card { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 22px; box-shadow: var(--surface-shadow); padding: 6px; }
 table.ranks { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
@@ -386,7 +412,7 @@ footer.site-foot a:hover { text-decoration: underline; }
   .votes { font-size: 15px; }
   .dd-toggle { height: 38px; padding: 0 14px 0 12px; }
   .pill { height: 50px; padding: 0 24px; font-size: 16px; }
-  .top-note { height: 38px; font-size: 12px; white-space: normal; width: calc(100vw - 230px); line-height: 1.3; justify-content: center; }
+  .top-donate { height: 38px; font-size: 13px; }
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -396,6 +422,7 @@ footer.site-foot a:hover { text-decoration: underline; }
 }
 @media (prefers-reduced-motion: reduce) {
   .brush-reveal { animation: none; }
+  .board h1, .board .sub, .board .card, .board #updated, #rows.rise tr { animation: none; }
   .meter span { transition: none; }
   button.lg:active, a.lg:active { transform: none; }
 }

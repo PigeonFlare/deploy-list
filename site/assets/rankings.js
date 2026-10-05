@@ -1,7 +1,7 @@
 // Page script; inline scripts are blocked by the Content-Security-Policy.
 const { esc, safeUrl } = DL;
 const fmt = new Intl.NumberFormat("en-US");
-let data;
+let data, entered = false;
 const ext = DL.icon("ext");
 
 // "r/SideProject" reads as a muted "r/" and the subreddit name.
@@ -47,6 +47,14 @@ function render() {
       <td class="num votes">${fmt.format(s.votes)}</td>
       <td class="src"><a href="${esc(safeUrl(s.post_url))}" target="_blank" rel="noopener noreferrer" title="${esc(s.source)}">${sourceLabel(s.source)}${ext}</a></td>
     </tr>`).join("");
+  // The first set of rows rises in on load.
+  if (!entered) {
+    entered = true;
+    tbody.classList.add("rise");
+    tbody.querySelectorAll("tr").forEach((tr, i) => tr.style.setProperty("--i", i));
+  } else {
+    tbody.classList.remove("rise");
+  }
   // Widths are set through the DOM because the CSP forbids inline style attributes.
   // They start at zero and grow on the next frame.
   requestAnimationFrame(() => tbody.querySelectorAll(".meter span[data-w]").forEach((b) => (b.style.width = b.dataset.w + "%")));
