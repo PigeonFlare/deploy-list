@@ -621,7 +621,18 @@
     onRange(fn) { rangeListeners.push(fn); },
   };
 
-  if (PAGE === "home") hyperspace();
+  // Homepage intro (style.css): start it once fonts are in and the page has painted, and
+  // replay it when the page comes back from the back/forward cache.
+  function playIntro() {
+    const start = () => requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add("intro")));
+    document.fonts.ready.then(start, start);
+    addEventListener("pageshow", (e) => {
+      if (!e.persisted) return;
+      document.getAnimations().forEach((a) => { if (a.animationName === "pop-in") a.currentTime = 0; });
+    });
+  }
+
+  if (PAGE === "home") { hyperspace(); playIntro(); }
   initMenus();
   liquidGlass();
 })();
