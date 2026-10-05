@@ -1,6 +1,6 @@
 # deploylist
 
-Your best look into the online development scene: the month's most-upvoted small websites, ranked, plus a StumbleUpon-style live view.
+Your best view into the online development scene: the month's most-upvoted small websites, ranked, plus a StumbleUpon-style live view.
 
 - `site/` is the static site deployed to GitHub Pages (homepage, `/leaderboards/`, `/live/`).
 - `scripts/scrape.py` builds `site/data/sites.json` from the last 30 days of Show HN (via hn.algolia.com) and Reddit posts that center on one standalone website. It reads r/SideProject, r/InternetIsBeautiful, r/IMadeThis, r/ClaudeAI, and r/SaaS (from the last two, only posts whose title says the poster made something). Posts need at least 10 votes. Sites that refuse to be framed or don't load stay on the leaderboard, tagged "Iframe disabled" or "Website down", but are left out of live view. Every daily run rechecks all ranked sites, so a site that goes down leaves Live and one that comes back returns.
