@@ -321,6 +321,15 @@ body.board-page::before {
 .board .sub { text-align: center; color: var(--muted); margin: 22px auto 40px; font-size: 16px; line-height: 1.5; max-width: 52ch; }
 
 /* Everything rises into place on load; rows follow in a quick cascade (rankings.js sets --i). */
+/* Homepage: everything grows into place and fades in on load, title first. */
+/* Uses the scale property, not transform, so elements keep their own positioning transforms. */
+@keyframes pop-in { from { opacity: 0; scale: 0.92; } to { opacity: 1; scale: 1; } }
+body.home .logo, body.home .tagline, body.home .cta, body.home .top-donate, body.home .corner {
+  animation: pop-in 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+body.home .tagline { animation-delay: 0.08s; }
+body.home .cta { animation-delay: 0.16s; }
+body.home .top-donate, body.home .corner { animation-delay: 0.24s; }
 @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 .board h1, .board .sub, .board .card, .board #updated { animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 .board .sub { animation-delay: 0.07s; }
@@ -433,6 +442,7 @@ footer.site-foot a:hover { text-decoration: underline; }
 }
 @media (prefers-reduced-motion: reduce) {
   .brush-reveal { animation: none; }
+  body.home .logo, body.home .tagline, body.home .cta, body.home .top-donate, body.home .corner { animation: none; }
   .board h1, .board .sub, .board .card, .board #updated, #rows.rise tr { animation: none; }
   .meter span { transition: none; }
   button.lg:active, a.lg:active { transform: none; }
