@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build site/data/sites.json from the last 30 days of top Show HN and Reddit posts.
+"""Build site/data/sites.json from the last 30 days (and the last 7) of top Show HN and Reddit posts.
 
 Only posts centred on one standalone website are kept (no GitHub repos,
 store pages, blog posts or social links). Each site is then probed to see
@@ -703,13 +703,21 @@ def main(if_due=False):
     posts += hn
     posts = [p for p in posts if p["votes"] >= MIN_VOTES]
 
-    # One entry per domain, keeping its best-voted post.
-    best = {}
-    for p in posts:
-        d = host_of(p["url"])
-        if d not in best or p["votes"] > best[d]["votes"]:
-            best[d] = {**p, "domain": d}
-    sites = sorted(best.values(), key=lambda s: -s["votes"])[:POOL_SIZE]
+    # One entry per domain, keeping its best-voted post. The month and the last week are
+    # ranked separately; sites that only make the week's list are marked "month": false.
+    def top(posts):
+        best = {}
+        for p in posts:
+            d = host_of(p["url"])
+            if d not in best or p["votes"] > best[d]["votes"]:
+                best[d] = {**p, "domain": d}
+        return sorted(best.values(), key=lambda s: -s["votes"])[:POOL_SIZE]
+    sites = top(posts)
+    week_start = (started - dt.timedelta(days=7)).timestamp()
+    in_month = {s["post_url"] for s in sites}
+    sites += [{**s, "month": False} for s in top([p for p in posts if (p.get("created") or 0) >= week_start])
+              if s["post_url"] not in in_month]
+    sites.sort(key=lambda s: -s["votes"])
 
     # Probe sites in parallel; any probe still running after the overall limit
     # counts as not embeddable instead of holding up the refresh.
