@@ -374,12 +374,9 @@
       const free = pics.filter((p) => !used.has(p));
       if (!free.length) return;
       // Start away from the center so cards pass beside the title rather than through it.
-      // Spread starting points over a wide field, each with its own sideways drift,
-      // so cards don't all fan out along the same lines.
+      // Spread starting points over a wide field; each card then flies straight out from the center.
       const a = Math.random() * Math.PI * 2, r = 60 + Math.sqrt(Math.random()) * 240;
-      const d = Math.random() * Math.PI * 2, drift = 0.01 + Math.random() * 0.03;
-      cards.push({ img: free[Math.floor(Math.random() * free.length)], x: Math.cos(a) * r, y: Math.sin(a) * r * 0.7, z,
-        vx: Math.cos(d) * drift, vy: Math.sin(d) * drift });
+      cards.push({ img: free[Math.floor(Math.random() * free.length)], x: Math.cos(a) * r, y: Math.sin(a) * r * 0.7, z });
       loadNext();
     }
 
@@ -393,7 +390,6 @@
       for (let i = cards.length - 1; i >= 0; i--) {
         const c = cards[i];
         c.z -= speed * 0.85 * (1 + (DEPTH - c.z) / 400); // nearly star speed
-        c.x += c.vx * dt; c.y += c.vy * dt;
         const k = scale / c.z;
         const cw = CARD_W * k, ch = CARD_H * k;
         const x = cx + c.x * k - cw / 2, y = cy + c.y * k - ch / 2;
