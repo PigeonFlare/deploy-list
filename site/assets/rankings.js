@@ -2,6 +2,13 @@
 const { esc, safeUrl } = DL;
 const fmt = new Intl.NumberFormat("en-US");
 let data;
+const ext = DL.icon("ext");
+
+// "r/SideProject" reads as a muted "r/" and the subreddit name.
+function sourceLabel(src) {
+  const m = /^(r\/)(.+)$/.exec(src || "");
+  return m ? `<span class="sn"><span class="pre">${m[1]}</span>${esc(m[2])}</span>` : `<span class="sn">${esc(src)}</span>`;
+}
 
 function render() {
   const cat = DL.CATS.find((c) => c.key === DL.category);
@@ -30,17 +37,19 @@ function render() {
     <tr>
       <td class="rank"><span class="badge ${i < 3 ? "medal r" + (i + 1) : ""}">${i + 1}</span></td>
       <td class="domain-cell">
-        <div class="bar" data-w="${Math.round((s.votes / max) * 100)}"></div>
-        <div class="inner">
-          <span><a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer">${esc(s.domain)} ↗</a>${s.embeddable ? "" : '<span class="nolive" title="This site can\'t be shown inside Live view">not in live</span>'}</span>
-          <span class="title">${esc(s.title)}</span>
+        <div class="line">
+          <a class="domain" href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer"><span class="dn">${esc(s.domain)}</span>${ext}</a>
+          ${s.embeddable ? "" : '<span class="tag" title="This site can\'t be shown inside Live view">Not in Live</span>'}
         </div>
+        <div class="title" title="${esc(s.title)}">${esc(s.title)}</div>
+        <div class="meter" aria-hidden="true"><span data-w="${Math.max(2, Math.round((s.votes / max) * 100))}"></span></div>
       </td>
       <td class="num votes">${fmt.format(s.votes)}</td>
-      <td class="src"><a href="${esc(safeUrl(s.post_url))}" target="_blank" rel="noopener noreferrer">${esc(s.source)} ↗</a></td>
+      <td class="src"><a href="${esc(safeUrl(s.post_url))}" target="_blank" rel="noopener noreferrer" title="${esc(s.source)}">${sourceLabel(s.source)}${ext}</a></td>
     </tr>`).join("");
   // Widths are set through the DOM because the CSP forbids inline style attributes.
-  tbody.querySelectorAll(".bar[data-w]").forEach((b) => (b.style.width = b.dataset.w + "%"));
+  // They start at zero and grow on the next frame.
+  requestAnimationFrame(() => tbody.querySelectorAll(".meter span[data-w]").forEach((b) => (b.style.width = b.dataset.w + "%")));
 }
 
 const pop = document.getElementById("src-pop");
@@ -65,12 +74,14 @@ DL.loadData().then((d) => {
   const srcList = document.getElementById("src-list");
   if (srcList && Array.isArray(d.sources)) {
     srcList.innerHTML = d.sources.map((s) =>
-      `<a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer">${esc(s.name)} ↗</a>`).join("");
+      `<a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer"><span>${esc(s.name)}</span>${ext}</a>`).join("");
   }
   const updatedEl = document.getElementById("updated");
   if (updatedEl) {
     const date = d.generated_at ? new Date(d.generated_at) : null;
-    const dateStr = date && !isNaN(date.getTime()) ? date.toLocaleString() : "recently";
+    const dateStr = date && !isNaN(date.getTime())
+      ? date.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })
+      : "recently";
     updatedEl.textContent = "Updated " + dateStr;
   }
   render();

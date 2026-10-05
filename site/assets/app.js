@@ -1,4 +1,4 @@
-// Shared bits for every page: hyperspace background, corner dropdowns, data loading.
+// Shared bits for every page: hyperspace background, corner dropdowns, liquid glass, data loading.
 (function () {
   const ROOT = document.body.dataset.root || "";
   const PAGE = document.body.dataset.page;
@@ -39,14 +39,24 @@
     listeners.forEach((fn) => fn(c));
   }
 
+  // ---- icons (stroked, 24px grid) ----
+  const ICONS = {
+    chev: '<path d="M6 9l6 6 6-6"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    ext: '<path d="M8 6h10v10M18 6L6 18"/>',
+  };
+  function icon(name) {
+    return `<svg class="icon ${name}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
+  }
+
   // ---- dropdowns ----
   function dropdown(side, id) {
     const wrap = document.createElement("div");
     wrap.className = `corner ${side} dropdown`;
     wrap.id = id;
-    wrap.innerHTML = `<button class="glass dd-toggle" aria-haspopup="true" aria-expanded="false">
-      <span class="caret" aria-hidden="true">▼</span><span class="dd-label"></span></button>
-      <div class="glass dd-menu" role="menu"></div>`;
+    wrap.innerHTML = `<button class="lg dd-toggle" aria-haspopup="true" aria-expanded="false">
+      <span class="dd-label"></span>${icon("chev")}</button>
+      <div class="frost dd-menu" role="menu"></div>`;
     const btn = wrap.querySelector(".dd-toggle");
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -82,7 +92,7 @@
       menuEl.innerHTML = CATS.map((c) => `
         <button role="menuitemradio" data-cat="${c.key}" aria-current="${c.key === category}">
           <span>${c.label}${counts ? ` <span class="count">(${counts[c.key] || 0})</span>` : ""}</span>
-          <span class="check" aria-hidden="true">✓</span></button>`).join("");
+          ${icon("check")}</button>`).join("");
     }
   }
 
@@ -105,7 +115,7 @@
     if (navMenu) {
       navMenu.innerHTML = PAGES.map((p) => `
         <a role="menuitem" href="${p.href}" aria-current="${p.key === PAGE}">
-          <span>${p.label}</span><span class="check" aria-hidden="true">✓</span></a>`).join("");
+          <span>${p.label}</span>${icon("check")}</a>`).join("");
     }
   }
 
@@ -329,12 +339,90 @@
     })[c]);
   }
 
+  // ---- liquid glass ----
+  // Chromium can run an SVG filter as a backdrop filter, so there the top buttons
+  // bend what's behind them at the rim like a lens. Each button gets a displacement
+  // map drawn for its exact size and corner radius. Safari and Firefox keep the
+  // CSS blur, rim and sheen from style.css.
+  function liquidGlass() {
+    const supported = !!navigator.userAgentData && window.CSS && CSS.supports("backdrop-filter", "url(#lg)") &&
+      !matchMedia("(prefers-reduced-transparency: reduce)").matches;
+    if (!supported || !window.ResizeObserver) return;
+    const NS = "http://www.w3.org/2000/svg";
+    const defs = document.createElementNS(NS, "svg");
+    defs.setAttribute("class", "lg-defs");
+    defs.setAttribute("aria-hidden", "true");
+    defs.setAttribute("width", "0");
+    defs.setAttribute("height", "0");
+    document.body.appendChild(defs);
+    const filters = new Map();
+
+    // Red/green encode where each pixel samples the backdrop from: 128 is "straight
+    // through"; within the bezel the sample is pulled toward the center, strongest at the edge.
+    function displacementMap(w, h, r) {
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      const ctx = c.getContext("2d");
+      const img = ctx.createImageData(w, h), d = img.data;
+      const bezel = Math.max(4, Math.min(r, 18, h / 2, w / 2));
+      const hw = w / 2, hh = h / 2;
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const px = x + 0.5 - hw, py = y + 0.5 - hh;
+          const qx = Math.abs(px) - (hw - r), qy = Math.abs(py) - (hh - r);
+          let nx = 0, ny = 0, dist;
+          if (qx > 0 && qy > 0) { const l = Math.hypot(qx, qy); dist = r - l; nx = qx / l; ny = qy / l; }
+          else if (qx > qy) { dist = r - qx; nx = 1; }
+          else { dist = r - qy; ny = 1; }
+          nx *= px < 0 ? -1 : 1; ny *= py < 0 ? -1 : 1;
+          let m = 0;
+          if (dist < bezel) { const t = Math.max(0, dist) / bezel; m = (1 - t) * (1 - t); }
+          const i = (y * w + x) * 4;
+          d[i] = 128 - nx * m * 127; d[i + 1] = 128 - ny * m * 127; d[i + 2] = 128; d[i + 3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      return c.toDataURL();
+    }
+
+    function filterFor(w, h, r, blur) {
+      const key = `${w}x${h}x${r}x${blur}`;
+      if (filters.has(key)) return filters.get(key);
+      const id = "lg-" + filters.size;
+      const f = document.createElementNS(NS, "filter");
+      f.id = id;
+      for (const [k, v] of Object.entries({ x: 0, y: 0, width: w, height: h, filterUnits: "userSpaceOnUse", "color-interpolation-filters": "sRGB" })) f.setAttribute(k, v);
+      f.innerHTML = `<feGaussianBlur in="SourceGraphic" stdDeviation="${blur}" result="soft"/>
+        <feImage href="${displacementMap(w, h, r)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none" result="map"/>
+        <feDisplacementMap in="soft" in2="map" scale="${Math.round(Math.min(48, h * 0.75))}" xChannelSelector="R" yChannelSelector="G"/>`;
+      defs.appendChild(f);
+      filters.set(key, id);
+      return id;
+    }
+
+    function apply(el) {
+      const w = el.offsetWidth, h = el.offsetHeight;
+      if (!w || !h) return;
+      const cs = getComputedStyle(el);
+      const raw = cs.borderTopLeftRadius;
+      let r = parseFloat(raw) || 0;
+      if (raw.endsWith("%")) r = (r / 100) * Math.min(w, h);
+      r = Math.round(Math.min(r, w / 2, h / 2));
+      const blur = parseFloat(cs.getPropertyValue("--lg-blur")) || 1;
+      el.style.backdropFilter = `url(#${filterFor(w, h, r, blur)}) saturate(190%) brightness(1.04)`;
+    }
+
+    const ro = new ResizeObserver((entries) => entries.forEach((e) => apply(e.target)));
+    document.querySelectorAll(".lg").forEach((el) => ro.observe(el));
+  }
+
   window.DL = {
-    ROOT, CATS, store, loadData, inCategory, setCounts, safeUrl, esc,
+    ROOT, CATS, store, loadData, inCategory, setCounts, safeUrl, esc, icon,
     get category() { return category; },
     onCategory(fn) { listeners.push(fn); },
   };
 
   if (PAGE === "home") hyperspace();
   initMenus();
+  liquidGlass();
 })();
