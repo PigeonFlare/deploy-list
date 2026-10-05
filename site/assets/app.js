@@ -297,17 +297,17 @@
       sctx.clearRect(0, 0, w, h);
       if (reduce) return;
       spawnIn -= dt;
-      if (spawnIn <= 0) { spawnCard(); spawnIn = 1400 + Math.random() * 1200; }
+      if (spawnIn <= 0) { spawnCard(); spawnIn = 700 + Math.random() * 900; }
       const scale = Math.max(w, h);
       for (let i = cards.length - 1; i >= 0; i--) {
         const c = cards[i];
-        c.z -= speed * 0.55 * (1 + (DEPTH - c.z) / 500);
+        c.z -= speed * 0.85 * (1 + (DEPTH - c.z) / 400); // nearly star speed
         const k = scale / c.z;
         const cw = CARD_W * k, ch = CARD_H * k;
         const x = cx + c.x * k - cw / 2, y = cy + c.y * k - ch / 2;
         if (c.z < 20 || x > w || y > h || x + cw < 0 || y + ch < 0) { cards.splice(i, 1); continue; }
         // Fade in from the distance.
-        sctx.globalAlpha = Math.min(1, (DEPTH - c.z) / 250) * 0.92;
+        sctx.globalAlpha = Math.min(1, (DEPTH - c.z) / 150) * 0.92;
         const rad = Math.min(cw, ch) * 0.07;
         sctx.save();
         sctx.beginPath();
