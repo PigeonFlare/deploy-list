@@ -1,6 +1,7 @@
 // Captures a small still of each ranked site for the homepage's hyperspace, and checks that
 // each site marked for Live view really runs inside a frame (some pass the header check but
-// refuse in script, e.g. "Not executing in a top-level window"); those are taken out of Live.
+// refuse in script, e.g. "Not executing in a top-level window"); those are taken out of Live,
+// marked "down" when the site itself doesn't load and "iframe" when only framing fails.
 // Stills are kept until their site leaves the rankings, so a refresh only visits new sites.
 // Usage: node scripts/snapshots.cjs  (needs playwright-core; set CHROME_PATH to use an installed Chrome)
 const fs = require("fs");
@@ -30,8 +31,11 @@ const SANDBOX = "allow-scripts allow-same-origin allow-forms allow-popups allow-
 
   const todo = sites.filter((s) => !fs.existsSync(path.join(OUT, name(s.domain))));
   const framed = sites.filter((s) => s.embeddable);
-  let refused = 0;
-  if (todo.length || framed.length) {
+  // The scraper's own request can fail on TLS or bot checks a browser gets through, so a
+  // site it found down only stays down if Chrome can't load it either.
+  const down = sites.filter((s) => s.live_issue === "down");
+  let changed = 0;
+  if (todo.length || framed.length || down.length) {
     const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
     // A 1280x800 page rendered at quarter scale gives a 320x200 still.
     const context = await browser.newContext({
@@ -60,6 +64,19 @@ const SANDBOX = "allow-scripts allow-same-origin allow-forms allow-popups allow-
       }
     }
 
+    async function loadsOnItsOwn(url) {
+      const page = await context.newPage();
+      try {
+        const res = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20000 });
+        const code = res ? res.status() : 0;
+        return code > 0 && code !== 404 && code !== 410 && code < 500;
+      } catch {
+        return false;
+      } finally {
+        await page.close().catch(() => {});
+      }
+    }
+
     async function frameCheck(s) {
       const page = await context.newPage();
       try {
@@ -72,9 +89,13 @@ const SANDBOX = "allow-scripts allow-same-origin allow-forms allow-popups allow-
         const blocked = frame.url().startsWith("chrome-error:");
         const bad = errors.find((m) => FRAME_ERROR.test(m));
         if (blocked || bad) {
+          // A frame error page looks the same whether the site is offline or refuses
+          // framing, so open it normally to tell which.
+          const down = blocked && !(await loadsOnItsOwn(s.url));
           s.embeddable = false;
-          refused++;
-          console.log(`not in Live: ${s.domain} (${blocked ? "refused to load in a frame" : bad})`);
+          s.live_issue = down ? "down" : "iframe";
+          changed++;
+          console.log(`not in Live: ${s.domain} (${down ? "site doesn't load" : blocked ? "refused to load in a frame" : bad})`);
         }
       } catch (e) {
         console.warn(`warn: frame check skipped for ${s.domain}: ${String(e.message || e).split("\n")[0]}`);
@@ -83,7 +104,20 @@ const SANDBOX = "allow-scripts allow-same-origin allow-forms allow-popups allow-
       }
     }
 
-    const jobs = [...todo.map((s) => () => snapshot(s)), ...framed.map((s) => () => frameCheck(s))];
+    async function downCheck(s) {
+      if (!(await loadsOnItsOwn(s.url))) return;
+      s.embeddable = true;
+      delete s.live_issue;
+      changed++;
+      console.log(`back up: ${s.domain}`);
+      await frameCheck(s);
+    }
+
+    const jobs = [
+      ...todo.map((s) => () => snapshot(s)),
+      ...framed.map((s) => () => frameCheck(s)),
+      ...down.map((s) => () => downCheck(s)),
+    ];
     let next = 0;
     async function worker() {
       while (next < jobs.length && Date.now() < DEADLINE) await jobs[next++]();
@@ -91,7 +125,7 @@ const SANDBOX = "allow-scripts allow-same-origin allow-forms allow-popups allow-
     await Promise.all(Array.from({ length: CONCURRENCY }, worker));
     await browser.close();
   }
-  if (refused) fs.writeFileSync(DATA, JSON.stringify(data));
+  if (changed) fs.writeFileSync(DATA, JSON.stringify(data));
 
   const have = sites.map((s) => s.domain).filter((d, i, all) => all.indexOf(d) === i && fs.existsSync(path.join(OUT, name(d))));
   fs.writeFileSync(path.join(OUT, "index.json"), JSON.stringify(have.map(name)));
