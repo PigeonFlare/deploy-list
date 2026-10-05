@@ -603,11 +603,12 @@ def reddit(since):
 
 
 def public_host(host):
-    """True when every address the host resolves to is on the public internet."""
+    """True when every address the host resolves to is on the public internet;
+    None when the name doesn't resolve at all."""
     try:
         infos = socket.getaddrinfo(host, 443, proto=socket.IPPROTO_TCP)
     except (OSError, UnicodeError):
-        return False
+        return None
     return bool(infos) and all(ipaddress.ip_address(i[4][0].split("%")[0]).is_global for i in infos)
 
 
@@ -635,22 +636,39 @@ def _probe_open(req):
         return _PROBE.open(req, timeout=10)
 
 
+# Why a ranked site is left out of Live view, stored as "live_issue" next to "embeddable".
+DOWN = "down"      # doesn't resolve, doesn't answer, or answers with a missing page or server error
+NO_FRAME = "iframe"  # up, but forbids framing (or can't be framed safely, e.g. plain HTTP)
+
+
 def embeddable(url):
     """True when the site loads over HTTPS and doesn't forbid framing."""
-    return probe(url)[0]
+    return probe(url)[0] == "ok"
+
+
+def _down_status(code):
+    # 401/403/429 mostly mean the site turned away an automated visitor, not that it's
+    # offline; the browser check in snapshots.cjs decides those.
+    return code in (404, 410) or code >= 500
 
 
 def probe(url):
-    """(embeddable, page summary): whether the site loads over HTTPS without forbidding
-    framing, and how its landing page describes itself."""
+    """(status, page summary): "ok" when the site loads over HTTPS without forbidding
+    framing, otherwise DOWN or NO_FRAME; and how its landing page describes itself."""
     url = url.replace("http://", "https://", 1)
     deadline = time.monotonic() + PROBE_DEADLINE
     try:
         for _ in range(PROBE_HOPS + 1):
             host = host_of(url)
-            if (not url.startswith("https://") or not host or blocked(host) or is_ip(host)
-                    or not public_host(host) or time.monotonic() > deadline):
-                return False, ""
+            if not url.startswith("https://") or not host or blocked(host) or is_ip(host):
+                return NO_FRAME, ""
+            if time.monotonic() > deadline:
+                return DOWN, ""
+            public = public_host(host)
+            if public is None:
+                return DOWN, ""
+            if not public:
+                return NO_FRAME, ""
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (deploylist iframe check)"})
             try:
                 r = _probe_open(req)
@@ -658,12 +676,14 @@ def probe(url):
                 location = e.headers.get("Location") if e.code in (301, 302, 303, 307, 308) else None
                 e.close()
                 if not location:
-                    return False, ""
+                    return (DOWN if _down_status(e.code) else "ok"), ""
                 url = urllib.parse.urljoin(url, location)
                 continue
+            except (urllib.error.URLError, TimeoutError, ConnectionError, OSError):
+                return DOWN, ""
             with r as resp:
                 if resp.status >= 400:
-                    return False, ""
+                    return (DOWN if _down_status(resp.status) else "ok"), ""
                 summary = ""
                 if "html" in (resp.headers.get("Content-Type") or "").lower():
                     try:
@@ -674,21 +694,67 @@ def probe(url):
                     xfo_lower = xfo.lower()
                     # ALLOW-FROM is ignored by current browsers, so it doesn't block framing.
                     if "deny" in xfo_lower or "sameorigin" in xfo_lower:
-                        return False, summary
+                        return NO_FRAME, summary
                 for csp in resp.headers.get_all("Content-Security-Policy") or []:
                     m = re.search(r"frame-ancestors([^;]*)", csp, re.I)
                     if m and "*" not in m.group(1).split():
-                        return False, summary
-                return True, summary
-        return False, ""  # too many redirects
+                        return NO_FRAME, summary
+                return "ok", summary
+        return DOWN, ""  # redirect loop
     except Exception:
-        return False, ""
+        return DOWN, ""
+
+
+def check_live(sites, previous=None):
+    """Probe every site in parallel and record whether it can go in Live view. A probe still
+    running after the overall limit keeps the site's previous status (or counts as down),
+    so one slow refresh doesn't flip sites in and out of Live. Returns page summaries."""
+    previous = previous or {}
+    ex = ThreadPoolExecutor(32)
+    futures = [ex.submit(probe, s["url"]) for s in sites]
+    wait(futures, timeout=PROBE_DEADLINE * 4)
+    summaries = []
+    for s, f in zip(sites, futures):
+        if f.done() and not f.cancelled() and f.exception() is None:
+            status, summary = f.result()
+        else:
+            before = previous.get(s["url"], {})
+            status = "ok" if before.get("embeddable") else before.get("live_issue", DOWN)
+            summary = ""
+        s["embeddable"] = status == "ok"
+        if status == "ok":
+            s.pop("live_issue", None)
+        else:
+            s["live_issue"] = status
+        summaries.append(summary)
+    ex.shutdown(wait=False, cancel_futures=True)
+    return summaries
+
+
+def recheck():
+    """Between refreshes: probe the sites already ranked again, so a site that went down
+    leaves Live view and one that came back returns, without touching the rankings."""
+    with open(OUT, encoding="utf-8") as f:
+        data = json.load(f)
+    sites = data.get("sites") or []
+    before = {s["url"]: dict(s) for s in sites}
+    check_live(sites, before)
+    for s in sites:
+        if s["embeddable"]:
+            s["url"] = s["url"].replace("http://", "https://", 1)
+    tmp = OUT + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, separators=(",", ":"), ensure_ascii=False)
+    os.replace(tmp, OUT)
+    down = sum(s.get("live_issue") == DOWN for s in sites)
+    print(f"rechecked {len(sites)} sites: {sum(s['embeddable'] for s in sites)} in Live, {down} down")
 
 
 def main(if_due=False):
     started = dt.datetime.now(dt.timezone.utc)
     if if_due and not refresh_due(started):
         print("Reddit refresh is not due; keeping the current rankings and update timestamp")
+        recheck()
         return
     since = window_start()
     posts = reddit(since)
@@ -719,19 +785,16 @@ def main(if_due=False):
               if s["post_url"] not in in_month]
     sites.sort(key=lambda s: -s["votes"])
 
-    # Probe sites in parallel; any probe still running after the overall limit
-    # counts as not embeddable instead of holding up the refresh.
-    ex = ThreadPoolExecutor(32)
-    futures = [ex.submit(probe, s["url"]) for s in sites]
-    wait(futures, timeout=PROBE_DEADLINE * 4)
-    results = [f.result() if f.done() and not f.cancelled() and f.exception() is None else (False, "") for f in futures]
-    flags = [ok for ok, _ in results]
-    ex.shutdown(wait=False, cancel_futures=True)
-    for s, (ok, summary) in zip(sites, results):
-        s["embeddable"] = ok
+    try:
+        with open(OUT, encoding="utf-8") as f:
+            previous = {s["url"]: s for s in json.load(f).get("sites") or []}
+    except (OSError, ValueError):
+        previous = {}
+    summaries = check_live(sites, previous)
+    for s, summary in zip(sites, summaries):
         # The post title plus the site's own title and description.
         s["category"] = category(s["title"] + " " + summary, s["source"])
-        s["url"] = s["url"].replace("http://", "https://", 1) if ok else s["url"]
+        s["url"] = s["url"].replace("http://", "https://", 1) if s["embeddable"] else s["url"]
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     tmp = OUT + ".tmp"
@@ -745,7 +808,7 @@ def main(if_due=False):
             "sites": sites,
         }, f, separators=(",", ":"), ensure_ascii=False)
     os.replace(tmp, OUT)
-    print(f"wrote {len(sites)} sites ({sum(flags)} embeddable) to {os.path.normpath(OUT)}")
+    print(f"wrote {len(sites)} sites ({sum(s['embeddable'] for s in sites)} embeddable) to {os.path.normpath(OUT)}")
 
 
 if __name__ == "__main__":

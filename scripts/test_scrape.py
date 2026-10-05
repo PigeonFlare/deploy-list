@@ -185,6 +185,33 @@ class ScraperTests(unittest.TestCase):
             self.assertTrue(scrape.embeddable("https://example.com"))
             self.assertEqual(mock_open.call_count, 2)
 
+    def test_probe_tells_down_sites_from_unframeable_ones(self):
+        with patch("scrape.public_host", return_value=None), patch.object(scrape._PROBE, "open") as mock_open:
+            self.assertEqual(scrape.probe("https://gone.example")[0], scrape.DOWN)
+            mock_open.assert_not_called()
+        with patch("scrape.public_host", return_value=True), patch("scrape.time.sleep"):
+            for code, want in [(404, scrape.DOWN), (410, scrape.DOWN), (502, scrape.DOWN), (403, "ok"), (429, "ok")]:
+                err = scrape.urllib.error.HTTPError("https://example.com", code, "x", {}, None)
+                with patch.object(scrape._PROBE, "open", side_effect=err):
+                    self.assertEqual(scrape.probe("https://example.com")[0], want, code)
+            with patch.object(scrape._PROBE, "open", side_effect=scrape.urllib.error.URLError("refused")):
+                self.assertEqual(scrape.probe("https://example.com")[0], scrape.DOWN)
+            ok = MagicMock()
+            ok.status = 200
+            ok.headers.get = lambda k, d=None: d
+            ok.headers.get_all = lambda k, d=None: ["DENY"] if k == "X-Frame-Options" else (d or [])
+            ok.__enter__.return_value = ok
+            with patch.object(scrape._PROBE, "open", return_value=ok):
+                self.assertEqual(scrape.probe("https://example.com")[0], scrape.NO_FRAME)
+
+    def test_check_live_records_the_reason_and_clears_it_when_fixed(self):
+        sites = [{"url": "https://a.example/"}, {"url": "https://b.example/", "live_issue": "down", "embeddable": False}]
+        results = {"https://a.example/": (scrape.DOWN, ""), "https://b.example/": ("ok", "")}
+        with patch("scrape.probe", side_effect=lambda u: results[u]):
+            scrape.check_live(sites)
+        self.assertEqual(sites[0], {"url": "https://a.example/", "embeddable": False, "live_issue": "down"})
+        self.assertEqual(sites[1], {"url": "https://b.example/", "embeddable": True})
+
 
 if __name__ == "__main__":
     unittest.main()

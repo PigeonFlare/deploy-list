@@ -10,6 +10,16 @@ function sourceLabel(src) {
   return m ? `<span class="sn"><span class="pre">${m[1]}</span>${esc(m[2])}</span>` : `<span class="sn">${esc(src)}</span>`;
 }
 
+// Why a site isn't in Live view; older data without a reason keeps the generic tag.
+const LIVE_TAGS = {
+  down: ["Website down", "This site didn't load at the last check, so it's out of Live view until it's back"],
+  iframe: ["Iframe disabled", "This site doesn't allow being shown inside another page, so it can't appear in Live view"],
+};
+function liveTag(s) {
+  const [label, tip] = LIVE_TAGS[s.live_issue] || ["Not in Live", "This site can't be shown inside Live view"];
+  return `<span class="tag" title="${esc(tip)}">${label}</span>`;
+}
+
 function render() {
   const cat = DL.CATS.find((c) => c.key === DL.category);
   const noun = document.getElementById("noun");
@@ -39,7 +49,7 @@ function render() {
       <td class="domain-cell">
         <div class="line">
           <a class="domain" href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer"><span class="dn">${esc(s.domain)}</span>${ext}</a>
-          ${s.embeddable ? "" : '<span class="tag" title="This site can\'t be shown inside Live view">Not in Live</span>'}
+          ${s.embeddable ? "" : liveTag(s)}
         </div>
         <div class="title" title="${esc(s.title)}">${esc(s.title)}</div>
         <a class="src-line" href="${esc(safeUrl(s.post_url))}" target="_blank" rel="noopener noreferrer">${sourceLabel(s.source)}${ext}</a>
