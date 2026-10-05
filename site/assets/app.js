@@ -335,6 +335,8 @@
     // ---- site snapshots ----
     const pics = [], cards = [];
     const MAX_CARDS = 16, CARD_W = 34, CARD_H = CARD_W * 0.625; // world units; stills are 16:10
+    // A random 48 of the stills per visit: plenty of variety, about half the download.
+    const MAX_PICS = 48;
     let spawnIn = 600, seeded = false, cardsDrawn = false;
     // Stills load a dozen up front, then one more each time a card launches, so the
     // homepage doesn't download all of them before anyone has watched for long.
@@ -363,7 +365,7 @@
       .then((r) => (r.ok ? r.json() : []))
       .then((names) => {
         if (!Array.isArray(names)) return;
-        queue = names.filter((n) => /^[\w.-]+\.jpg$/.test(n)).sort(() => Math.random() - 0.5);
+        queue = names.filter((n) => /^[\w.-]+\.jpg$/.test(n)).sort(() => Math.random() - 0.5).slice(0, MAX_PICS);
         for (let i = 0; i < MAX_CARDS + 4; i++) loadNext();
       })
       .catch(() => {});
