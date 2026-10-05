@@ -25,6 +25,36 @@ class ScraperTests(unittest.TestCase):
                 self.assertIsNone(scrape.site_url(f"https://{host}/repo", "Title"))
                 self.assertIsNone(scrape.site_url(f"https://sub.{host}/repo", "Title"))
 
+    def test_site_url_rejects_vendor_news_and_article_links(self):
+        for url in ["https://www.anthropic.com/news/x", "https://claude.ai/share/x", "https://www.businessinsider.com/x",
+                    "https://blog.cloudflare.com/x", "https://shopify.engineering/x"]:
+            with self.subTest(url=url):
+                self.assertIsNone(scrape.site_url(url, "Title"))
+        for title in ["Why CSS-Tricks has been quiet", "How to write a design doc", "Hot take: React is fine",
+                      "Introducing Claude Opus 5.5"]:
+            with self.subTest(title=title):
+                self.assertIsNone(scrape.site_url("https://example.com/", title))
+        self.assertIsNotNone(scrape.site_url("https://example.com/", "Page Rage: destroy any page"))
+
+    def test_page_summary_feeds_category(self):
+        page = b"""<html><head><title>Page Rage</title>
+          <meta name="description" content="A browser game: fly around and shoot any web page to pieces">
+          <meta property="og:title" content='Page Rage &amp; friends'></head></html>"""
+        summary = scrape.page_summary(page)
+        self.assertIn("shoot any web page", summary)
+        self.assertEqual(scrape.category("I built a website for safe area insets in Simulator", "r/SideProject"), "other")
+        self.assertIn("Page Rage & friends", summary)
+        self.assertEqual(scrape.category("Destroy any web page " + summary, "r/webdev"), "games")
+
+    def test_maker_title(self):
+        for title in ["Made a Destroy Any Website game", "I made a virtual lounge", "My SaaS crossed 1M users",
+                      "hey opus can you build me a news network"]:
+            with self.subTest(title=title):
+                self.assertTrue(scrape.MAKER_TITLE.search(title))
+        for title in ["Anthropic researcher quits", "Claude Opus 5.5 official prompting guide"]:
+            with self.subTest(title=title):
+                self.assertFalse(scrape.MAKER_TITLE.search(title))
+
     def test_site_url_rejects_non_http(self):
         self.assertIsNone(scrape.site_url("javascript:alert(1)", "Title"))
         self.assertIsNone(scrape.site_url("data:text/html,test", "Title"))

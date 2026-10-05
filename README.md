@@ -3,7 +3,7 @@
 The best-curated snapshot of online development: the month's most-upvoted small websites, ranked, plus a StumbleUpon-style live view.
 
 - `site/` is the static site deployed to GitHub Pages (homepage, `/leaderboards/`, `/live/`).
-- `scripts/scrape.py` builds `site/data/sites.json` from the last 30 days of Show HN (via hn.algolia.com) and Reddit posts that center on one standalone website. It reads r/SideProject, r/InternetIsBeautiful, r/WebGames, r/alphaandbetausers, and r/IMadeThis. Sites that refuse to be framed stay on the leaderboard but are left out of live view.
+- `scripts/scrape.py` builds `site/data/sites.json` from the last 30 days of Show HN (via hn.algolia.com) and Reddit posts that center on one standalone website. It reads r/SideProject, r/InternetIsBeautiful, r/IMadeThis, r/ClaudeAI, and r/SaaS (from the last two, only posts whose title says the poster made something). Posts need at least 10 votes. Sites that refuse to be framed stay on the leaderboard but are left out of live view.
 - `.github/workflows/deploy.yml` checks daily at 06:17 UTC and collects posts when the three-day refresh is due. The saved `next_refresh_at` keeps the cadence across month boundaries and runner delays. Pushes deploy the committed site without collecting posts; a manual workflow run refreshes immediately.
 
 ## Setup
