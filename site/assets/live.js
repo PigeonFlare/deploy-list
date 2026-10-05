@@ -46,6 +46,7 @@ function show(site) {
   const postLink = $("post-link");
   postLink.href = postUrl;
   postLink.hidden = false;
+  $("meta-sep").hidden = false;
 
   $("prev").disabled = hist.pos <= 0;
   document.title = `${site.domain} · deploylist live`;
@@ -95,6 +96,7 @@ function empty(msg) {
   siteLink.removeAttribute("title");
   $("votes").textContent = "";
   $("post-link").hidden = true;
+  $("meta-sep").hidden = true;
   $("prev").disabled = hist.pos <= 0;
 }
 
@@ -127,6 +129,10 @@ function prev() {
 }
 
 $("next").addEventListener("click", next);
+// Controls fade out over the site and come back on hover (see style.css);
+// show them for a moment when Live opens so people know where they are.
+document.body.classList.add("peek");
+setTimeout(() => document.body.classList.remove("peek"), 2500);
 $("prev").addEventListener("click", prev);
 addEventListener("keydown", (e) => {
   if (e.target.closest("input, textarea, select")) return;
