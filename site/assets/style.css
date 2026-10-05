@@ -367,6 +367,8 @@ body.board-page { background: var(--bg); }
 body.home .logo, body.home .tagline, body.home .cta, body.home .top-donate, body.home .corner {
   animation: pop-in 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
+/* Held at the first frame until app.js adds .intro once the page has painted, so a slow first paint doesn't eat into it. */
+body.home:not(.intro) :is(.logo, .tagline, .cta, .top-donate, .corner) { animation-play-state: paused; }
 body.home .tagline { animation-delay: 0.16s; }
 body.home .cta { animation-delay: 0.32s; }
 body.home .top-donate, body.home .corner { animation-delay: 0.48s; }
