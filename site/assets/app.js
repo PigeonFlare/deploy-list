@@ -235,10 +235,15 @@
       }
       return [238, 241, 247];
     }
+    // Safari can run this before the stylesheet's variables resolve, which used to leave
+    // light-mode colors painted under dark-mode text. Fall back by the system theme, and
+    // read again once the page has loaded or is restored from the back/forward cache.
+    const darkQuery = matchMedia("(prefers-color-scheme: dark)");
     function readColors() {
       const cs = getComputedStyle(document.documentElement);
-      star = cs.getPropertyValue("--star").trim() || "225, 60%, 30%";
-      space = cs.getPropertyValue("--space").trim() || "#eef1f7";
+      const dark = darkQuery.matches;
+      star = cs.getPropertyValue("--star").trim() || (dark ? "214, 90%, 84%" : "228, 62%, 26%");
+      space = cs.getPropertyValue("--space").trim() || (dark ? "#04050b" : "#dde3f0");
       const rgb = parseHex(space);
       fade = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.35)`;
       bucketStyles.length = 0;
@@ -247,8 +252,15 @@
         bucketStyles.push(`hsla(${star},${Math.min(1, t * t * 2.4)})`);
       }
     }
+    function refreshColors() {
+      const before = space;
+      readColors();
+      if (space !== before) { ctx.fillStyle = space; ctx.fillRect(0, 0, w, h); }
+    }
     readColors();
-    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readColors);
+    darkQuery.addEventListener("change", refreshColors);
+    addEventListener("load", refreshColors);
+    addEventListener("pageshow", refreshColors);
 
     // ---- site snapshots ----
     const pics = [], cards = [];
