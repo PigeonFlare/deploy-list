@@ -280,10 +280,25 @@
       updateBucketWidths();
     }
     resize();
-    let resizeTimer;
+    // Follow a resize on the next frame. Waiting let the browser stretch the old field to the
+    // new size and then snap it back, which shook the background whenever the window changed
+    // size as the page opened (a new tab's bookmarks bar going away, for one). The trails
+    // carry over, recentered, so the field doesn't flash.
+    let resizeQueued = false;
+    function followResize() {
+      resizeQueued = false;
+      const ow = w, oh = h;
+      const old = document.createElement("canvas");
+      old.width = ow; old.height = oh;
+      old.getContext("2d").drawImage(canvas, 0, 0);
+      resize();
+      if (w === ow && h === oh) return;
+      ctx.fillStyle = space;
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(old, Math.round((w - ow) / 2), Math.round((h - oh) / 2));
+    }
     addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(resize, 150);
+      if (!resizeQueued) { resizeQueued = true; requestAnimationFrame(followResize); }
     }, { passive: true });
 
     for (let i = 0; i < N; i++) {
@@ -624,8 +639,13 @@
   // Homepage intro (style.css): start it once fonts are in and the page has painted, and
   // replay it when the page comes back from the back/forward cache.
   function playIntro() {
-    const start = () => requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add("intro")));
-    document.fonts.ready.then(start, start);
+    // fonts.ready only covers fonts the page has already asked for, so let a frame lay the
+    // page out first; otherwise the fonts swap in mid-intro and everything jolts.
+    // A font that hangs holds the intro for a second at most.
+    const start = () => requestAnimationFrame(() => document.body.classList.add("intro"));
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1000))]).then(start, start);
+    }));
     addEventListener("pageshow", (e) => {
       if (!e.persisted) return;
       document.getAnimations().forEach((a) => { if (a.animationName === "pop-in") a.currentTime = 0; });
