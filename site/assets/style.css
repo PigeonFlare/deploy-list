@@ -261,6 +261,10 @@ body.live { overflow: hidden; height: 100%; }
 .frame-wrap { position: fixed; inset: 0; z-index: 1; background: var(--bg); }
 .frame-wrap iframe { width: 100%; height: 100%; border: 0; background: #fff; display: block; }
 .empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); text-align: center; padding: 16px; }
+/* Only the visible buttons and menus take clicks; the gaps around and between them
+   pass through to the page or site underneath. */
+.corner, .live-controls { pointer-events: none; }
+.corner > *, .live-controls > * { pointer-events: auto; }
 .live-controls {
   position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 10;
   display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 280px);
@@ -275,11 +279,9 @@ body.live { overflow: hidden; height: 100%; }
 .now-playing .meta a:hover { text-decoration: underline; }
 .now-playing .meta .sep { color: var(--faint); user-select: none; }
 /* On devices with a pointer, Live's controls stay out of the way until the pointer
-   reaches the spot they sit in. A padded hit area makes the spot easier to find. */
+   reaches the spot they sit in. */
 @media (hover: hover) and (pointer: fine) {
   body.live .corner, body.live .live-controls { opacity: 0; transition: opacity 0.35s ease; }
-  body.live .corner { padding: 14px; margin: -14px; }
-  body.live .live-controls { padding: 14px; margin-top: -14px; }
   body.live:has(.corner:hover, .corner:focus-within, .corner.open, .live-controls:hover, .live-controls:focus-within) :is(.corner, .live-controls),
   body.live.peek :is(.corner, .live-controls) { opacity: 1; transition-duration: 0.18s; }
 }
