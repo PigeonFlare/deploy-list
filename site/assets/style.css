@@ -217,13 +217,6 @@ button.lg:disabled:hover { background: var(--lg-tint); }
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center; padding: 96px 16px 120px;
 }
-.eyebrow {
-  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 999px;
-  font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 28px; text-decoration: none;
-}
-.eyebrow:not(.ready) { visibility: hidden; }
-.eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: #2fc46b; box-shadow: 0 0 0 3px rgba(47, 196, 107, 0.2); }
-.eyebrow b { color: var(--text); font-weight: 600; }
 /* Wordmark: a heavy sans "deploy" set against an italic serif "list" in a blue-violet ink. */
 .logo {
   font-family: var(--display); font-size: clamp(60px, 13vw, 140px); font-weight: 700; letter-spacing: -0.05em; margin: 0; line-height: 1;
@@ -274,7 +267,7 @@ body.live { overflow: hidden; height: 100%; }
 .now-playing { display: flex; flex-direction: column; justify-content: center; height: 52px; border-radius: 999px; padding: 0 26px; text-align: center; min-width: 0; max-width: 440px; }
 .now-playing .site { display: block; font-weight: 650; font-size: 15px; letter-spacing: -0.01em; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none; }
 .now-playing .site:hover { text-decoration: underline; }
-.now-playing .meta { font-size: 12px; line-height: 1.35; color: var(--muted); display: flex; gap: 6px; justify-content: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.now-playing .meta { font-size: 12px; line-height: 1.35; color: var(--text); font-weight: 500; display: flex; gap: 6px; justify-content: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .now-playing .meta a { color: var(--text); text-decoration: none; font-weight: 500; }
 .now-playing .meta a:hover { text-decoration: underline; }
 .now-playing .meta .sep { color: var(--faint); user-select: none; }
