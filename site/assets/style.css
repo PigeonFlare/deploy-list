@@ -253,6 +253,10 @@ button.lg:disabled:hover { background: var(--lg-tint); }
   font-size: 14px; font-weight: 600; letter-spacing: -0.005em; color: var(--text); text-decoration: none;
 }
 .top-donate:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* Narrow screens: the corner menus reach the middle, so Donate moves to the bottom center. */
+@media (max-width: 500px) {
+  .top-donate { top: auto; bottom: max(16px, env(safe-area-inset-bottom)); }
+}
 /* Kept close under the wordmark so the title, line and buttons read as one block. */
 .tagline { font-size: clamp(17px, 2.3vw, 22px); font-weight: 500; color: color-mix(in srgb, var(--text) 72%, transparent); margin: 16px 0 30px; letter-spacing: -0.015em; max-width: 40ch; text-wrap: balance; }
 .cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
