@@ -391,7 +391,7 @@ table.ranks { width: 100%; border-collapse: separate; border-spacing: 0; table-l
 .badge.medal {
   color: #1d1a12; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.8' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.7 0 0 0 -0.27'/%3E%3C/filter%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008 0.7' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.38 0 0 0 -0.17'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23l)'/%3E%3Crect width='120' height='120' filter='url(%23d)'/%3E%3C/svg%3E") center / 120px 120px,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.8' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.7 0 0 0 -0.27'/%3E%3C/filter%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008 0.7' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0 0 0 -0.065'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23l)'/%3E%3Crect width='120' height='120' filter='url(%23d)'/%3E%3C/svg%3E") center / 120px 120px,
     linear-gradient(90deg, transparent 18%, rgba(255, 255, 255, 0.5) 46%, rgba(255, 255, 255, 0.58) 52%, transparent 82%),
     linear-gradient(90deg, var(--m-edge), var(--m-mid) 50%, var(--m-edge));
 }
