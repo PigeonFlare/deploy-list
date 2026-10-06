@@ -43,7 +43,8 @@ REDDIT_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "reddit-cac
 ARCHIVE_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "archive-cache.json")
 UA = "deploylist/1.0 (+https://deploylist.com)"
 POOL_SIZE = 100  # sites kept and shown, split across the categories
-MIN_VOTES = 10  # Show HN points or Reddit upvotes a post needs to be ranked
+MIN_VOTES = 10  # Show HN points or Reddit upvotes a post needs to be ranked for the month
+WEEK_MIN_VOTES = 3  # lower for the last week, so that list can fill up too
 REFRESH_INTERVAL = dt.timedelta(days=3)
 # Match the daily due-check in .github/workflows/deploy.yml.
 REFRESH_HOUR, REFRESH_MINUTE = 6, 17
@@ -190,7 +191,7 @@ def window_start():
 def show_hn(since):
     q = urllib.parse.urlencode({
         "tags": "show_hn",
-        "numericFilters": f"created_at_i>={int(since.timestamp())},points>={MIN_VOTES}",
+        "numericFilters": f"created_at_i>={int(since.timestamp())},points>={WEEK_MIN_VOTES}",
         "hitsPerPage": 1000,
     })
     hits = json.loads(fetch(f"https://hn.algolia.com/api/v1/search?{q}"))["hits"]
@@ -257,16 +258,20 @@ def pick_site(title, direct, body_links=()):
 
 
 def reddit_api(since, token):
-    out = []
-    for sub in SUBREDDITS:
+    out, seen = [], set()
+    # The week's top list reaches the lower-voted posts the month's top 100 leaves out.
+    for sub, t in [(sub, t) for sub in SUBREDDITS for t in ("month", "week")]:
         try:
-            data = json.loads(fetch(f"https://oauth.reddit.com/r/{sub}/top.json?t=month&limit=100&raw_json=1",
+            data = json.loads(fetch(f"https://oauth.reddit.com/r/{sub}/top.json?t={t}&limit=100&raw_json=1",
                                     {"Authorization": f"bearer {token}"}))
         except Exception as e:  # one subreddit failing shouldn't sink the run
-            print(f"warn: r/{sub}: {e}", file=sys.stderr)
+            print(f"warn: r/{sub} ({t}): {e}", file=sys.stderr)
             continue
         for c in data["data"]["children"]:
             p = c["data"]
+            if p.get("permalink") in seen:
+                continue
+            seen.add(p.get("permalink"))
             if not isinstance(p.get("score"), int):
                 continue
             if p.get("created_utc", 0) < since.timestamp() or p.get("over_18") or p.get("stickied"):
@@ -360,13 +365,13 @@ class RedditListing(HTMLParser):
         self.posts.append(post)
 
 
-def listing_posts(sub):
+def listing_posts(sub, t="MONTH"):
     """Read a bounded number of pages directly from Reddit, with live scores."""
     posts, after = {}, None
     for _ in range(LISTING_PAGES):
         # Reddit hands out the cursor without its base64 padding but only accepts it padded;
         # unpadded, page 2 comes back with no posts.
-        q = {"t": "MONTH", "name": sub, **({"after": after + "=" * (-len(after) % 4)} if after else {})}
+        q = {"t": t, "name": sub, **({"after": after + "=" * (-len(after) % 4)} if after else {})}
         try:
             page = reddit_get("https://www.reddit.com/svc/shreddit/community-more-posts/top/?" + urllib.parse.urlencode(q))
             listing = RedditListing()
@@ -563,6 +568,12 @@ def reddit_pages(since):
             else:
                 unreachable.append(sub)
             continue
+        # The week's top list reaches the lower-voted posts the month's leaves out.
+        try:
+            ids = {p["id"] for p in posts}
+            posts += [p for p in listing_posts(sub, "WEEK") if p["id"] not in ids]
+        except Exception as e:
+            print(f"warn: r/{sub} weekly listing: {e}; keeping the month's posts", file=sys.stderr)
         posts = [p for p in posts if p["created"] >= since.timestamp()
                  and not p["excluded"] and not NSFW.search(p["title"])]
         feed = {}
@@ -794,10 +805,11 @@ def main(if_due=False):
         sys.exit(f"Show HN failed ({e}); keeping existing data")
     print(f"Show HN: {len(hn)} candidate posts")
     posts += hn
-    posts = [p for p in posts if p["votes"] >= MIN_VOTES]
+    posts = [p for p in posts if p["votes"] >= WEEK_MIN_VOTES]
 
     # One entry per domain, keeping its best-voted post. The month and the last week are
-    # ranked separately; sites that only make the week's list are marked "month": false.
+    # ranked separately, the week with a lower vote minimum; sites that only make the
+    # week's list are marked "month": false.
     def top(posts):
         best = {}
         for p in posts:
@@ -805,7 +817,7 @@ def main(if_due=False):
             if d not in best or p["votes"] > best[d]["votes"]:
                 best[d] = {**p, "domain": d}
         return sorted(best.values(), key=lambda s: -s["votes"])[:POOL_SIZE]
-    sites = top(posts)
+    sites = top([p for p in posts if p["votes"] >= MIN_VOTES])
     week_start = (started - dt.timedelta(days=7)).timestamp()
     in_month = {s["post_url"] for s in sites}
     sites += [{**s, "month": False} for s in top([p for p in posts if (p.get("created") or 0) >= week_start])

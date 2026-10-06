@@ -89,7 +89,7 @@ class RedditIngestionTests(unittest.TestCase):
 
     def test_one_blocked_subreddit_does_not_disable_the_others(self):
         with patch.object(scrape, "SUBREDDITS", ["Blocked", "Working"]), \
-             patch.object(scrape, "listing_posts", side_effect=[RuntimeError("403"), [listed_post()]]), \
+             patch.object(scrape, "listing_posts", side_effect=[RuntimeError("403"), [listed_post()], []]), \
              patch.object(scrape, "feed_fallback", side_effect=RuntimeError("also blocked")), \
              patch.object(scrape, "reddit_feed") as feed:
             posts = scrape.reddit_pages(SINCE)
@@ -190,6 +190,47 @@ class RedditIngestionTests(unittest.TestCase):
             posts = scrape.reddit(scrape.window_start())
         self.assertEqual([p["url"] for p in posts], ["https://made.example/", "https://other.example/"])
 
+    def test_weekly_listing_adds_lower_voted_posts_without_duplicates(self):
+        weekly = {**listed_post(), "id": "week", "permalink": "/r/SideProject/comments/week/x/",
+                  "direct": "https://week.example/", "votes": 4}
+        with patch.object(scrape, "SUBREDDITS", ["SideProject"]), \
+             patch.object(scrape, "listing_posts", side_effect=[[listed_post()], [listed_post(), weekly]]) as listing:
+            posts = scrape.reddit_pages(SINCE)
+        self.assertEqual([c.args for c in listing.call_args_list], [("SideProject",), ("SideProject", "WEEK")])
+        self.assertEqual([p["votes"] for p in posts], [listed_post()["votes"], 4])
+
+    def test_failed_weekly_listing_keeps_the_months_posts(self):
+        with patch.object(scrape, "SUBREDDITS", ["SideProject"]), \
+             patch.object(scrape, "listing_posts", side_effect=[[listed_post()], RuntimeError("403")]):
+            self.assertEqual(len(scrape.reddit_pages(SINCE)), 1)
+
+    def test_api_reads_month_and_week_without_duplicates(self):
+        post = {"created_utc": 1791028800, "url": "https://example.com/", "title": "Tool",
+                "permalink": "/r/SideProject/comments/example/example/", "score": 5}
+        payload = json.dumps({"data": {"children": [{"data": post}]}}).encode()
+        with patch.object(scrape, "SUBREDDITS", ["SideProject"]), \
+             patch.object(scrape, "fetch", return_value=payload) as fetch:
+            posts = scrape.reddit_api(SINCE, "test-token")
+        self.assertEqual(len(posts), 1)
+        self.assertEqual([("t=week" in c.args[0]) for c in fetch.call_args_list], [False, True])
+
+    def test_week_has_a_lower_vote_minimum_than_the_month(self):
+        now = dt.datetime.now(dt.timezone.utc).timestamp()
+        def post(url, votes, created):
+            return scrape.reddit_entry("SideProject", url, "A useful tool", votes,
+                                       f"/r/SideProject/comments/{votes}/x/", int(created))
+        posts = [post("https://month.example/", 10, now - 20 * 86400), post("https://old.example/", 9, now - 20 * 86400),
+                 post("https://week.example/", 3, now - 86400), post("https://two.example/", 2, now - 86400)]
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory) / "sites.json"
+            with patch.object(scrape, "OUT", str(out)), patch.object(scrape, "reddit", return_value=posts), \
+                 patch.object(scrape, "show_hn", return_value=[]), \
+                 patch.object(scrape, "probe", return_value=(True, "")):
+                scrape.main()
+            sites = json.loads(out.read_text())["sites"]
+        self.assertEqual({s["url"]: s.get("month", True) for s in sites},
+                         {"https://month.example/": True, "https://week.example/": False})
+
     def test_successful_rankings_merge_show_hn_and_keep_highest_vote_per_domain(self):
         hn = {**entry("https://hn.example/", 50), "source": "Hacker News"}
         with tempfile.TemporaryDirectory() as directory:
@@ -271,7 +312,7 @@ class RedditIngestionTests(unittest.TestCase):
 
     def test_archive_is_used_only_when_listing_and_rss_both_fail(self):
         with patch.object(scrape, "SUBREDDITS", ["Working", "RssOnly", "Blocked"]), \
-             patch.object(scrape, "listing_posts", side_effect=[[listed_post()], RuntimeError("403"), RuntimeError("403")]), \
+             patch.object(scrape, "listing_posts", side_effect=[[listed_post()], [], RuntimeError("403"), RuntimeError("403")]), \
              patch.object(scrape, "feed_fallback", side_effect=[[entry("https://rss.example/", 20)], RuntimeError("RSS gone")]), \
              patch.object(scrape, "archive_sync", side_effect=lambda cache, since: cache) as sync:
             scrape.reddit_pages(SINCE)
