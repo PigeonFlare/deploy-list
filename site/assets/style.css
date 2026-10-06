@@ -61,11 +61,10 @@
   --live-tint: rgba(250, 251, 253, 0.42);
   --live-tint-hover: rgba(255, 255, 255, 0.56);
   --red: #e0342f;
-  --star: 228, 62%, 26%;
   --space: #dde3f0;
   --tagline: color-mix(in srgb, var(--text) 72%, transparent);
-  --space-edge: #c3cce0;
-  --glow: rgba(255, 255, 255, 0.85);
+  --bezel: #fbfcfe; --bezel-2: #eef1f6; --bezel-edge: rgba(14, 16, 22, 0.12);
+  --bezel-shadow: 0 10px 24px -6px rgba(22, 32, 60, 0.22);
   --aurora-1: rgba(47, 107, 255, 0.26);
   --aurora-2: rgba(138, 92, 255, 0.24);
   --aurora-3: rgba(255, 90, 140, 0.14);
@@ -93,7 +92,8 @@
     --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
     --menu-hover: rgba(255, 255, 255, 0.09);
     --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
-    --red: #ff5a52; --tagline: #f2efe8; --star: 214, 90%, 84%; --space: #04050b; --space-edge: #010103; --glow: rgba(70, 110, 255, 0.16);
+    --red: #ff5a52; --tagline: #f2efe8; --space: #04050b;
+    --bezel: #161a24; --bezel-2: #20242f; --bezel-edge: rgba(255, 255, 255, 0.14); --bezel-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
   }
 }
@@ -115,7 +115,8 @@
   --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
   --menu-hover: rgba(255, 255, 255, 0.09);
   --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
-  --red: #ff5a52; --tagline: #f2efe8; --star: 214, 90%, 84%; --space: #04050b; --space-edge: #010103; --glow: rgba(70, 110, 255, 0.16);
+  --red: #ff5a52; --tagline: #f2efe8; --space: #04050b;
+    --bezel: #161a24; --bezel-2: #20242f; --bezel-edge: rgba(255, 255, 255, 0.14); --bezel-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
 }
 
@@ -136,13 +137,37 @@ button { font: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 svg.icon { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* Hyperspace (homepage only) */
+/* Wall of sites (homepage only): rows of stills in device frames, pressed together like
+   bricks (app.js builds them). Sizes scale with the row height through --u. */
 body.home { background: var(--space); }
-#hyperspace, #snapshots { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
-.veil { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+#wall {
+  position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+  display: flex; flex-direction: column; justify-content: center; gap: var(--gap);
+}
+#wall .row { flex: none; }
+#wall .track { display: flex; width: max-content; height: 100%; margin-left: calc(-60px * var(--u)); animation: wall-drift linear infinite; will-change: transform; }
+#wall.paused .track { animation-play-state: paused; }
+@keyframes wall-drift { to { transform: translate3d(-50%, 0, 0); } }
+#wall .dev {
+  flex: none; display: flex; height: 100%; margin-right: var(--gap); box-sizing: border-box;
+  background: var(--bezel); border: 1px solid var(--bezel-edge); box-shadow: var(--bezel-shadow);
+}
+#wall img { display: block; height: 100%; width: auto; object-fit: cover; object-position: top; opacity: 0; transition: opacity 0.5s ease; }
+#wall img.in { opacity: 1; }
+#wall .phone { padding: calc(5px * var(--u)); border-radius: calc(22px * var(--u)); }
+#wall .phone img { aspect-ratio: 390 / 844; border-radius: calc(17px * var(--u)); }
+#wall .tablet { padding: calc(8px * var(--u)); border-radius: calc(18px * var(--u)); }
+#wall .tablet img { aspect-ratio: 820 / 1180; border-radius: calc(10px * var(--u)); }
+#wall .laptop { padding: calc(6px * var(--u)) calc(6px * var(--u)) calc(14px * var(--u)); border-radius: calc(10px * var(--u)) calc(10px * var(--u)) calc(6px * var(--u)) calc(6px * var(--u)); }
+#wall .laptop img { aspect-ratio: 16 / 10; border-radius: calc(4px * var(--u)); }
+#wall .desktop { padding: calc(7px * var(--u)); border-radius: calc(8px * var(--u)); background: var(--bezel-2); }
+#wall .desktop img { aspect-ratio: 16 / 10; border-radius: calc(3px * var(--u)); }
+/* Just enough of the page color over the middle of the wall for the title and buttons to read. */
+#wall::after {
+  content: ""; position: fixed; inset: 0;
   background:
-    radial-gradient(ellipse 46% 36% at 50% 50%, var(--glow), transparent 100%),
-    radial-gradient(ellipse at center, transparent 35%, var(--space-edge) 100%); }
+    radial-gradient(ellipse 52% 40% at 50% 50%, color-mix(in srgb, var(--space) 80%, transparent), color-mix(in srgb, var(--space) 45%, transparent) 70%, color-mix(in srgb, var(--space) 25%, transparent));
+}
 
 /* Liquid glass: the top buttons. A clear, lightly tinted lens with a specular rim,
    inner glow and soft drop shadow. app.js adds edge refraction where the browser
@@ -503,5 +528,7 @@ footer.site-foot a:hover { text-decoration: underline; }
   body.home .logo, body.home .tagline, body.home .cta, body.home .top-donate, body.home .corner { animation: none; }
   .board h1, .board .sub, .board .card, .board #updated, #rows.rise tr { animation: none; }
   .meter span { transition: none; }
+  #wall .track { animation: none; }
+  #wall img { transition: none; }
   button.lg:active, a.lg:active { transform: none; }
 }

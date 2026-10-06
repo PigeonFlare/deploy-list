@@ -1,4 +1,4 @@
-// Shared bits for every page: hyperspace background, corner dropdowns, liquid glass, data loading.
+// Shared bits for every page: the homepage wall of sites, corner dropdowns, liquid glass, data loading.
 (function () {
   const ROOT = document.body.dataset.root || "";
   const PAGE = document.body.dataset.page;
@@ -225,309 +225,104 @@
     renderCategoryMenu();
   }
 
-  // ---- hyperspace ----
-  function hyperspace() {
-    const canvas = document.createElement("canvas");
-    canvas.id = "hyperspace";
-    canvas.setAttribute("aria-hidden", "true");
-    const veil = document.createElement("div");
-    veil.className = "veil";
-    // Snapshots of ranked sites fly past on their own layer, cleared every frame,
-    // so they don't smear like the star trails do.
-    const snapCanvas = document.createElement("canvas");
-    snapCanvas.id = "snapshots";
-    snapCanvas.setAttribute("aria-hidden", "true");
-    document.body.prepend(veil);
-    document.body.prepend(snapCanvas);
-    document.body.prepend(canvas);
-    const ctx = canvas.getContext("2d", { alpha: false });
-    const sctx = snapCanvas.getContext("2d");
-    const motionQuery = matchMedia("(prefers-reduced-motion: reduce)");
-    let reduce = motionQuery.matches;
-    let w = 0, h = 0, cx = 0, cy = 0, dpr = 1, stars = [];
-    const DEPTH = 1000;
-    let maxDpr = 1.5;
-    const N = Math.round(Math.min(1100, Math.max(350, ((innerWidth || 800) * (innerHeight || 600)) / 900)));
+  // ---- wall of sites (homepage only) ----
+  // Rows of site stills in phone, tablet, laptop and desktop frames, pressed together like
+  // bricks. Each row drifts sideways, alternating direction at slightly different speeds.
+  // The drift is a CSS animation (style.css), so it stays smooth on phones; it pauses while
+  // the tab is hidden and stands still for reduced motion.
+  function wall() {
+    const el = document.createElement("div");
+    el.id = "wall";
+    el.setAttribute("aria-hidden", "true");
+    document.body.prepend(el);
+    // Which still each frame shows; the screen's shape comes from style.css.
+    const KINDS = { phone: "phone", tablet: "tablet", laptop: "desktop", desktop: "desktop" };
+    const DIRS = { phone: "phone/", tablet: "tablet/", desktop: "" };
+    // A mix that leans on laptops and phones, like the flyer.
+    const MIX = ["laptop", "phone", "tablet", "laptop", "desktop", "phone", "tablet", "laptop"];
+    const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    let pools = null, builtW = 0, builtH = 0;
 
-    function resetStar(s, fresh) {
-      // Keep stars off the exact center line, where they'd pile up into a bright blob.
-      const a = Math.random() * Math.PI * 2, r = 12 + Math.sqrt(Math.random()) * 220;
-      s.x = Math.cos(a) * r;
-      s.y = Math.sin(a) * r;
-      s.z = fresh ? Math.random() * DEPTH : DEPTH;
-      s.pz = s.z;
+    function take(still) {
+      const p = pools[still];
+      if (!p.list.length) return null;
+      const n = p.list[p.i++ % p.list.length];
+      return ROOT + "snapshots/" + DIRS[still] + n;
     }
 
-    const BUCKETS = 8;
-    const paths = Array.from({ length: BUCKETS }, () => []);
-    const bucketStyles = [];
-    const bucketWidths = new Float32Array(BUCKETS);
-
-    function updateBucketWidths() {
-      for (let b = 0; b < BUCKETS; b++) {
-        const t = (b + 0.5) / BUCKETS;
-        bucketWidths[b] = (0.8 + t * 1.8) * dpr;
+    function build() {
+      const vw = innerWidth || 800, vh = innerHeight || 600;
+      builtW = vw; builtH = vh;
+      const rowH = Math.round(Math.max(110, Math.min(230, vh / 4.6, vw / 2.6)));
+      const gap = Math.round(rowH * 0.06);
+      el.style.setProperty("--u", (rowH / 204).toFixed(3));
+      el.style.setProperty("--gap", gap + "px");
+      el.textContent = "";
+      const kinds = Object.keys(KINDS).filter((k) => pools[KINDS[k]].list.length);
+      if (!kinds.length) return;
+      const mix = MIX.filter((k) => kinds.includes(k));
+      const rows = Math.ceil((vh + gap) / (rowH + gap)) + 1;
+      let k = Math.floor(Math.random() * mix.length);
+      for (let r = 0; r < rows; r++) {
+        const row = document.createElement("div");
+        row.className = "row";
+        row.style.height = rowH + "px";
+        const track = document.createElement("div");
+        track.className = "track";
+        row.appendChild(track);
+        el.appendChild(row);
+        // Fill one half wider than the screen, then repeat it, so sliding by half loops seamlessly.
+        while (track.scrollWidth < vw + rowH * 2) {
+          const kind = mix[k++ % mix.length];
+          const src = take(KINDS[kind]);
+          if (!src) break;
+          const dev = document.createElement("div");
+          dev.className = "dev " + kind;
+          const img = new Image();
+          img.decoding = "async";
+          img.alt = "";
+          img.onload = () => img.classList.add("in");
+          img.src = src;
+          dev.appendChild(img);
+          track.appendChild(dev);
+        }
+        const half = track.scrollWidth;
+        for (const d of [...track.children]) {
+          const c = d.cloneNode(true);
+          c.firstChild.onload = () => c.firstChild.classList.add("in");
+          track.appendChild(c);
+        }
+        // 14 to 24 px a second, every other row the other way, each from its own starting point.
+        const secs = half / (14 + Math.random() * 10);
+        track.style.animationDuration = secs.toFixed(1) + "s";
+        track.style.animationDelay = (-Math.random() * secs).toFixed(1) + "s";
+        if (r % 2) track.style.animationDirection = "reverse";
       }
     }
 
-    function resize() {
-      // Streaks look the same at 1.5x as at 2x, and painting 44% fewer pixels a frame
-      // keeps the animation smooth on retina screens; slow devices drop to 1x.
-      dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
-      w = canvas.width = snapCanvas.width = Math.max(1, Math.floor((innerWidth || 800) * dpr));
-      h = canvas.height = snapCanvas.height = Math.max(1, Math.floor((innerHeight || 600) * dpr));
-      cx = w / 2; cy = h / 2;
-      updateBucketWidths();
-    }
-    resize();
-    // Follow a resize on the next frame. Waiting let the browser stretch the old field to the
-    // new size and then snap it back, which shook the background whenever the window changed
-    // size as the page opened (a new tab's bookmarks bar going away, for one). The trails
-    // carry over, recentered, so the field doesn't flash.
-    let resizeQueued = false;
-    function followResize() {
-      resizeQueued = false;
-      const ow = w, oh = h;
-      const old = document.createElement("canvas");
-      old.width = ow; old.height = oh;
-      old.getContext("2d").drawImage(canvas, 0, 0);
-      resize();
-      if (w === ow && h === oh) return;
-      ctx.fillStyle = space;
-      ctx.fillRect(0, 0, w, h);
-      ctx.drawImage(old, Math.round((w - ow) / 2), Math.round((h - oh) / 2));
-    }
-    addEventListener("resize", () => {
-      if (!resizeQueued) { resizeQueued = true; requestAnimationFrame(followResize); }
-    }, { passive: true });
-
-    for (let i = 0; i < N; i++) {
-      const s = { x: 0, y: 0, z: 0, pz: 0 };
-      resetStar(s, true);
-      stars.push(s);
-    }
-
-    // Colors come from CSS so the field follows light/dark mode.
-    let star = "225, 60%, 30%", space = "#eef1f7", fade = "rgba(238,241,247,0.35)";
-    function parseHex(hex) {
-      hex = (hex || "").replace("#", "").trim();
-      if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
-      if (hex.length >= 6) {
-        return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
-      }
-      return [238, 241, 247];
-    }
-    // Safari can run this before the stylesheet's variables resolve, which used to leave
-    // light-mode colors painted under dark-mode text. Fall back by the system theme, and
-    // read again once the page has loaded or is restored from the back/forward cache.
-    const darkQuery = matchMedia("(prefers-color-scheme: dark)");
-    let colorsResolved = false;
-    function readColors() {
-      const cs = getComputedStyle(document.documentElement);
-      const dark = darkQuery.matches;
-      colorsResolved = !!cs.getPropertyValue("--space").trim();
-      star = cs.getPropertyValue("--star").trim() || (dark ? "214, 90%, 84%" : "228, 62%, 26%");
-      space = cs.getPropertyValue("--space").trim() || (dark ? "#04050b" : "#dde3f0");
-      const rgb = parseHex(space);
-      fade = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.35)`;
-      bucketStyles.length = 0;
-      for (let b = 0; b < BUCKETS; b++) {
-        const t = (b + 0.5) / BUCKETS;
-        bucketStyles.push(`hsla(${star},${Math.min(1, t * t * 2.4)})`);
-      }
-    }
-    function refreshColors() {
-      const before = space;
-      readColors();
-      if (space !== before) { ctx.fillStyle = space; ctx.fillRect(0, 0, w, h); }
-    }
-    readColors();
-    darkQuery.addEventListener("change", refreshColors);
-    addEventListener("load", refreshColors);
-    addEventListener("pageshow", refreshColors);
-
-    // ---- site snapshots ----
-    const pics = [], cards = [];
-    const MAX_CARDS = 16, CARD_W = 34, CARD_H = CARD_W * 0.625; // world units; stills are 16:10
-    // A random 48 of the stills per visit: plenty of variety, about half the download.
-    const MAX_PICS = 48;
-    let spawnIn = 600, seeded = false, cardsDrawn = false;
-    // Stills load a dozen up front, then one more each time a card launches, so the
-    // homepage doesn't download all of them before anyone has watched for long.
-    let queue = [];
-    function loadNext() {
-      const n = queue.shift();
-      if (!n) return;
-      const img = new Image();
-      img.decoding = "async";
-      img.onload = () => {
-        // Decode off the main thread before first use, so a new still never stalls a frame.
-        (img.decode ? img.decode() : Promise.resolve()).catch(() => {}).then(() => addPic(img));
-      };
-      img.src = ROOT + "snapshots/" + n;
-    }
-    function addPic(img) {
-      pics.push(img);
-      // As soon as there are enough, place a full set mid-flight at random depths,
-      // like the stars, so the page doesn't open on an empty field.
-      if (!seeded && pics.length >= MAX_CARDS) {
-        seeded = true;
-        for (let i = 0; i < MAX_CARDS; i++) spawnCard(300 + Math.random() * (DEPTH - 300));
-      }
-    }
     fetch(ROOT + "snapshots/index.json")
-      .then((r) => (r.ok ? r.json() : []))
-      .then((names) => {
-        if (!Array.isArray(names)) return;
-        queue = names.filter((n) => /^[\w.-]+\.jpg$/.test(n)).sort(() => Math.random() - 0.5).slice(0, MAX_PICS);
-        for (let i = 0; i < MAX_CARDS + 4; i++) loadNext();
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((index) => {
+        if (Array.isArray(index)) index = { desktop: index }; // older single-list index
+        const ok = (a) => (Array.isArray(a) ? a.filter((n) => /^[\w.-]+\.jpg$/.test(n)) : []);
+        pools = {};
+        for (const still of Object.keys(DIRS)) pools[still] = { list: shuffle(ok(index[still])), i: 0 };
+        build();
       })
       .catch(() => {});
 
-    function spawnCard(z = DEPTH) {
-      if (!pics.length || cards.length >= MAX_CARDS) return;
-      const used = new Set(cards.map((c) => c.img));
-      const free = pics.filter((p) => !used.has(p));
-      if (!free.length) return;
-      // Start away from the center so cards pass beside the title rather than through it.
-      // Spread starting points over a wide field; each card then flies straight out from the center.
-      const a = Math.random() * Math.PI * 2, r = 60 + Math.sqrt(Math.random()) * 240;
-      cards.push({ img: free[Math.floor(Math.random() * free.length)], x: Math.cos(a) * r, y: Math.sin(a) * r * 0.7, z });
-      loadNext();
-    }
-
-    function drawCards(dt, speed) {
-      if (cards.length || cardsDrawn) sctx.clearRect(0, 0, w, h);
-      cardsDrawn = cards.length > 0;
-      if (reduce) return;
-      spawnIn -= dt;
-      if (spawnIn <= 0) { spawnCard(); spawnIn = 175 + Math.random() * 225; }
-      const scale = Math.max(w, h);
-      for (let i = cards.length - 1; i >= 0; i--) {
-        const c = cards[i];
-        c.z -= speed * 0.85 * (1 + (DEPTH - c.z) / 400); // nearly star speed
-        const k = scale / c.z;
-        const cw = CARD_W * k, ch = CARD_H * k;
-        const x = cx + c.x * k - cw / 2, y = cy + c.y * k - ch / 2;
-        if (c.z < 20 || x > w || y > h || x + cw < 0 || y + ch < 0) { cards.splice(i, 1); continue; }
-        // Fade in from the distance.
-        sctx.globalAlpha = Math.min(1, (DEPTH - c.z) / 150) * 0.92;
-        const rad = Math.min(cw, ch) * 0.07;
-        sctx.save();
-        sctx.beginPath();
-        sctx.roundRect(x, y, cw, ch, rad);
-        sctx.clip();
-        sctx.drawImage(c.img, x, y, cw, ch);
-        sctx.restore();
-        sctx.lineWidth = Math.max(1, dpr);
-        sctx.strokeStyle = "rgba(255,255,255,0.35)";
-        sctx.beginPath();
-        sctx.roundRect(x, y, cw, ch, rad);
-        sctx.stroke();
-      }
-      sctx.globalAlpha = 1;
-    }
-
-    let last = performance.now();
-    let animId = null;
-
-    // If frames keep running long (a slow GPU or a busy machine), drop to 1x resolution once.
-    let slowFrames = 0, seenFrames = 0;
-    function watchSpeed(dt) {
-      if (maxDpr === 1 || ++seenFrames < 30) return;
-      slowFrames = dt > 24 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
-      if (slowFrames > 20) {
-        maxDpr = 1;
-        resize();
-        ctx.fillStyle = space;
-        ctx.fillRect(0, 0, w, h);
-      }
-    }
-
-    function renderFrame(now) {
-      if (!colorsResolved) refreshColors(); // keep checking until the stylesheet's colors are in
-      const dt = Math.min(50, now - last);
-      last = now;
-      watchSpeed(dt);
-      const speed = 0.09 * dt;
-      ctx.fillStyle = fade;
-      ctx.fillRect(0, 0, w, h);
-      const scale = Math.max(w, h), cap = 26 * dpr;
-      for (const p of paths) p.length = 0;
-      for (const s of stars) {
-        s.pz = s.z;
-        s.z -= speed * (1 + (DEPTH - s.z) / 400);
-        if (s.z < 1) { resetStar(s, false); continue; }
-        const x = cx + (s.x / s.z) * scale, y = cy + (s.y / s.z) * scale;
-        if (x < -50 || x > w + 50 || y < -50 || y > h + 50) { resetStar(s, false); continue; }
-        const t = 1 - s.z / DEPTH;
-        if (t < 0.1) continue; // too faint to see
-        let px = cx + (s.x / s.pz) * scale, py = cy + (s.y / s.pz) * scale;
-        // Cap streak length so near stars read as streaks, not lines across the screen.
-        const dx = x - px, dy = y - py, len = Math.hypot(dx, dy);
-        if (len > cap && len > 0) { px = x - (dx / len) * cap; py = y - (dy / len) * cap; }
-        paths[Math.min(BUCKETS - 1, Math.floor(t * BUCKETS))].push(px, py, x, y);
-      }
-      ctx.lineCap = "round";
-      for (let b = 0; b < BUCKETS; b++) {
-        const pts = paths[b];
-        if (!pts.length) continue;
-        ctx.strokeStyle = bucketStyles[b];
-        ctx.lineWidth = bucketWidths[b];
-        ctx.beginPath();
-        for (let i = 0; i < pts.length; i += 4) { ctx.moveTo(pts[i], pts[i + 1]); ctx.lineTo(pts[i + 2], pts[i + 3]); }
-        ctx.stroke();
-      }
-      drawCards(dt, speed);
-    }
-
-    function loop(now) {
-      renderFrame(now);
-      if (!reduce && !document.hidden) {
-        animId = requestAnimationFrame(loop);
-      } else {
-        animId = null;
-      }
-    }
-
-    function startAnim() {
-      if (animId !== null || reduce || document.hidden) return;
-      last = performance.now();
-      animId = requestAnimationFrame(loop);
-    }
-
-    function stopAnim() {
-      if (animId !== null) {
-        cancelAnimationFrame(animId);
-        animId = null;
-      }
-    }
-
-    ctx.fillStyle = space;
-    ctx.fillRect(0, 0, w, h);
-    if (reduce) {
-      for (let i = 0; i < 6; i++) renderFrame(last + 16 * i);
-    } else {
-      startAnim();
-    }
-
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        stopAnim();
-      } else {
-        startAnim();
-      }
-    });
-
-    motionQuery.addEventListener("change", (e) => {
-      reduce = e.matches;
-      if (reduce) {
-        stopAnim();
-        for (let i = 0; i < 6; i++) renderFrame(last + 16 * i);
-      } else {
-        startAnim();
-      }
-    });
+    // Rebuild when the width changes, or the height grows past the rows (a phone's address bar
+    // coming and going only nudges the height, so that alone leaves the wall be).
+    let timer = 0;
+    addEventListener("resize", () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (pools && (Math.abs(innerWidth - builtW) > 40 || innerHeight > builtH + 120)) build();
+      }, 200);
+    }, { passive: true });
+    const pause = () => el.classList.toggle("paused", document.hidden);
+    document.addEventListener("visibilitychange", pause);
+    pause();
   }
 
   // Only ever hand http(s) URLs from the data to links and the frame.
@@ -683,7 +478,7 @@
     });
   }
 
-  if (PAGE === "home") { hyperspace(); playIntro(); }
+  if (PAGE === "home") { wall(); playIntro(); }
   initMenus();
   liquidGlass();
   lightRims();
