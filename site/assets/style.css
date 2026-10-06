@@ -168,7 +168,8 @@ body.home { background: var(--space); }
 /* A light, even dim over the wall; the title, tagline and Donate also get a tight shadow. */
 #wall::after { content: ""; position: fixed; inset: 0; background: color-mix(in srgb, var(--space) 25%, transparent); }
 body.home :is(.logo, .tagline, .top-donate) { filter: var(--hero-shadow); }
-/* "deploy" and the tagline are white over the wall in both modes. */
+/* "deploy", the tagline and Donate are white over the wall in both modes. */
+body.home .top-donate { color: #f3f5fa; }
 body.home .logo .w1 { background: linear-gradient(180deg, #f3f5fa 50%, #dcdfe6); -webkit-background-clip: text; background-clip: text; }
 
 /* Liquid glass: the top buttons. A clear, lightly tinted lens with a specular rim,
