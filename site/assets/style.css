@@ -217,7 +217,7 @@ button.lg:active, a.lg:active { transform: scale(0.95); }
 button.lg:disabled { opacity: 0.38; cursor: default; transform: none; }
 button.lg:disabled:hover { background: var(--lg-tint); }
 /* The primary button is flatter: a solid fill, no sheen, a faint rim. */
-.lg.tinted { background: var(--lg-accent); color: #fff; text-shadow: none; box-shadow: 0 6px 16px -8px rgba(47, 107, 255, 0.6); }
+.lg.tinted { background: var(--lg-accent); color: #fff; text-shadow: none; box-shadow: var(--lg-shadow); }
 .lg.tinted::after { display: none; }
 .lg.tinted::before { opacity: 0.45; }
 .lg.tinted:hover { background: var(--lg-accent-hover); }
