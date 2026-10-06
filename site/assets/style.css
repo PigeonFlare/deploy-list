@@ -278,7 +278,7 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 .dd-menu .check { width: 14px; height: 14px; stroke-width: 2.4; color: var(--accent); visibility: hidden; }
 .dd-menu [aria-current="true"] .check { visibility: visible; }
 .count { color: var(--faint); font-variant-numeric: tabular-nums; font-weight: 400; margin-left: 4px; }
-.dd-menu .count { color: var(--menu-count); }
+:is(.dd-menu, .dd-toggle) .count { color: var(--menu-count); }
 .count.done { color: var(--done); font-weight: 600; }
 .tagline .count, .tagline .count.done { color: inherit; font-weight: inherit; margin-left: 0; }
 
