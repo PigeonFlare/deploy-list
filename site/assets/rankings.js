@@ -116,23 +116,33 @@ DL.loadData().then((d) => {
 
 // Parallax: the city photo behind the page drifts up at a fraction of the scroll speed,
 // so it trails the title and table. It's made tall enough to never run out at the bottom.
+// Where the browser can tie an animation to scrolling, the style sheet moves it off the
+// main thread (smooth on iPhone and iPad); otherwise each scroll frame moves it here.
 (() => {
   const bg = document.querySelector(".paris");
   if (!bg) return;
   const still = matchMedia("(prefers-reduced-motion: reduce)");
+  const linked = CSS.supports("animation-timeline: scroll()");
   const RATE = 0.3;
   let queued = false;
+  let travel = -1;
   const rate = () => (still.matches ? 0 : RATE);
   const move = () => {
     queued = false;
-    bg.style.transform = `translate3d(0, ${(-scrollY * rate()).toFixed(1)}px, 0)`;
+    bg.style.transform = `translate3d(0, ${(-Math.max(0, scrollY) * rate()).toFixed(1)}px, 0)`;
   };
+  // Measured against the viewport with the browser bars shown, which stays put while
+  // Safari's toolbar slides away, so the photo isn't resized mid-scroll.
   const size = () => {
-    const room = Math.max(0, document.documentElement.scrollHeight - innerHeight);
-    bg.style.setProperty("--travel", `${Math.ceil(room * rate())}px`);
-    move();
+    const room = Math.max(0, document.documentElement.scrollHeight - document.documentElement.clientHeight);
+    const next = Math.ceil(room * rate());
+    if (next !== travel) {
+      travel = next;
+      bg.style.setProperty("--travel", `${travel}px`);
+    }
+    if (!linked) move();
   };
-  addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(move); } }, { passive: true });
+  if (!linked) addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(move); } }, { passive: true });
   addEventListener("resize", size);
   still.addEventListener("change", size);
   new ResizeObserver(size).observe(document.querySelector(".board") || document.body);

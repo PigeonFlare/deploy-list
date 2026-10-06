@@ -348,6 +348,11 @@ body.board-page { background: var(--bg); }
   background: var(--paris-scrim), url(bg/paris-light.jpg) center top / cover no-repeat, var(--bg);
   background: var(--paris-scrim), image-set(url(bg/paris-light-1800.webp) type("image/webp"), url(bg/paris-light.jpg) type("image/jpeg")) center top / cover no-repeat, var(--bg);
 }
+@supports (animation-timeline: scroll()) {
+  .paris { animation: paris-drift linear both; animation-timeline: scroll(root block); }
+  @keyframes paris-drift { to { transform: translate3d(0, calc(-1 * var(--travel, 0px)), 0); } }
+}
+@media (prefers-reduced-motion: reduce) { .paris { animation: none; } }
 /* Over the busy night photo the dark card needs more body to keep rows readable. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .board-page { --surface: rgba(14, 11, 28, 0.8); }
