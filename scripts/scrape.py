@@ -183,6 +183,41 @@ def category(title, source, summary=""):
     return "other"
 
 
+# A language model double-checks the keyword categories when an OpenAI key is set
+# (OPENAI_API_KEY and OPENAI_MODEL); without one, or if the call fails, the keywords stand.
+LLM_BATCH = 50
+LLM_PROMPT = (
+    "Sort each website into exactly one category. \"games\": something you play in the browser "
+    "(a game, puzzle, quiz, toy or playful interactive experience). \"apps\": a tool, product or "
+    "service people use to get something done. \"other\": everything else (art, writing, data, "
+    "reference, portfolios, experiments). Reply with JSON: {\"categories\": {\"<id>\": \"games|apps|other\"}}.")
+
+
+def llm_categories(sites, summaries):
+    """Categories keyed by site index from the model, or {} without a key or on failure."""
+    key, model = os.environ.get("OPENAI_API_KEY"), os.environ.get("OPENAI_MODEL")
+    if not key or not model:
+        return {}
+    out = {}
+    for start in range(0, len(sites), LLM_BATCH):
+        items = [{"id": str(i), "title": s["title"], "domain": host_of(s["url"]), "page": summary[:400]}
+                 for i, (s, summary) in enumerate(zip(sites, summaries)) if start <= i < start + LLM_BATCH]
+        body = json.dumps({"model": model, "response_format": {"type": "json_object"}, "messages": [
+            {"role": "system", "content": LLM_PROMPT},
+            {"role": "user", "content": json.dumps(items, ensure_ascii=False)}]}).encode()
+        try:
+            reply = json.loads(fetch("https://api.openai.com/v1/chat/completions",
+                                     {"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                                     data=body, timeout=120))
+            got = json.loads(reply["choices"][0]["message"]["content"])["categories"]
+        except Exception as e:
+            print(f"warn: OpenAI categories: {e}; keeping keyword categories", file=sys.stderr)
+            return {}
+        out.update({int(i): c for i, c in got.items() if c in ("games", "apps", "other") and str(i).isdigit()})
+    print(f"OpenAI ({model}) categorized {len(out)} of {len(sites)} sites")
+    return out
+
+
 def window_start():
     # A rolling 30-day window, so the board isn't nearly empty early in a calendar month.
     return dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)
@@ -773,10 +808,13 @@ def recheck():
     sites = data.get("sites") or []
     before = {s["url"]: dict(s) for s in sites}
     summaries = check_live(sites, before)
-    for s, summary in zip(sites, summaries):
+    llm = llm_categories(sites, summaries)
+    for i, (s, summary) in enumerate(zip(sites, summaries)):
         # Recategorize with the site's current description; a site that didn't answer
         # keeps its category.
-        if summary:
+        if i in llm:
+            s["category"] = llm[i]
+        elif summary:
             s["category"] = category(s["title"], s["source"], summary)
         if s["embeddable"]:
             s["url"] = s["url"].replace("http://", "https://", 1)
@@ -830,9 +868,11 @@ def main(if_due=False):
     except (OSError, ValueError):
         previous = {}
     summaries = check_live(sites, previous)
-    for s, summary in zip(sites, summaries):
-        # The post title plus the site's own title and description.
-        s["category"] = category(s["title"], s["source"], summary)
+    llm = llm_categories(sites, summaries)
+    for i, (s, summary) in enumerate(zip(sites, summaries)):
+        # The model's call when there is one, else the post title plus the site's own
+        # title and description.
+        s["category"] = llm.get(i) or category(s["title"], s["source"], summary)
         s["url"] = s["url"].replace("http://", "https://", 1) if s["embeddable"] else s["url"]
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
