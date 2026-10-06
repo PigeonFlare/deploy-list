@@ -1,8 +1,11 @@
 """Unit tests for scraper logic and URL validation."""
 
 import datetime as dt
+import io
+import json
 import os
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
 from unittest.mock import MagicMock, patch
 
 import scrape
@@ -228,6 +231,25 @@ class ScraperTests(unittest.TestCase):
             scrape.check_live(sites)
         self.assertEqual(sites[0]["live_issue"], "iframe")
         self.assertTrue(sites[1]["embeddable"])
+
+
+    def test_llm_categories_need_a_key_and_model(self):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "", "OPENAI_MODEL": ""}), patch.object(scrape, "fetch") as fetch:
+            self.assertEqual(scrape.llm_categories([{"title": "x", "url": "https://x.example/"}], [""]), {})
+        fetch.assert_not_called()
+
+    def test_llm_categories_keep_only_known_categories(self):
+        sites = [{"title": f"t{i}", "url": f"https://s{i}.example/"} for i in range(3)]
+        content = json.dumps({"categories": {"0": "games", "1": "spaceships", "2": "apps"}})
+        reply = json.dumps({"choices": [{"message": {"content": content}}]}).encode()
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "k", "OPENAI_MODEL": "m"}), \
+             patch.object(scrape, "fetch", return_value=reply), redirect_stdout(io.StringIO()):
+            self.assertEqual(scrape.llm_categories(sites, ["", "", ""]), {0: "games", 2: "apps"})
+
+    def test_llm_failure_keeps_keyword_categories(self):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "k", "OPENAI_MODEL": "m"}), \
+             patch.object(scrape, "fetch", side_effect=RuntimeError("down")), redirect_stderr(io.StringIO()):
+            self.assertEqual(scrape.llm_categories([{"title": "x", "url": "https://x.example/"}], [""]), {})
 
 
 if __name__ == "__main__":
