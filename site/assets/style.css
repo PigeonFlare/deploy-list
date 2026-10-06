@@ -63,6 +63,7 @@
   --red: #e0342f;
   --star: 228, 62%, 26%;
   --space: #dde3f0;
+  --tagline: color-mix(in srgb, var(--text) 72%, transparent);
   --space-edge: #c3cce0;
   --glow: rgba(255, 255, 255, 0.85);
   --aurora-1: rgba(47, 107, 255, 0.26);
@@ -92,7 +93,7 @@
     --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
     --menu-hover: rgba(255, 255, 255, 0.09);
     --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
-    --red: #ff5a52; --star: 214, 90%, 84%; --space: #04050b; --space-edge: #010103; --glow: rgba(70, 110, 255, 0.16);
+    --red: #ff5a52; --tagline: #f2efe8; --star: 214, 90%, 84%; --space: #04050b; --space-edge: #010103; --glow: rgba(70, 110, 255, 0.16);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
   }
 }
@@ -114,7 +115,7 @@
   --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
   --menu-hover: rgba(255, 255, 255, 0.09);
   --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
-  --red: #ff5a52; --star: 214, 90%, 84%; --space: #04050b; --space-edge: #010103; --glow: rgba(70, 110, 255, 0.16);
+  --red: #ff5a52; --tagline: #f2efe8; --star: 214, 90%, 84%; --space: #04050b; --space-edge: #010103; --glow: rgba(70, 110, 255, 0.16);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
 }
 
@@ -266,7 +267,7 @@ button.lg:disabled:hover { background: var(--lg-tint); }
   .top-donate { top: auto; bottom: max(16px, env(safe-area-inset-bottom)); }
 }
 /* Kept close under the wordmark so the title, line and buttons read as one block. */
-.tagline { font-size: clamp(17px, 2.3vw, 22px); font-weight: 500; color: color-mix(in srgb, var(--text) 72%, transparent); margin: 16px 0 30px; letter-spacing: -0.015em; max-width: 40ch; text-wrap: balance; }
+.tagline { font-size: clamp(17px, 2.3vw, 22px); font-weight: 500; color: var(--tagline); margin: 16px 0 30px; letter-spacing: -0.015em; max-width: 40ch; text-wrap: balance; }
 .cta { display: flex; gap: 34px; flex-wrap: wrap; justify-content: center; }
 .pill {
   display: inline-flex; align-items: center; gap: 9px; height: 48px; padding: 0 25px; border-radius: 14px;
