@@ -4,6 +4,7 @@ import datetime as dt
 import io
 import json
 import os
+import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from unittest.mock import MagicMock, patch
@@ -233,24 +234,60 @@ class ScraperTests(unittest.TestCase):
         self.assertTrue(sites[1]["embeddable"])
 
 
-    def test_llm_categories_need_a_key(self):
+    def llm(self, sites, cache=None, **patches):
+        """Run llm_categories against a temporary cache; returns (result, saved cache)."""
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, "categories.json")
+            if cache is not None:
+                with open(path, "w") as f:
+                    json.dump(cache, f)
+            with patch.object(scrape, "CATEGORY_CACHE", path), redirect_stdout(io.StringIO()), \
+                 redirect_stderr(io.StringIO()):
+                got = scrape.llm_categories(sites, [""] * len(sites))
+            with open(path) as f:
+                return got, json.load(f)
+
+    @staticmethod
+    def sites(n):
+        return [{"title": f"t{i}", "url": f"https://s{i}.example/", "post_url": f"https://post/{i}"} for i in range(n)]
+
+    @staticmethod
+    def reply(categories):
+        content = json.dumps({"categories": categories})
+        return json.dumps({"choices": [{"message": {"content": content}}]}).encode()
+
+    def test_llm_categories_without_a_key_use_only_the_cache(self):
         with patch.dict(os.environ, {"OPENAI_API_KEY": ""}), patch.object(scrape, "fetch") as fetch:
-            self.assertEqual(scrape.llm_categories([{"title": "x", "url": "https://x.example/"}], [""]), {})
+            got, _ = self.llm(self.sites(2), {"https://post/1": "games"})
         fetch.assert_not_called()
+        self.assertEqual(got, {1: "games"})
 
     def test_llm_categories_keep_only_known_categories(self):
-        sites = [{"title": f"t{i}", "url": f"https://s{i}.example/"} for i in range(3)]
-        content = json.dumps({"categories": {"0": "games", "1": "spaceships", "2": "apps"}})
-        reply = json.dumps({"choices": [{"message": {"content": content}}]}).encode()
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "k", "OPENAI_MODEL": "m"}), \
-             patch.object(scrape, "fetch", return_value=reply), redirect_stdout(io.StringIO()):
-            self.assertEqual(scrape.llm_categories(sites, ["", "", ""]), {0: "games", 2: "apps"})
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "k"}), \
+             patch.object(scrape, "fetch", return_value=self.reply({"0": "games", "1": "spaceships", "2": "apps"})):
+            got, cache = self.llm(self.sites(3))
+        self.assertEqual(got, {0: "games", 2: "apps"})
+        self.assertEqual(cache, {"https://post/0": "games", "https://post/2": "apps"})
+
+    def test_llm_only_sends_new_posts_and_drops_unranked_ones(self):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "k"}), \
+             patch.object(scrape, "fetch", return_value=self.reply({"1": "apps"})) as fetch:
+            got, cache = self.llm(self.sites(2), {"https://post/0": "games", "https://post/gone": "other"})
+        sent = json.loads(json.loads(fetch.call_args.kwargs["data"])["messages"][1]["content"])
+        self.assertEqual([x["id"] for x in sent], ["1"])
+        self.assertEqual(got, {0: "games", 1: "apps"})
+        self.assertEqual(cache, {"https://post/0": "games", "https://post/1": "apps"})
+
+    def test_llm_skips_the_call_when_nothing_is_new(self):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "k"}), patch.object(scrape, "fetch") as fetch:
+            got, _ = self.llm(self.sites(1), {"https://post/0": "games"})
+        fetch.assert_not_called()
+        self.assertEqual(got, {0: "games"})
 
     def test_llm_failure_keeps_keyword_categories(self):
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "k", "OPENAI_MODEL": "m"}), \
-             patch.object(scrape, "fetch", side_effect=RuntimeError("down")), redirect_stderr(io.StringIO()):
-            self.assertEqual(scrape.llm_categories([{"title": "x", "url": "https://x.example/"}], [""]), {})
-
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "k"}), \
+             patch.object(scrape, "fetch", side_effect=RuntimeError("down")):
+            self.assertEqual(self.llm(self.sites(1))[0], {})
 
 if __name__ == "__main__":
     unittest.main()

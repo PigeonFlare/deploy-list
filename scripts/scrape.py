@@ -41,6 +41,8 @@ REDDIT_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "reddit-cac
 # Posts collected from the Arctic Shift archive, used only when Reddit's API,
 # listings and RSS feeds all fail. Filled a little at a time across daily runs.
 ARCHIVE_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "archive-cache.json")
+# The category the model gave each ranked post, so each post is only sent once.
+CATEGORY_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "categories.json")
 UA = "deploylist/1.0 (+https://deploylist.com)"
 MONTH_POOL_SIZE = 200  # sites kept and shown for the month, split across the categories
 WEEK_POOL_SIZE = 100  # the same for the last week
@@ -195,28 +197,41 @@ LLM_PROMPT = (
 
 
 def llm_categories(sites, summaries):
-    """Categories keyed by site index from the model, or {} without a key or on failure."""
+    """Categories keyed by site index. The model only sees posts it hasn't sorted before;
+    earlier answers come from CATEGORY_CACHE. Without a key, or if the call fails, only the
+    cached answers are returned."""
+    try:
+        with open(CATEGORY_CACHE, encoding="utf-8") as f:
+            cache = json.load(f)
+    except (OSError, ValueError):
+        cache = {}
     key, model = os.environ.get("OPENAI_API_KEY"), os.environ.get("OPENAI_MODEL") or "gpt-5.6-luna"
-    if not key or not model:
-        return {}
-    out = {}
-    for start in range(0, len(sites), LLM_BATCH):
-        items = [{"id": str(i), "title": s["title"], "domain": host_of(s["url"]), "page": summary[:400]}
-                 for i, (s, summary) in enumerate(zip(sites, summaries)) if start <= i < start + LLM_BATCH]
-        body = json.dumps({"model": model, "response_format": {"type": "json_object"}, "messages": [
-            {"role": "system", "content": LLM_PROMPT},
-            {"role": "user", "content": json.dumps(items, ensure_ascii=False)}]}).encode()
+    new = [i for i, s in enumerate(sites) if s["post_url"] not in cache]
+    if key and new:
         try:
-            reply = json.loads(fetch("https://api.openai.com/v1/chat/completions",
-                                     {"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-                                     data=body, timeout=120))
-            got = json.loads(reply["choices"][0]["message"]["content"])["categories"]
+            for start in range(0, len(new), LLM_BATCH):
+                items = [{"id": str(i), "title": sites[i]["title"], "domain": host_of(sites[i]["url"]),
+                          "page": summaries[i][:400]} for i in new[start:start + LLM_BATCH]]
+                body = json.dumps({"model": model, "response_format": {"type": "json_object"}, "messages": [
+                    {"role": "system", "content": LLM_PROMPT},
+                    {"role": "user", "content": json.dumps(items, ensure_ascii=False)}]}).encode()
+                reply = json.loads(fetch("https://api.openai.com/v1/chat/completions",
+                                         {"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                                         data=body, timeout=120))
+                got = json.loads(reply["choices"][0]["message"]["content"])["categories"]
+                cache.update({sites[int(i)]["post_url"]: c for i, c in got.items()
+                              if c in ("games", "apps", "other") and str(i).isdigit() and int(i) in new})
+            print(f"OpenAI ({model}) sorted {len(new)} new sites")
         except Exception as e:
-            print(f"warn: OpenAI categories: {e}; keeping keyword categories", file=sys.stderr)
-            return {}
-        out.update({int(i): c for i, c in got.items() if c in ("games", "apps", "other") and str(i).isdigit()})
-    print(f"OpenAI ({model}) categorized {len(out)} of {len(sites)} sites")
-    return out
+            print(f"warn: OpenAI categories: {e}; new sites keep keyword categories", file=sys.stderr)
+    # Keep answers only for posts still ranked.
+    cache = {s["post_url"]: cache[s["post_url"]] for s in sites if s["post_url"] in cache}
+    os.makedirs(os.path.dirname(CATEGORY_CACHE), exist_ok=True)
+    tmp = CATEGORY_CACHE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(cache, f, indent=1, ensure_ascii=False)
+    os.replace(tmp, CATEGORY_CACHE)
+    return {i: cache[s["post_url"]] for i, s in enumerate(sites) if s["post_url"] in cache}
 
 
 def window_start():

@@ -51,6 +51,7 @@ class RedditIngestionTests(unittest.TestCase):
         # Keep tests off the network and away from the real archive cache.
         self.archive_path = Path(self.enterContext(tempfile.TemporaryDirectory())) / "archive-cache.json"
         self.enterContext(patch.object(scrape, "ARCHIVE_CACHE", str(self.archive_path)))
+        self.enterContext(patch.object(scrape, "CATEGORY_CACHE", str(self.archive_path.parent / "categories.json")))
         self.enterContext(patch.object(scrape.ArchiveClient, "get", side_effect=scrape.ArchivePaused("offline")))
         self.enterContext(patch.object(scrape, "ARCHIVE_PAUSE", 0))
 
