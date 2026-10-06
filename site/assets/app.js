@@ -57,14 +57,16 @@
     renderProgress();
   }
 
-  // The category and time range carry from page to page within a tab, but a refresh or a
-  // new tab starts over on Games and Last month.
+  // The category and time range carry from page to page within the site, but a refresh, or
+  // arriving from anywhere else (a typed address, a bookmark, another site), starts over on
+  // Games and Last month, whatever the address says.
   const tab = {
     get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { sessionStorage.setItem(k, v); } catch {} },
   };
   const nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
-  if (nav && nav.type === "reload") {
+  const fromSite = (() => { try { return new URL(document.referrer).origin === location.origin; } catch { return false; } })();
+  if ((nav && nav.type === "reload") || !fromSite) {
     tab.set("deploylist.cat", DEFAULT_CAT);
     tab.set("deploylist.range", "month");
     const url = new URL(location.href);
