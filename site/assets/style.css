@@ -63,7 +63,7 @@
   --red: #e0342f;
   --space: #dde3f0;
   --tagline: #f2efe8;
-  --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.55)) drop-shadow(0 3px 12px rgba(0, 0, 0, 0.4));
+  --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4));
   --bezel: #fbfcfe; --bezel-2: #eef1f6; --bezel-edge: rgba(14, 16, 22, 0.12);
   --bezel-shadow: 0 10px 24px -6px rgba(22, 32, 60, 0.22);
   --aurora-1: rgba(47, 107, 255, 0.26);
@@ -94,7 +94,7 @@
     --menu-hover: rgba(255, 255, 255, 0.09);
     --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
     --red: #ff5a52; --tagline: #f2efe8;
-    --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35)); --space: #04050b;
+    --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4)); --space: #04050b;
     --bezel: #161a24; --bezel-2: #20242f; --bezel-edge: rgba(255, 255, 255, 0.14); --bezel-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
   }
@@ -118,7 +118,7 @@
   --menu-hover: rgba(255, 255, 255, 0.09);
   --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
   --red: #ff5a52; --tagline: #f2efe8;
-    --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35)); --space: #04050b;
+    --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4)); --space: #04050b;
     --bezel: #161a24; --bezel-2: #20242f; --bezel-edge: rgba(255, 255, 255, 0.14); --bezel-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
 }
