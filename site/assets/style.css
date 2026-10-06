@@ -165,7 +165,8 @@ body.home { background: var(--space); }
 #wall .laptop img { aspect-ratio: 16 / 10; border-radius: calc(4px * var(--u)); }
 #wall .desktop { padding: calc(7px * var(--u)); border-radius: calc(8px * var(--u)); background: var(--bezel-2); }
 #wall .desktop img { aspect-ratio: 16 / 10; border-radius: calc(3px * var(--u)); }
-/* The title, tagline and Donate stand off the wall with a tight shadow, not a dimmed wall. */
+/* A light, even dim over the wall; the title, tagline and Donate also get a tight shadow. */
+#wall::after { content: ""; position: fixed; inset: 0; background: color-mix(in srgb, var(--space) 25%, transparent); }
 body.home :is(.logo, .tagline, .top-donate) { filter: var(--hero-shadow); }
 
 /* Liquid glass: the top buttons. A clear, lightly tinted lens with a specular rim,
