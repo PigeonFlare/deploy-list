@@ -58,9 +58,11 @@ let upcoming = null;
 function randomPick() {
   const list = candidates();
   if (!list.length) return null;
-  const seen = new Set([...hist.ids, ...DL.visited]);
-  const fresh = list.filter((s) => !seen.has(s.id));
   const current = hist.ids[hist.pos];
+  const unvisited = list.filter((s) => !DL.visited.includes(s.id));
+  // Right after the list starts over, every site is already in this visit's history.
+  let fresh = unvisited.filter((s) => !hist.ids.includes(s.id));
+  if (!fresh.length) fresh = unvisited.filter((s) => s.id !== current);
   if (!fresh.length) return DL.visited.map((id) => byId[id]).find((s) => s && s.id !== current && list.includes(s)) || list[0];
   const top = new Set(DL.inRange(data).filter((s) => DL.inCategory(s)).slice(0, 50));
   const weights = fresh.map((s) => (top.has(s) ? 2 : 1));

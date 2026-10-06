@@ -28,8 +28,10 @@
   };
 
   // Sites seen in Live, kept across visits, oldest first. Live won't bring one back until
-  // every eligible site has been seen; sites that leave the rankings are dropped.
+  // every eligible site has been seen; sites that leave the rankings are dropped. Seeing them
+  // all turns the Live view button gold for good and starts the list over.
   const VISITED = "deploylist.visited";
+  const GOLD = "deploylist.gold";
   function readVisited() {
     try {
       const v = JSON.parse(store.get(VISITED) || "[]");
@@ -51,12 +53,28 @@
   function clearVisited() {
     visited = [];
     store.remove(VISITED);
+    store.remove(GOLD);
     renderProgress();
   }
 
+  // The category and time range carry from page to page within a tab, but a refresh or a
+  // new tab starts over on Games and Last month.
+  const tab = {
+    get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { sessionStorage.setItem(k, v); } catch {} },
+  };
+  const nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+  if (nav && nav.type === "reload") {
+    tab.set("deploylist.cat", DEFAULT_CAT);
+    tab.set("deploylist.range", "month");
+    const url = new URL(location.href);
+    url.searchParams.delete("cat");
+    url.searchParams.delete("range");
+    history.replaceState(history.state, "", url);
+  }
   function getCategory() {
     const q = new URLSearchParams(location.search).get("cat");
-    const c = q || store.get("deploylist.cat") || DEFAULT_CAT;
+    const c = q || tab.get("deploylist.cat") || DEFAULT_CAT;
     return CATS.some((x) => x.key === c) ? c : DEFAULT_CAT;
   }
 
@@ -64,7 +82,7 @@
   const listeners = [];
 
   function getRange() {
-    const r = new URLSearchParams(location.search).get("range") || store.get("deploylist.range") || "month";
+    const r = new URLSearchParams(location.search).get("range") || tab.get("deploylist.range") || "month";
     return RANGES.some((x) => x.key === r) ? r : "month";
   }
   let range = getRange();
@@ -73,7 +91,7 @@
   function setRange(r) {
     if (!RANGES.some((x) => x.key === r)) r = "month";
     range = r;
-    store.set("deploylist.range", r);
+    tab.set("deploylist.range", r);
     const url = new URL(location.href);
     if (r === "month") url.searchParams.delete("range"); else url.searchParams.set("range", r);
     history.replaceState(history.state, "", url);
@@ -84,7 +102,7 @@
   function setCategory(c) {
     if (!CATS.some((x) => x.key === c)) c = DEFAULT_CAT;
     category = c;
-    store.set("deploylist.cat", c);
+    tab.set("deploylist.cat", c);
     const url = new URL(location.href);
     if (c === DEFAULT_CAT) url.searchParams.delete("cat"); else url.searchParams.set("cat", c);
     history.replaceState(history.state, "", url);
@@ -139,7 +157,7 @@
     if (!catMenu) return;
     const cur = CATS.find((c) => c.key === category) || CATS[0];
     const labelEl = catMenu.querySelector(".dd-label");
-    if (labelEl) labelEl.textContent = cur.label;
+    if (labelEl) labelEl.innerHTML = cur.label + (counts ? ` ${progress(counts[cur.key])}` : "");
     const menuEl = catMenu.querySelector(".dd-menu");
     if (menuEl) {
       menuEl.innerHTML = CATS.map((c) => `
@@ -266,11 +284,17 @@
       counts.all.x += counts[c.key].x;
       counts.all.y += counts[c.key].y;
     });
+    if (counts.all.y && counts.all.x >= counts.all.y) {
+      store.set(GOLD, "1");
+      visited = [];
+      store.remove(VISITED);
+      return renderProgress();
+    }
     renderCategoryMenu();
     const tag = document.getElementById("tagline-progress");
     if (tag) tag.outerHTML = progress(counts.all).replace('class="', 'id="tagline-progress" class="');
     const live = document.getElementById("go-live");
-    if (live) live.classList.toggle("gold", !!counts.all.y && counts.all.x >= counts.all.y);
+    if (live) live.classList.toggle("gold", store.get(GOLD) === "1");
   }
   // Coming back to a page from the back/forward cache, pick up sites seen since.
   addEventListener("pageshow", (e) => { if (e.persisted) { visited = readVisited(); renderProgress(); } });
