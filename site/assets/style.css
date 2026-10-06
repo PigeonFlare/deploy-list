@@ -166,7 +166,7 @@ body.home { background: var(--space); }
 #wall::after {
   content: ""; position: fixed; inset: 0;
   background:
-    radial-gradient(ellipse 52% 40% at 50% 50%, color-mix(in srgb, var(--space) 80%, transparent), color-mix(in srgb, var(--space) 45%, transparent) 70%, color-mix(in srgb, var(--space) 25%, transparent));
+    radial-gradient(ellipse 55% 42% at 50% 50%, color-mix(in srgb, var(--space) 88%, transparent), color-mix(in srgb, var(--space) 72%, transparent) 75%, color-mix(in srgb, var(--space) 58%, transparent));
 }
 
 /* Liquid glass: the top buttons. A clear, lightly tinted lens with a specular rim,
