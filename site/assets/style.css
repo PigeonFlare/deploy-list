@@ -221,14 +221,14 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 .lg.tinted::after { display: none; }
 .lg.tinted::before { opacity: 0.45; }
 .lg.tinted:hover { background: var(--lg-accent-hover); }
-/* Live view turns gold once every site Live can show has been seen: rich, saturated gold
-   that's still see-through glass. */
+/* Live view turns emerald once every site Live can show has been seen: brilliant, saturated
+   green that's still see-through glass. */
 a.lg.gold, a.lg.gold:hover {
-  color: #fff; text-shadow: 0 1px 2px rgba(110, 60, 0, 0.55);
-  background: linear-gradient(160deg, rgba(255, 222, 92, 0.62), rgba(245, 168, 12, 0.55) 55%, rgba(214, 128, 0, 0.6));
-  --lg-rim-hi: #fff6c2; --lg-rim-lo: rgba(255, 214, 90, 0.95); --lg-rim-shade: rgba(176, 104, 0, 0.5); --lg-rim-glint: rgba(255, 236, 150, 1);
-  --lg-sheen: rgba(255, 246, 200, 0.35);
-  box-shadow: 0 10px 26px -10px rgba(230, 140, 0, 0.75), inset 0 0 8px rgba(255, 228, 130, 0.5), inset 0 -6px 10px -8px rgba(255, 240, 170, 0.8);
+  color: #fff; text-shadow: 0 1px 2px rgba(0, 70, 35, 0.55);
+  background: linear-gradient(160deg, rgba(10, 205, 110, 0.8), rgba(0, 170, 85, 0.76) 55%, rgba(0, 128, 64, 0.82));
+  --lg-rim-hi: #d9fff0; --lg-rim-lo: rgba(110, 245, 175, 0.95); --lg-rim-shade: rgba(0, 110, 60, 0.5); --lg-rim-glint: rgba(180, 255, 215, 1);
+  --lg-sheen: rgba(210, 255, 230, 0.18);
+  box-shadow: 0 10px 26px -10px rgba(0, 200, 110, 0.75), inset 0 0 8px rgba(140, 255, 195, 0.5), inset 0 -6px 10px -8px rgba(190, 255, 220, 0.8);
 }
 a.lg.gold:hover { filter: brightness(1.06); }
 
@@ -255,7 +255,7 @@ a.lg.gold:hover { filter: brightness(1.06); }
 /* Seeing every site: the category button flashes green and swells, then settles back with its count reset. */
 @keyframes complete {
   0% { scale: 1; }
-  25%, 45% { scale: 1.18; background-color: rgba(16, 196, 84, 0.92); box-shadow: 0 10px 30px -6px rgba(16, 196, 84, 0.85); }
+  25%, 45% { scale: 1.18; background-color: rgba(10, 205, 110, 0.62); box-shadow: 0 10px 30px -8px rgba(0, 200, 110, 0.75), inset 0 0 8px rgba(140, 255, 195, 0.5), inset 0 -6px 10px -8px rgba(190, 255, 220, 0.8); }
   100% { scale: 1; }
 }
 .dd-toggle.complete { animation: complete 1s cubic-bezier(0.3, 1.4, 0.5, 1); color: #fff; }
