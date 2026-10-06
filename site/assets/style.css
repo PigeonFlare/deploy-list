@@ -30,6 +30,7 @@
   --accent: #2f6bff;
   --mark-a: #2f6bff;
   --mark-b: #8a5cff;
+  --list-a: #5a8cff; --list-b: #a37fff;
   --surface: #ffffff;
   --surface-border: rgba(14, 16, 22, 0.07);
   --surface-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 24px 60px -28px rgba(16, 24, 40, 0.22);
@@ -77,7 +78,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0a0c12; --bg-2: #121827; --text: #f3f5fa; --muted: rgba(243, 245, 250, 0.62); --faint: rgba(243, 245, 250, 0.4);
-    --accent: #6ea8ff; --mark-a: #6ea8ff; --mark-b: #b99cff;
+    --accent: #6ea8ff; --mark-a: #6ea8ff; --mark-b: #b99cff; --list-a: var(--mark-a); --list-b: var(--mark-b);
     --surface: rgba(255, 255, 255, 0.035); --surface-border: rgba(255, 255, 255, 0.08);
     --surface-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.7);
     --row-rule: rgba(255, 255, 255, 0.06); --row-hover: rgba(110, 168, 255, 0.05);
@@ -101,7 +102,7 @@
 }
 :root[data-theme="dark"] {
   --bg: #0a0c12; --bg-2: #121827; --text: #f3f5fa; --muted: rgba(243, 245, 250, 0.62); --faint: rgba(243, 245, 250, 0.4);
-  --accent: #6ea8ff; --mark-a: #6ea8ff; --mark-b: #b99cff;
+  --accent: #6ea8ff; --mark-a: #6ea8ff; --mark-b: #b99cff; --list-a: var(--mark-a); --list-b: var(--mark-b);
   --surface: rgba(255, 255, 255, 0.035); --surface-border: rgba(255, 255, 255, 0.08);
   --surface-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.7);
   --row-rule: rgba(255, 255, 255, 0.06); --row-hover: rgba(110, 168, 255, 0.05);
@@ -171,6 +172,7 @@ body.home :is(.logo, .tagline, .top-donate) { filter: var(--hero-shadow); }
 /* "deploy", the tagline and Donate are white over the wall in both modes. */
 body.home .top-donate { color: #f3f5fa; }
 body.home .logo .w1 { background: linear-gradient(180deg, #f3f5fa 50%, #dcdfe6); -webkit-background-clip: text; background-clip: text; }
+body.home .logo .w2 { background: linear-gradient(105deg, var(--list-a) 10%, var(--list-b) 90%); -webkit-background-clip: text; background-clip: text; }
 
 /* Liquid glass: the top buttons. A clear, lightly tinted lens with a specular rim,
    inner glow and soft drop shadow. app.js adds edge refraction where the browser
