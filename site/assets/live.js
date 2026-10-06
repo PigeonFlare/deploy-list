@@ -1,7 +1,8 @@
 // Page script; inline scripts are blocked by the Content-Security-Policy.
 const fmt = new Intl.NumberFormat("en-US");
 const $ = (id) => document.getElementById(id);
-// History of viewed sites lives only in memory, so closing or reloading the page clears it.
+// The back/forward history lives only in memory, so closing or reloading the page clears it.
+// Which sites have been seen at all is kept across visits (DL.visited).
 let data, byId = {}, hist = { ids: [], pos: -1 };
 
 // Sites Live can show in the chosen time range.
@@ -42,22 +43,25 @@ function show(site) {
   postLink.hidden = false;
   $("meta-sep").hidden = false;
 
+  DL.markVisited(site.id);
   $("prev").disabled = hist.pos <= 0;
   document.title = `${site.domain} · deploylist live`;
   if (hist.pos === hist.ids.length - 1) prepareNext();
 }
 
 // Pick the next random site ahead of time and warm up a connection to it,
-// so pressing › loads faster. A site in the history can't come up again; once every site
-// has been seen, the one seen longest ago comes next, so the same order repeats.
+// so pressing › loads faster. A site seen before, on this visit or an earlier one, can't come
+// up again; once every site has been seen, the one seen longest ago comes next, so the same
+// order repeats.
 // Sites in the top 50 of the current leaderboard are twice as likely to come up.
 let upcoming = null;
 function randomPick() {
   const list = candidates();
   if (!list.length) return null;
-  const seen = new Set(hist.ids);
+  const seen = new Set([...hist.ids, ...DL.visited]);
   const fresh = list.filter((s) => !seen.has(s.id));
-  if (!fresh.length) return hist.ids.map((id) => byId[id]).find((s) => list.includes(s)) || list[0];
+  const current = hist.ids[hist.pos];
+  if (!fresh.length) return DL.visited.map((id) => byId[id]).find((s) => s && s.id !== current && list.includes(s)) || list[0];
   const top = new Set(DL.inRange(data).filter((s) => DL.inCategory(s)).slice(0, 50));
   const weights = fresh.map((s) => (top.has(s) ? 2 : 1));
   let r = Math.random() * weights.reduce((a, b) => a + b, 0);
@@ -104,7 +108,7 @@ function next() {
     hist.pos++;
     return show(byId[hist.ids[hist.pos]]);
   }
-  const pick = upcoming && candidates().includes(upcoming) && !hist.ids.includes(upcoming.id) ? upcoming : randomPick();
+  const pick = upcoming && candidates().includes(upcoming) && upcoming.id !== hist.ids[hist.pos] ? upcoming : randomPick();
   upcoming = null;
   if (!pick) return empty(DL.range === "week" ? "No live-viewable sites in this category from the last week." : "No live-viewable sites in this category yet.");
   hist.ids = hist.ids.filter((id) => id !== pick.id);

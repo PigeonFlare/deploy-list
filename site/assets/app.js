@@ -24,7 +24,35 @@
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+    remove(k) { try { localStorage.removeItem(k); } catch {} },
   };
+
+  // Sites seen in Live, kept across visits, oldest first. Live won't bring one back until
+  // every eligible site has been seen; sites that leave the rankings are dropped.
+  const VISITED = "deploylist.visited";
+  function readVisited() {
+    try {
+      const v = JSON.parse(store.get(VISITED) || "[]");
+      return Array.isArray(v) ? v.filter((x) => typeof x === "string") : [];
+    } catch { return []; }
+  }
+  let visited = readVisited();
+  function markVisited(id) {
+    visited = visited.filter((x) => x !== id);
+    visited.push(id);
+    store.set(VISITED, JSON.stringify(visited));
+    renderProgress();
+  }
+  function pruneVisited(d) {
+    const ids = new Set(((d && d.sites) || []).map((s) => s.id));
+    const kept = visited.filter((id) => ids.has(id));
+    if (kept.length !== visited.length) { visited = kept; store.set(VISITED, JSON.stringify(visited)); }
+  }
+  function clearVisited() {
+    visited = [];
+    store.remove(VISITED);
+    renderProgress();
+  }
 
   function getCategory() {
     const q = new URLSearchParams(location.search).get("cat");
@@ -106,7 +134,7 @@
     if (e.key === "Escape") closeAll();
   });
 
-  let catMenu, counts = null;
+  let catMenu, counts = null, countSites = null;
   function renderCategoryMenu() {
     if (!catMenu) return;
     const cur = CATS.find((c) => c.key === category) || CATS[0];
@@ -116,7 +144,7 @@
     if (menuEl) {
       menuEl.innerHTML = CATS.map((c) => `
         <button role="menuitemradio" data-cat="${c.key}" aria-current="${c.key === category}">
-          <span>${c.label}${counts ? ` <span class="count">(${counts[c.key] || 0})</span>` : ""}</span>
+          <span>${c.label}${counts ? ` ${progress(counts[c.key])}` : ""}</span>
           ${icon("check")}</button>`).join("");
     }
   }
@@ -184,6 +212,7 @@
         .then((d) => {
           if (!d || !Array.isArray(d.sites)) d = { ...(d || {}), sites: [] };
           d.sites.forEach((s, i) => (s.id = s.post_url || s.domain || String(i)));
+          pruneVisited(d);
           return d;
         })
         .catch((err) => {
@@ -217,15 +246,34 @@
     };
     return sites.filter((s) => inCategory(s, c) && keep(s));
   }
-  function setCounts(sites, limit) {
-    counts = { all: 0 };
+  // Counts are the sites Live can show (x seen of y) in each category of the given list.
+  function progress(n) {
+    const c = n || { x: 0, y: 0 };
+    return `<span class="count${c.y && c.x >= c.y ? " done" : ""}">(${c.x}/${c.y})</span>`;
+  }
+  function setCounts(sites) {
+    countSites = sites;
+    renderProgress();
+  }
+  function renderProgress() {
+    if (!countSites) return;
+    const seen = new Set(visited);
+    counts = { all: { x: 0, y: 0 } };
     CATS.forEach((c) => {
       if (c.key === "all") return;
-      counts[c.key] = ranked(sites, c.key, limit).length;
-      counts.all += counts[c.key];
+      const live = ranked(countSites, c.key).filter((s) => s.embeddable);
+      counts[c.key] = { x: live.filter((s) => seen.has(s.id)).length, y: live.length };
+      counts.all.x += counts[c.key].x;
+      counts.all.y += counts[c.key].y;
     });
     renderCategoryMenu();
+    const tag = document.getElementById("tagline-progress");
+    if (tag) tag.outerHTML = progress(counts.all).replace('class="', 'id="tagline-progress" class="');
+    const live = document.getElementById("go-live");
+    if (live) live.classList.toggle("gold", !!counts.all.y && counts.all.x >= counts.all.y);
   }
+  // Coming back to a page from the back/forward cache, pick up sites seen since.
+  addEventListener("pageshow", (e) => { if (e.persisted) { visited = readVisited(); renderProgress(); } });
 
   // ---- wall of sites (homepage only) ----
   // Rows of site stills in phone, tablet, laptop and desktop frames, pressed together like
@@ -457,7 +505,8 @@
   }
 
   window.DL = {
-    ROOT, CATS, store, loadData, inRange, inCategory, ranked, setCounts, safeUrl, esc, icon,
+    ROOT, CATS, store, loadData, markVisited, clearVisited,
+    get visited() { return visited; }, inRange, inCategory, ranked, setCounts, safeUrl, esc, icon,
     get category() { return category; },
     DEFAULT_CAT,
     get range() { return range; },

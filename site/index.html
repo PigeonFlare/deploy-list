@@ -18,10 +18,13 @@
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body data-page="home" data-root="" class="home">
-  <a class="top-donate" href="https://buymeacoffee.com/0wtynrfutb" target="_blank" rel="noopener noreferrer">Donate</a>
+  <div class="top-donate">
+    <a href="https://buymeacoffee.com/0wtynrfutb" target="_blank" rel="noopener noreferrer">Donate</a>
+    <button type="button" id="clear-cache">Clear cache</button>
+  </div>
   <main class="hero">
     <h1 class="logo"><span class="w1">deploy</span><span class="w2">list</span></h1>
-    <p class="tagline">Scroll the internet's most popular indie websites</p>
+    <p class="tagline">Scroll the internet's most popular indie websites <span id="tagline-progress"></span></p>
     <div class="cta">
       <a class="lg tinted pill" id="go-rankings" href="leaderboards/"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Rankings</a>
       <a class="lg pill" id="go-live" href="live/"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg>Live view</a>
