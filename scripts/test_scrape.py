@@ -233,8 +233,8 @@ class ScraperTests(unittest.TestCase):
         self.assertTrue(sites[1]["embeddable"])
 
 
-    def test_llm_categories_need_a_key_and_model(self):
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "", "OPENAI_MODEL": ""}), patch.object(scrape, "fetch") as fetch:
+    def test_llm_categories_need_a_key(self):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": ""}), patch.object(scrape, "fetch") as fetch:
             self.assertEqual(scrape.llm_categories([{"title": "x", "url": "https://x.example/"}], [""]), {})
         fetch.assert_not_called()
 
