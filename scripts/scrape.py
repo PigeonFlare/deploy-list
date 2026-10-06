@@ -184,7 +184,7 @@ def category(title, source, summary=""):
 
 
 # A language model double-checks the keyword categories when an OpenAI key is set
-# (OPENAI_API_KEY and OPENAI_MODEL); without one, or if the call fails, the keywords stand.
+# (OPENAI_API_KEY; OPENAI_MODEL overrides the model); without one, or if the call fails, the keywords stand.
 LLM_BATCH = 50
 LLM_PROMPT = (
     "Sort each website into exactly one category. \"games\": something you play in the browser "
@@ -195,7 +195,7 @@ LLM_PROMPT = (
 
 def llm_categories(sites, summaries):
     """Categories keyed by site index from the model, or {} without a key or on failure."""
-    key, model = os.environ.get("OPENAI_API_KEY"), os.environ.get("OPENAI_MODEL")
+    key, model = os.environ.get("OPENAI_API_KEY"), os.environ.get("OPENAI_MODEL") or "gpt-5.6-luna"
     if not key or not model:
         return {}
     out = {}
