@@ -364,7 +364,7 @@ body.live { overflow: hidden; height: 100%; }
 /* On devices with a pointer, Live's controls stay out of the way until the pointer
    reaches the spot they sit in. */
 @media (hover: hover) and (pointer: fine) {
-  body.live .corner, body.live .live-controls { opacity: 1; transition: opacity 0.35s ease; }
+  body.live .corner, body.live .live-controls { opacity: 0; transition: opacity 0.35s ease; }
   body.live:has(.corner:hover, .corner:focus-within, .corner.open, .live-controls:hover, .live-controls:focus-within) :is(.corner, .live-controls),
   body.live.peek :is(.corner, .live-controls) { opacity: 1; transition-duration: 0.18s; }
 }
