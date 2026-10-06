@@ -2,7 +2,7 @@
 const fmt = new Intl.NumberFormat("en-US");
 const $ = (id) => document.getElementById(id);
 // History of viewed sites lives only in memory, so closing or reloading the page clears it.
-let data, pool = [], byId = {}, hist = { ids: [], pos: -1 };
+let data, byId = {}, hist = { ids: [], pos: -1 };
 
 // Sites Live can show in the chosen time range.
 function inRangePool() { return DL.inRange(data).filter((s) => s.embeddable); }
@@ -48,17 +48,21 @@ function show(site) {
 }
 
 // Pick the next random site ahead of time and warm up a connection to it,
-// so pressing › loads faster.
+// so pressing › loads faster. A site in the history can't come up again; once every site
+// has been seen, the one seen longest ago comes next, so the same order repeats.
+// Sites in the top 50 of the current leaderboard are twice as likely to come up.
 let upcoming = null;
 function randomPick() {
   const list = candidates();
   if (!list.length) return null;
   const seen = new Set(hist.ids);
   const fresh = list.filter((s) => !seen.has(s.id));
-  const recent = new Set(hist.ids.slice(-Math.floor(list.length / 2)));
-  const older = list.filter((s) => !recent.has(s.id));
-  const from = fresh.length ? fresh : older.length ? older : list;
-  return from[Math.floor(Math.random() * from.length)];
+  if (!fresh.length) return hist.ids.map((id) => byId[id]).find((s) => list.includes(s)) || list[0];
+  const top = new Set(DL.inRange(data).filter((s) => DL.inCategory(s)).slice(0, 50));
+  const weights = fresh.map((s) => (top.has(s) ? 2 : 1));
+  let r = Math.random() * weights.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < fresh.length; i++) if ((r -= weights[i]) < 0) return fresh[i];
+  return fresh[fresh.length - 1];
 }
 
 function prepareNext() {
@@ -103,10 +107,12 @@ function next() {
   const pick = upcoming && candidates().includes(upcoming) && !hist.ids.includes(upcoming.id) ? upcoming : randomPick();
   upcoming = null;
   if (!pick) return empty(DL.range === "week" ? "No live-viewable sites in this category from the last week." : "No live-viewable sites in this category yet.");
+  hist.ids = hist.ids.filter((id) => id !== pick.id);
   hist.ids.push(pick.id);
-  // Keep at most one entry per site Live can show.
-  if (hist.ids.length > pool.length) {
-    const trim = hist.ids.length - pool.length;
+  // Keep at most as many entries as sites this feed can show.
+  const cap = candidates().length;
+  if (hist.ids.length > cap) {
+    const trim = hist.ids.length - cap;
     hist.ids = hist.ids.slice(trim);
     hist.pos = Math.max(0, hist.pos - trim);
   }
@@ -135,8 +141,7 @@ $("frame").addEventListener("load", () => {
 
 DL.loadData().then((d) => {
   data = d;
-  pool = (d.sites || []).filter((s) => s.embeddable);
-  pool.forEach((s) => (byId[s.id] = s));
+  (d.sites || []).filter((s) => s.embeddable).forEach((s) => (byId[s.id] = s));
   DL.setCounts(inRangePool());
   next();
   // When the category or time range changes, keep the current site if it still fits.
