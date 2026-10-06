@@ -17,8 +17,8 @@
   ];
   const PAGES = [
     { key: "home", label: "Home", href: ROOT || "./" },
-    { key: "rankings", label: "Rankings", href: ROOT + "leaderboards/" },
     { key: "live", label: "Live", href: ROOT + "live/" },
+    { key: "rankings", label: "Rankings", href: ROOT + "leaderboards/" },
   ];
 
   const store = {
@@ -305,7 +305,11 @@
     const tag = document.getElementById("tagline-progress");
     if (tag) tag.outerHTML = progress(counts.all).replace('class="', 'id="tagline-progress" class="');
     const live = document.getElementById("go-live");
-    if (live) live.classList.toggle("gold", store.get(GOLD) === "1");
+    if (live) {
+      const done = store.get(GOLD) === "1";
+      live.classList.toggle("gold", done);
+      live.classList.toggle("tinted", !done);
+    }
   }
   // Coming back to a page from the back/forward cache, pick up sites seen since.
   addEventListener("pageshow", (e) => { if (e.persisted) { visited = readVisited(); renderProgress(); } });
