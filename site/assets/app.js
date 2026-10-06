@@ -269,7 +269,15 @@
     const c = n || { x: 0, y: 0 };
     return `<span class="count${c.y && c.x >= c.y ? " done" : ""}">(${c.x}/${c.y})</span>`;
   }
-  function setCounts(sites) {
+  function celebrate() {
+    const btn = catMenu && catMenu.querySelector(".dd-toggle");
+    if (!btn) return;
+    btn.classList.remove("complete");
+    void btn.offsetWidth;
+    btn.classList.add("complete");
+    setTimeout(() => btn.classList.remove("complete"), 1000);
+  }
+    function setCounts(sites) {
     countSites = sites;
     renderProgress();
   }
@@ -288,6 +296,7 @@
       store.set(GOLD, "1");
       visited = [];
       store.remove(VISITED);
+      celebrate();
       return renderProgress();
     }
     renderCategoryMenu();
