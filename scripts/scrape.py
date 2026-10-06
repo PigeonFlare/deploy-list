@@ -42,7 +42,8 @@ REDDIT_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "reddit-cac
 # listings and RSS feeds all fail. Filled a little at a time across daily runs.
 ARCHIVE_CACHE = os.path.join(os.path.dirname(__file__), "..", "data", "archive-cache.json")
 UA = "deploylist/1.0 (+https://deploylist.com)"
-POOL_SIZE = 100  # sites kept and shown, split across the categories
+MONTH_POOL_SIZE = 200  # sites kept and shown for the month, split across the categories
+WEEK_POOL_SIZE = 100  # the same for the last week
 MIN_VOTES = 10  # Show HN points or Reddit upvotes a post needs to be ranked for the month
 WEEK_MIN_VOTES = 3  # lower for the last week, so that list can fill up too
 REFRESH_INTERVAL = dt.timedelta(days=3)
@@ -848,17 +849,17 @@ def main(if_due=False):
     # One entry per domain, keeping its best-voted post. The month and the last week are
     # ranked separately, the week with a lower vote minimum; sites that only make the
     # week's list are marked "month": false.
-    def top(posts):
+    def top(posts, size):
         best = {}
         for p in posts:
             d = host_of(p["url"])
             if d not in best or p["votes"] > best[d]["votes"]:
                 best[d] = {**p, "domain": d}
-        return sorted(best.values(), key=lambda s: -s["votes"])[:POOL_SIZE]
-    sites = top([p for p in posts if p["votes"] >= MIN_VOTES])
+        return sorted(best.values(), key=lambda s: -s["votes"])[:size]
+    sites = top([p for p in posts if p["votes"] >= MIN_VOTES], MONTH_POOL_SIZE)
     week_start = (started - dt.timedelta(days=7)).timestamp()
     in_month = {s["post_url"] for s in sites}
-    sites += [{**s, "month": False} for s in top([p for p in posts if (p.get("created") or 0) >= week_start])
+    sites += [{**s, "month": False} for s in top([p for p in posts if (p.get("created") or 0) >= week_start], WEEK_POOL_SIZE)
               if s["post_url"] not in in_month]
     sites.sort(key=lambda s: -s["votes"])
 
