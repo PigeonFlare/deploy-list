@@ -8,6 +8,8 @@
     { key: "games", label: "Games", noun: "games" },
     { key: "other", label: "Other", noun: "projects" },
   ];
+  // New visitors start on Games; the URL leaves out the category only when it's this one.
+  const DEFAULT_CAT = "games";
   // Every page can show the last month or just the last week; the choice carries across pages.
   const RANGES = [
     { key: "month", label: "Last month" },
@@ -26,8 +28,8 @@
 
   function getCategory() {
     const q = new URLSearchParams(location.search).get("cat");
-    const c = q || store.get("deploylist.cat") || "all";
-    return CATS.some((x) => x.key === c) ? c : "all";
+    const c = q || store.get("deploylist.cat") || DEFAULT_CAT;
+    return CATS.some((x) => x.key === c) ? c : DEFAULT_CAT;
   }
 
   let category = getCategory();
@@ -52,11 +54,11 @@
   }
 
   function setCategory(c) {
-    if (!CATS.some((x) => x.key === c)) c = "all";
+    if (!CATS.some((x) => x.key === c)) c = DEFAULT_CAT;
     category = c;
     store.set("deploylist.cat", c);
     const url = new URL(location.href);
-    if (c === "all") url.searchParams.delete("cat"); else url.searchParams.set("cat", c);
+    if (c === DEFAULT_CAT) url.searchParams.delete("cat"); else url.searchParams.set("cat", c);
     history.replaceState(history.state, "", url);
     renderCategoryMenu();
     listeners.forEach((fn) => fn(c));
@@ -457,6 +459,7 @@
   window.DL = {
     ROOT, CATS, store, loadData, inRange, inCategory, ranked, setCounts, safeUrl, esc, icon,
     get category() { return category; },
+    DEFAULT_CAT,
     get range() { return range; },
     onCategory(fn) { listeners.push(fn); },
     onRange(fn) { rangeListeners.push(fn); },

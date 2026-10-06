@@ -7,7 +7,7 @@ DL.onRange(() => { if (data) DL.setCounts(DL.inRange(data)); syncLinks(); });
 // Carry the chosen category and time range into the next page.
 function syncLinks() {
   const params = new URLSearchParams();
-  if (DL.category !== "all") params.set("cat", DL.category);
+  if (DL.category !== DL.DEFAULT_CAT) params.set("cat", DL.category);
   if (DL.range !== "month") params.set("range", DL.range);
   const q = params.toString() ? "?" + params : "";
   const goRankings = document.getElementById("go-rankings");
