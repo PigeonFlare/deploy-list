@@ -96,7 +96,7 @@
     --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
     --menu-hover: rgba(255, 255, 255, 0.09);
     --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
-    --red: #ff5a52; --done: #2ef07a; --menu-count: var(--text); --tagline: #f2efe8;
+    --red: #ff5a52; --done: #2ef07a; --menu-count: rgba(243, 245, 250, 0.78); --tagline: #f2efe8;
     --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4)); --space: #04050b;
     --bezel: #161a24; --bezel-2: #20242f; --bezel-edge: rgba(255, 255, 255, 0.14); --bezel-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
@@ -120,7 +120,7 @@
   --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
   --menu-hover: rgba(255, 255, 255, 0.09);
   --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
-  --red: #ff5a52; --done: #2ef07a; --menu-count: var(--text); --tagline: #f2efe8;
+  --red: #ff5a52; --done: #2ef07a; --menu-count: rgba(243, 245, 250, 0.78); --tagline: #f2efe8;
     --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4)); --space: #04050b;
     --bezel: #161a24; --bezel-2: #20242f; --bezel-edge: rgba(255, 255, 255, 0.14); --bezel-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
