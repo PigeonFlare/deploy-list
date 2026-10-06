@@ -17,3 +17,4 @@ function syncLinks() {
 }
 DL.onCategory(syncLinks); syncLinks();
 
+document.getElementById("clear-cache").addEventListener("click", DL.clearVisited);

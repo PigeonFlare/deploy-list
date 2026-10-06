@@ -62,6 +62,7 @@
   --live-tint: rgba(250, 251, 253, 0.42);
   --live-tint-hover: rgba(255, 255, 255, 0.56);
   --red: #e0342f;
+  --done: #1f9d55;
   --space: #dde3f0;
   --tagline: #f2efe8;
   --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4));
@@ -94,7 +95,7 @@
     --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
     --menu-hover: rgba(255, 255, 255, 0.09);
     --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
-    --red: #ff5a52; --tagline: #f2efe8;
+    --red: #ff5a52; --done: #3ccf74; --tagline: #f2efe8;
     --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4)); --space: #04050b;
     --bezel: #161a24; --bezel-2: #20242f; --bezel-edge: rgba(255, 255, 255, 0.14); --bezel-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
@@ -118,7 +119,7 @@
   --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
   --menu-hover: rgba(255, 255, 255, 0.09);
   --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
-  --red: #ff5a52; --tagline: #f2efe8;
+  --red: #ff5a52; --done: #3ccf74; --tagline: #f2efe8;
     --hero-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4)); --space: #04050b;
     --bezel: #161a24; --bezel-2: #20242f; --bezel-edge: rgba(255, 255, 255, 0.14); --bezel-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
    --aurora-1: rgba(58, 116, 255, 0.3); --aurora-2: rgba(140, 92, 255, 0.24); --aurora-3: rgba(255, 70, 110, 0.1); --aurora-top: #0d1222;
@@ -219,6 +220,13 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 .lg.tinted::after { display: none; }
 .lg.tinted::before { opacity: 0.45; }
 .lg.tinted:hover { background: var(--lg-accent-hover); }
+/* Live view turns gold once every site Live can show has been seen: the same clear glass, warmed. */
+.lg.gold {
+  --lg-tint: rgba(255, 196, 64, 0.2); --lg-tint-hover: rgba(255, 196, 64, 0.3);
+  --lg-rim-hi: #fff4cc; --lg-rim-lo: rgba(255, 210, 110, 0.75); --lg-rim-shade: rgba(190, 130, 20, 0.28); --lg-rim-glint: rgba(255, 226, 150, 0.85);
+  --lg-sheen: rgba(255, 236, 180, 0.2);
+  box-shadow: 0 8px 22px -10px rgba(170, 110, 0, 0.45), inset 0 0 6px rgba(255, 214, 120, 0.35), inset 0 -6px 10px -8px rgba(255, 226, 150, 0.6);
+}
 
 /* Menus and popovers: the same liquid glass as the buttons, with a bit more tint and
    blur so their text stays readable over whatever they open on top of. */
@@ -262,6 +270,9 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 .dd-menu .check { width: 14px; height: 14px; stroke-width: 2.4; color: var(--accent); visibility: hidden; }
 .dd-menu [aria-current="true"] .check { visibility: visible; }
 .dd-menu .count { color: var(--faint); font-variant-numeric: tabular-nums; font-weight: 400; margin-left: 4px; }
+.count.done { color: var(--done); }
+.tagline .count { color: rgba(243, 245, 250, 0.62); font-variant-numeric: tabular-nums; }
+.tagline .count.done { color: #5be08a; }
 
 /* Homepage */
 .hero {
@@ -288,10 +299,11 @@ button.lg:disabled:hover { background: var(--lg-tint); }
 }
 .top-donate {
   position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 2;
-  height: 40px; display: flex; align-items: center;
-  font-size: 14px; font-weight: 600; letter-spacing: -0.005em; color: var(--text); text-decoration: none;
+  height: 40px; display: flex; align-items: center; gap: 22px; white-space: nowrap;
+  font-size: 14px; font-weight: 600; letter-spacing: -0.005em; color: var(--text);
 }
-.top-donate:hover { text-decoration: underline; text-underline-offset: 3px; }
+.top-donate :is(a, button) { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: none; }
+.top-donate :is(a, button):hover { text-decoration: underline; text-underline-offset: 3px; }
 /* Narrow screens: the corner menus reach the middle, so Donate moves to the bottom center. */
 @media (max-width: 500px) {
   .top-donate { top: auto; bottom: max(16px, env(safe-area-inset-bottom)); }
