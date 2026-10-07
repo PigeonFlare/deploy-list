@@ -172,7 +172,7 @@ body.home { background: var(--space); }
 #wall::after { content: ""; position: fixed; inset: 0; background: color-mix(in srgb, var(--space) 25%, transparent); }
 body.home :is(.logo, .tagline, .top-donate) { filter: var(--hero-shadow); }
 /* "deploy", the tagline and Donate are white over the wall in both modes. */
-body.home .top-donate { color: #f3f5fa; }
+body.home .top-donate { color: #f3f5fa; background: #121827; padding: 0 14px; border-radius: 999px; }
 body.home .logo .w1 { background: linear-gradient(180deg, #f3f5fa 50%, #dcdfe6); -webkit-background-clip: text; background-clip: text; }
 body.home .logo .w2 { background: linear-gradient(105deg, var(--list-a) 10%, var(--list-b) 90%); -webkit-background-clip: text; background-clip: text; }
 
