@@ -55,7 +55,7 @@
   --lg-accent: #2f6bff;
   --lg-accent-hover: #255ff0;
   /* Frosted menus */
-  --frost: rgba(255, 255, 255, 0.4);
+  --frost: rgba(255, 255, 255, 0.72);
   --frost-border: rgba(255, 255, 255, 0.9);
   --frost-shadow: 0 18px 50px -12px rgba(22, 32, 60, 0.3), 0 0 0 0.5px rgba(14, 16, 22, 0.1);
   --menu-hover: rgba(14, 16, 22, 0.06);
@@ -92,7 +92,7 @@
     --lg-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.7), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
     --lg-inner: inset 0 0 14px rgba(255, 255, 255, 0.06), inset 0 -10px 18px -14px rgba(255, 255, 255, 0.25);
     --lg-accent: #3a74ff; --lg-accent-hover: #4b82ff;
-    --frost: rgba(24, 26, 34, 0.42); --frost-border: rgba(255, 255, 255, 0.12);
+    --frost: rgba(24, 26, 34, 0.78); --frost-border: rgba(255, 255, 255, 0.12);
     --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
     --menu-hover: rgba(255, 255, 255, 0.09);
     --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
@@ -116,7 +116,7 @@
   --lg-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.7), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
   --lg-inner: inset 0 0 14px rgba(255, 255, 255, 0.06), inset 0 -10px 18px -14px rgba(255, 255, 255, 0.25);
   --lg-accent: #3a74ff; --lg-accent-hover: #4b82ff;
-  --frost: rgba(24, 26, 34, 0.42); --frost-border: rgba(255, 255, 255, 0.12);
+  --frost: rgba(24, 26, 34, 0.78); --frost-border: rgba(255, 255, 255, 0.12);
   --frost-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
   --menu-hover: rgba(255, 255, 255, 0.09);
   --live-tint: rgba(26, 28, 36, 0.42); --live-tint-hover: rgba(40, 43, 54, 0.56);
@@ -238,7 +238,7 @@ a.lg.gold:hover { filter: brightness(1.06); }
   box-shadow: var(--frost-shadow), var(--lg-inner);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  --lg-blur: 7;
+  --lg-blur: 16;
   text-shadow: none;
 }
 
@@ -339,7 +339,7 @@ a.lg.gold:hover { filter: brightness(1.06); }
 
 /* Live view: the site fills the screen and the controls float over it.
    Embedded sites can be any color, so Live's glass carries more tint to keep text readable. */
-body.live .lg { --lg-tint: var(--live-tint); --lg-tint-hover: var(--live-tint-hover); --lg-blur: 5; }
+body.live .lg:not(.frost) { --lg-tint: var(--live-tint); --lg-tint-hover: var(--live-tint-hover); --lg-blur: 5; }
 body.live { overflow: hidden; height: 100%; }
 .frame-wrap { position: fixed; inset: 0; z-index: 1; background: var(--bg); }
 .frame-wrap iframe { width: 100%; height: 100%; border: 0; background: #fff; display: block; }
@@ -448,6 +448,9 @@ body.home:not(.intro) :is(.logo, .tagline, .cta, .top-donate, .corner) { animati
 body.home .tagline { animation-delay: 0.16s; }
 body.home .cta { animation-delay: 0.32s; }
 body.home .top-donate, body.home .corner { animation-delay: 0.48s; }
+/* Keep the delayed entrance, then release the opacity animation's backdrop root
+   so dropdown panels can blur the wall behind their parent. */
+body.home .corner { animation-fill-mode: backwards; }
 @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 .board h1, .board .sub, .board .card, .board #updated { animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 .board .sub { animation-delay: 0.07s; }
@@ -529,55 +532,12 @@ footer.site-foot {
 footer.site-foot a { color: var(--text); text-decoration: none; font-weight: 500; }
 footer.site-foot a:hover { text-decoration: underline; }
 
-/* Useful discovery content sits below the existing full-screen homepage. */
-.discovery { position: relative; z-index: 1; background: var(--bg); border-top: 1px solid var(--surface-border); }
-.discovery-inner { max-width: 1080px; margin: 0 auto; padding: 72px 24px 44px; }
-.discovery h2, .directory-main h1, .directory-main h2 { font-family: "Lora", Georgia, serif; letter-spacing: -0.025em; }
-.discovery h2 { font-size: clamp(28px, 4vw, 42px); line-height: 1.2; max-width: 25ch; margin: 12px 0 22px; }
-.discovery p, .directory-main p { line-height: 1.8; max-width: 75ch; color: var(--muted); }
-.discovery a, .directory-main p a { color: var(--text); text-underline-offset: 3px; }
-.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.browse-nav { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: center; margin: 24px 0 32px; }
-.browse-nav a { font-size: 14px; font-weight: 600; color: var(--text); text-decoration: none; padding: 6px 0; }
-.browse-nav a:hover, .browse-nav a[aria-current] { text-decoration: underline; text-underline-offset: 5px; }
-.browse-nav a:focus-visible, .category-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; border-radius: 4px; }
-.category-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 32px 0 56px; }
-.category-card { display: block; padding: 28px; border: 1px solid var(--surface-border); border-radius: 20px; background: var(--bg-2); color: var(--text); text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
-.category-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-.category-card h3 { font-size: 20px; margin: 0 0 14px; }
-.category-card p { font-size: 14px; line-height: 1.7; margin-bottom: 24px; }
-.category-card span { font-size: 13px; font-weight: 600; color: color-mix(in srgb, var(--accent) 70%, var(--text)); }
-.directory-page { background: var(--bg); }
-.directory-header { max-width: 1080px; margin: 0 auto; padding: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; }
-.directory-header .browse-nav { margin: 0; }
-.wordmark { font-family: "Lora", Georgia, serif; color: var(--text); font-size: 26px; font-weight: 700; text-decoration: none; }
-.wordmark span { font-family: "Playfair Display", Georgia, serif; font-style: italic; color: var(--accent); }
-.directory-main { max-width: 1080px; margin: 0 auto; padding: 48px 24px 24px; }
-.directory-main h1 { font-size: clamp(34px, 5.5vw, 60px); line-height: 1.15; margin: 12px 0 24px; max-width: 22ch; }
-.directory-lead { font-size: 20px; }
-.directory-main .updated { text-align: left; }
-.directory-main section { margin-top: 48px; }
-.directory-main h2 { font-size: 28px; line-height: 1.3; }
-.directory-actions { display: flex; flex-wrap: wrap; gap: 14px; margin: 28px 0 40px; }
-.table-caption { text-align: left; padding: 18px 20px; font-size: 14px; font-weight: 600; color: var(--muted); }
-.directory-note { border-top: 1px solid var(--surface-border); padding-top: 20px; }
 .owner-note { position: relative; z-index: 1; margin: 12px auto; padding: 0 20px; max-width: 900px; text-align: center; font-size: 13px; line-height: 1.7; color: var(--muted); }
 .owner-note a { color: var(--text); }
 .live-fallback { position: fixed; inset: 0; z-index: 5; background: var(--bg); padding: 12vh 24px; }
 .live-fallback p { line-height: 1.8; max-width: 65ch; }
 .live-fallback a { color: var(--text); }
 footer.site-foot { flex-wrap: wrap; gap: 18px; }
-@media (max-width: 720px) {
-  .category-cards { grid-template-columns: 1fr; }
-  .directory-header, .directory-main { padding-left: 16px; padding-right: 16px; }
-  .directory-header .browse-nav { gap: 8px 16px; justify-content: flex-start; }
-  .directory-main { padding-top: 24px; }
-  .directory-main .directory-lead { font-size: 17px; line-height: 1.65; }
-  .discovery-inner { padding: 48px 16px 24px; }
-  .directory-actions .pill { font-size: 14px; padding: 0 16px; }
-}
-@media (prefers-reduced-motion: reduce) { .category-card { transition: none; } .category-card:hover { transform: none; } }
-
 @media (max-width: 960px) {
   .ranks th.src { width: 180px; }
   .ranks th.votes { width: 92px; }
@@ -611,9 +571,10 @@ footer.site-foot { flex-wrap: wrap; gap: 18px; }
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .lg, .frost { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  /* This preference also overrides SVG backdrop filters installed inline. */
+  .lg, .frost.lg { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
   .lg { --lg-tint: var(--bg); --lg-tint-hover: var(--bg-2); }
-  .frost { background: var(--bg); }
+  .frost.lg { background: var(--bg); }
 }
 @media (prefers-reduced-motion: reduce) {
   .brush-reveal { animation: none; }

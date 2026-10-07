@@ -17,11 +17,12 @@ Last resort: if Reddit's API, listing and RSS feed all fail for a subreddit (Red
 
 ## Local
 
-SEO pages are generated from the saved rankings by `python3 -B scripts/build_seo.py`.
-The asset-versioning build also runs this generator, keeping the static category
-pages, initial rankings, and sitemap current on both hosting services. `/discover/`
-is the search landing page for Live view; the iframe-based `/live/` tool is marked
-`noindex`. The homepage verification tag must remain for Google Search Console.
+Page metadata, initial rankings, and the sitemap are refreshed from the saved
+rankings by `python3 -B scripts/build_seo.py`. The asset-versioning build also runs
+this generator on both hosting services. The sitemap includes Home and Rankings;
+the iframe-based `/live/` tool is marked `noindex`. The homepage verification tag
+must remain for Google Search Console. Retired category, About, and Discover URLs
+redirect to the original Rankings or Live view through Cloudflare Pages.
 
 ```sh
 python3 scripts/scrape.py
