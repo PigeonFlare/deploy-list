@@ -1,0 +1,11 @@
+# Retired landing pages lead to the original interfaces.
+/games /leaderboards/?cat=games 301
+/games/ /leaderboards/?cat=games 301
+/apps /leaderboards/?cat=apps 301
+/apps/ /leaderboards/?cat=apps 301
+/websites /leaderboards/?cat=other 301
+/websites/ /leaderboards/?cat=other 301
+/discover /live/ 301
+/discover/ /live/ 301
+/about /leaderboards/ 301
+/about/ /leaderboards/ 301

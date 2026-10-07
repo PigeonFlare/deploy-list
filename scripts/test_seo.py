@@ -38,23 +38,30 @@ class SEOTests(unittest.TestCase):
     def save(self):
         (self.site / "data/sites.json").write_text(json.dumps(self.data))
 
-    def test_week_only_projects_do_not_leak_into_monthly_directories(self):
+    def test_week_only_projects_do_not_leak_into_initial_monthly_rankings(self):
         self.data["sites"][1]["month"] = False
+        self.data["sites"][1]["category"] = "games"
         self.save()
         seo.build(self.site)
-        self.assertNotIn("app.example", (self.site / "apps/index.html").read_text())
-        self.assertIn("game.example", (self.site / "leaderboards/index.html").read_text())
+        text = (self.site / "leaderboards/index.html").read_text()
+        self.assertNotIn("app.example", text)
+        self.assertIn("game.example", text)
 
     def test_titles_cannot_inject_html_or_terminate_jsonld(self):
-        self.data["sites"][1]["title"] = '</script><script>alert("x")</script> & a tool'
+        title = '</script><script>alert("x")</script> & a game'
+        self.data["sites"][0]["title"] = title
+        before = Scripts()
+        before.feed((self.site / "leaderboards/index.html").read_text())
         self.save()
         seo.build(self.site)
-        text = (self.site / "apps/index.html").read_text()
+        text = (self.site / "leaderboards/index.html").read_text()
         parser = Scripts()
         parser.feed(text)
-        self.assertEqual(parser.scripts, [{"type": "application/ld+json"}])
+        self.assertEqual(parser.scripts, before.scripts)
         self.assertIn("&lt;/script&gt;", text)
-        self.assertIn("\\u003c/script>", text)
+        encoded = seo.ld_json({"title": title})
+        self.assertNotIn("</script>", encoded)
+        self.assertEqual(json.loads(encoded), {"title": title})
 
     def test_unsafe_urls_fail_before_any_generated_page_changes(self):
         before = (self.site / "index.html").read_bytes()
@@ -84,8 +91,10 @@ class SEOTests(unittest.TestCase):
         seo.build(self.site)
         self.assertIn('content="noindex, follow', (self.site / "live/index.html").read_text())
         urls = [e.text for e in ET.parse(self.site / "sitemap.xml").findall(".//{*}loc")]
-        self.assertEqual(len(urls), 7)
+        self.assertEqual(urls, [seo.ORIGIN + "/", seo.ORIGIN + "/leaderboards/"])
         self.assertNotIn(seo.ORIGIN + "/live/", urls)
+        for retired in ("games", "apps", "websites", "discover", "about"):
+            self.assertFalse((self.site / retired).exists(), retired)
         for url in urls:
             path = self.site / (url.removeprefix(seo.ORIGIN).strip("/") or ".") / "index.html"
             self.assertTrue(path.is_file(), url)
