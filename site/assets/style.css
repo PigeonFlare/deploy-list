@@ -546,7 +546,7 @@ footer.site-foot a:hover { text-decoration: underline; }
 .category-card:hover { border-color: var(--accent); transform: translateY(-3px); }
 .category-card h3 { font-size: 20px; margin: 0 0 14px; }
 .category-card p { font-size: 14px; line-height: 1.7; margin-bottom: 24px; }
-.category-card span { font-size: 13px; font-weight: 600; color: var(--accent); }
+.category-card span { font-size: 13px; font-weight: 600; color: color-mix(in srgb, var(--accent) 70%, var(--text)); }
 .directory-page { background: var(--bg); }
 .directory-header { max-width: 1080px; margin: 0 auto; padding: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; }
 .directory-header .browse-nav { margin: 0; }
