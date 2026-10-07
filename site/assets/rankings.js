@@ -48,15 +48,15 @@ function render() {
       <td class="rank"><span class="badge ${i < 3 ? "medal r" + (i + 1) : ""}">${i + 1}</span></td>
       <td class="domain-cell">
         <div class="line">
-          <a class="domain" href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer"><span class="dn">${esc(s.domain)}</span>${ext}</a>
+          <a class="domain" href="${esc(safeUrl(s.url))}" target="_blank" rel="ugc noopener noreferrer"><span class="dn">${esc(s.domain)}</span>${ext}</a>
           ${s.embeddable ? "" : liveTag(s)}
         </div>
         <div class="title" title="${esc(s.title)}">${esc(s.title)}</div>
-        <a class="src-line" href="${esc(safeUrl(s.post_url))}" target="_blank" rel="noopener noreferrer">${sourceLabel(s.source)}${ext}</a>
+        <a class="src-line" href="${esc(safeUrl(s.post_url))}" target="_blank" rel="ugc noopener noreferrer">${sourceLabel(s.source)}${ext}</a>
         <div class="meter" aria-hidden="true"><span data-w="${Math.max(2, Math.round((s.votes / max) * 100))}"></span></div>
       </td>
       <td class="num votes">${fmt.format(s.votes)}</td>
-      <td class="src"><a href="${esc(safeUrl(s.post_url))}" target="_blank" rel="noopener noreferrer" title="${esc(s.source)}">${sourceLabel(s.source)}${ext}</a></td>
+      <td class="src"><a href="${esc(safeUrl(s.post_url))}" target="_blank" rel="ugc noopener noreferrer" title="${esc(s.source)}">${sourceLabel(s.source)}${ext}</a></td>
     </tr>`).join("");
   // The first set of rows rises in on load.
   if (!entered) {
@@ -111,7 +111,8 @@ DL.loadData().then((d) => {
   });
 }).catch(() => {
   const tbody = document.getElementById("rows");
-  if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="updated">Couldn\'t load rankings.</td></tr>';
+  // Keep the readable, pre-rendered snapshot when the interactive data request fails.
+  if (tbody && !tbody.querySelector("a.domain")) tbody.innerHTML = '<tr><td colspan="4" class="updated">Couldn\'t load rankings.</td></tr>';
 });
 
 // Parallax: the city photo behind the page drifts up at a fraction of the scroll speed,
