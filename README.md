@@ -17,6 +17,12 @@ Last resort: if Reddit's API, listing and RSS feed all fail for a subreddit (Red
 
 ## Local
 
+SEO pages are generated from the saved rankings by `python3 -B scripts/build_seo.py`.
+The asset-versioning build also runs this generator, keeping the static category
+pages, initial rankings, and sitemap current on both hosting services. `/discover/`
+is the search landing page for Live view; the iframe-based `/live/` tool is marked
+`noindex`. The homepage verification tag must remain for Google Search Console.
+
 ```sh
 python3 scripts/scrape.py
 python3 -m http.server -d site 8000
