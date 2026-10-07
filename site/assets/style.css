@@ -423,7 +423,7 @@ body.board-page { background: var(--bg); }
 .board h1 .noun { position: relative; display: inline-block; margin-left: 0.06em; }
 .board h1 #noun {
   font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 600; font-size: 1.1em; letter-spacing: -0.02em;
-  padding-right: 0.08em;
+  padding: 0 0.08em 0 0.14em; margin-left: -0.14em;
   background: linear-gradient(105deg, var(--mark-a) 10%, var(--mark-b) 90%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
