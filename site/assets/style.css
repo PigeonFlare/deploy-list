@@ -187,7 +187,7 @@ body.home .logo .w2 { background: linear-gradient(105deg, var(--list-a) 10%, var
   text-shadow: var(--lg-text-shadow);
   backdrop-filter: blur(3px) saturate(170%);
   -webkit-backdrop-filter: blur(3px) saturate(170%);
-  --lg-blur: 0.6;
+  --lg-blur: 3;
   transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1), background-color 0.2s, box-shadow 0.2s;
 }
 /* Specular rim, lit by one light above the page: a hot glint on the top edge where it
