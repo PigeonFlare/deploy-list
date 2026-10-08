@@ -91,7 +91,7 @@ def build(site=ROOT / "site"):
     monthly_games = [s for s in data["sites"] if s["category"] == "games" and s.get("month") is not False]
     stamp = f'<time datetime="{escape(data["generated_at"], quote=True)}">{date.strftime("%B %d, %Y")} (UTC)</time>'
     pages = {
-        "index.html": ("/", "Deploylist — Discover Indie Websites, Web Apps & Browser Games", "Discover indie websites, useful web apps, and browser games. Browse community-ranked projects or explore the independent web with Live view.", "WebPage", True),
+        "index.html": ("/", "Deploylist - Scroll the most popular indie websites", "Discover indie websites, web apps, and browser games ranked by community votes. Browse recent projects or explore them one at a time in Live view.", "WebPage", True),
         "leaderboards/index.html": ("/leaderboards/", "Indie Website Rankings — Community Favorites | Deploylist", "Explore recent indie websites, web apps, and browser games ranked by recorded community votes. Filter by category and the last month or week.", "CollectionPage", True),
         "live/index.html": ("/live/", "Explore Indie Websites in Live View | Deploylist", "Explore indie websites, web apps, and browser games one at a time with Deploylist's Live view. Skip forward and discover something new.", "WebPage", False),
     }
