@@ -331,6 +331,7 @@
     const MIX = ["laptop", "phone", "tablet", "laptop", "desktop", "phone", "tablet", "laptop"];
     const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
     let pools = null, builtW = 0, builtH = 0;
+    const FPS = 30;
 
     function take(still) {
       const p = pools[still];
@@ -382,11 +383,18 @@
           track.appendChild(c);
         }
         // 14 to 24 px a second, every other row the other way, each from its own starting point.
-        const secs = half / (14 + Math.random() * 10);
-        track.style.animationDuration = secs.toFixed(1) + "s";
-        track.style.animationDelay = (-Math.random() * secs).toFixed(1) + "s";
+        // Every row steps on one shared 30 fps clock, so the compositor redraws the wall half as often.
+        const steps = Math.round((half / (14 + Math.random() * 10)) * FPS);
+        track.style.animationDuration = steps / FPS + "s";
+        track.style.animationTimingFunction = `steps(${steps})`;
+        track.style.animationDelay = -Math.floor(Math.random() * steps) / FPS + "s";
         if (r % 2) track.style.animationDirection = "reverse";
       }
+      // Start every row on the same frame so their steps line up.
+      requestAnimationFrame(() => {
+        const t = document.timeline.currentTime;
+        el.getAnimations({ subtree: true }).forEach((a) => { if (a.animationName === "wall-drift") a.startTime = t; });
+      });
     }
 
     fetch(ROOT + "snapshots/index.json")
