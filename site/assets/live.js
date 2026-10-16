@@ -7,7 +7,14 @@ let data, byId = {}, hist = { ids: [], pos: -1 };
 
 // Sites Live can show in the chosen time range.
 function inRangePool() { return DL.inRange(data).filter((s) => s.embeddable); }
-function candidates() { return inRangePool().filter((s) => DL.inCategory(s)); }
+function candidates(category = DL.category) { return inRangePool().filter((s) => DL.inCategory(s, category)); }
+
+// Warming the next site must not change the category of the site still on screen.
+function nextCategory() {
+  const unseen = (s) => !DL.visited.includes(s.id);
+  if (DL.category !== "all" && !candidates().some(unseen) && inRangePool().some(unseen)) return "all";
+  return DL.category;
+}
 
 function show(site) {
   if (!site) return;
@@ -56,7 +63,8 @@ function show(site) {
 // Sites in the top 50 of the current leaderboard are twice as likely to come up.
 let upcoming = null;
 function randomPick() {
-  const list = candidates();
+  const category = nextCategory();
+  const list = candidates(category);
   if (!list.length) return null;
   const current = hist.ids[hist.pos];
   const unvisited = list.filter((s) => !DL.visited.includes(s.id));
@@ -64,7 +72,7 @@ function randomPick() {
   let fresh = unvisited.filter((s) => !hist.ids.includes(s.id));
   if (!fresh.length) fresh = unvisited.filter((s) => s.id !== current);
   if (!fresh.length) return DL.visited.map((id) => byId[id]).find((s) => s && s.id !== current && list.includes(s)) || list[0];
-  const top = new Set(DL.inRange(data).filter((s) => DL.inCategory(s)).slice(0, 50));
+  const top = new Set(DL.inRange(data).filter((s) => DL.inCategory(s, category)).slice(0, 50));
   const weights = fresh.map((s) => (top.has(s) ? 2 : 1));
   let r = Math.random() * weights.reduce((a, b) => a + b, 0);
   for (let i = 0; i < fresh.length; i++) if ((r -= weights[i]) < 0) return fresh[i];
@@ -110,9 +118,11 @@ function next() {
     hist.pos++;
     return show(byId[hist.ids[hist.pos]]);
   }
-  const pick = upcoming && candidates().includes(upcoming) && upcoming.id !== hist.ids[hist.pos] ? upcoming : randomPick();
+  const category = nextCategory();
+  const pick = upcoming && candidates(category).includes(upcoming) && upcoming.id !== hist.ids[hist.pos] ? upcoming : randomPick();
   upcoming = null;
   if (!pick) return empty(DL.range === "week" ? "No live-viewable sites in this category from the last week." : "No live-viewable sites in this category yet.");
+  if (category !== DL.category) DL.setCategory(category);
   hist.ids = hist.ids.filter((id) => id !== pick.id);
   hist.ids.push(pick.id);
   // Keep at most as many entries as sites this feed can show.
@@ -149,6 +159,8 @@ DL.loadData().then((d) => {
   data = d;
   (d.sites || []).filter((s) => s.embeddable).forEach((s) => (byId[s.id] = s));
   DL.setCounts(inRangePool());
+  // Keep opening All after Games is complete, even if new games arrive later.
+  if (DL.category === DL.DEFAULT_CAT && DL.liveDefaultCategory === "all") DL.setCategory("all");
   next();
   // When the category or time range changes, keep the current site if it still fits.
   const refilter = () => {

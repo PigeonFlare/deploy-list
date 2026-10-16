@@ -32,6 +32,7 @@
   // all turns the Live view button gold for good and starts the list over.
   const VISITED = "deploylist.visited";
   const GOLD = "deploylist.gold";
+  const LIVE_ALL = "deploylist.liveAll";
   function readVisited() {
     try {
       const v = JSON.parse(store.get(VISITED) || "[]");
@@ -54,6 +55,7 @@
     visited = [];
     store.remove(VISITED);
     store.remove(GOLD);
+    store.remove(LIVE_ALL);
     renderProgress();
   }
 
@@ -294,6 +296,8 @@
       counts.all.x += counts[c.key].x;
       counts.all.y += counts[c.key].y;
     });
+    // Remember finishing Games even when the rankings change or a full round starts over.
+    if (counts.games.y && counts.games.x >= counts.games.y) store.set(LIVE_ALL, "1");
     if (counts.all.y && counts.all.x >= counts.all.y) {
       store.set(GOLD, "1");
       visited = [];
@@ -552,9 +556,10 @@
   }
 
   window.DL = {
-    ROOT, CATS, store, loadData, markVisited, clearVisited,
+    ROOT, CATS, store, loadData, markVisited, clearVisited, setCategory,
     get visited() { return visited; }, inRange, inCategory, ranked, setCounts, safeUrl, esc, icon,
     get category() { return category; },
+    get liveDefaultCategory() { return store.get(LIVE_ALL) === "1" || store.get(GOLD) === "1" ? "all" : DEFAULT_CAT; },
     DEFAULT_CAT,
     get range() { return range; },
     onCategory(fn) { listeners.push(fn); },
