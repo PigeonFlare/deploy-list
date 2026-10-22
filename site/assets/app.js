@@ -59,9 +59,8 @@
     renderProgress();
   }
 
-  // The category and time range carry from page to page within the site, but a refresh, or
-  // arriving from anywhere else (a typed address, a bookmark, another site), starts over on
-  // Games and Last month, whatever the address says.
+  // The category and time range carry between pages. Fresh visits and refreshes reset
+  // them, except Rankings links keep their explicit filters so shared URLs stay useful.
   const tab = {
     get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { sessionStorage.setItem(k, v); } catch {} },
@@ -71,10 +70,12 @@
   if ((nav && nav.type === "reload") || !fromSite) {
     tab.set("deploylist.cat", DEFAULT_CAT);
     tab.set("deploylist.range", "month");
-    const url = new URL(location.href);
-    url.searchParams.delete("cat");
-    url.searchParams.delete("range");
-    history.replaceState(history.state, "", url);
+    if (PAGE !== "rankings") {
+      const url = new URL(location.href);
+      url.searchParams.delete("cat");
+      url.searchParams.delete("range");
+      history.replaceState(history.state, "", url);
+    }
   }
   function getCategory() {
     const q = new URLSearchParams(location.search).get("cat");
